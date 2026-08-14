@@ -45,15 +45,17 @@
 
     @push('scripts')
     <script>
-        const isDark = document.documentElement.classList.contains('dark');
-        new ApexCharts(document.getElementById('alumni-growth-chart'), {
-            chart: { type: 'line', height: 280, toolbar: { show: false }, foreColor: isDark ? '#cbd5e1' : '#475569' },
-            series: [{ name: 'Alumni', data: @json($growthTrend->pluck('total')) }],
-            xaxis: { categories: @json($growthTrend->pluck('month')) },
-            colors: ['#233c6c'],
-            stroke: { curve: 'smooth', width: 3 },
-            dataLabels: { enabled: false },
-        }).render();
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDark = document.documentElement.classList.contains('dark');
+            new ApexCharts(document.getElementById('alumni-growth-chart'), {
+                chart: { type: 'line', height: 280, toolbar: { show: false }, foreColor: isDark ? '#cbd5e1' : '#475569' },
+                series: [{ name: 'Alumni', data: @json($growthTrend->pluck('total')) }],
+                xaxis: { categories: @json($growthTrend->pluck('month')) },
+                colors: ['#233c6c'],
+                stroke: { curve: 'smooth', width: 3 },
+                dataLabels: { enabled: false },
+            }).render();
+        });
     </script>
     @endpush
 </x-layouts::admin>

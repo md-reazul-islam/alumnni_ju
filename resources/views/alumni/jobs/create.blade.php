@@ -41,6 +41,6 @@
     </form>
 
     @push('scripts')
-    <script>flatpickr('.flatpickr-deadline', { dateFormat: 'Y-m-d', minDate: 'today' });</script>
+    <script>document.addEventListener('DOMContentLoaded', () => flatpickr('.flatpickr-deadline', { dateFormat: 'Y-m-d', minDate: 'today' }));</script>
     @endpush
 </x-layouts::alumni>

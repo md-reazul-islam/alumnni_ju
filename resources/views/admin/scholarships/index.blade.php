@@ -74,6 +74,6 @@
     </div>
 
     @push('scripts')
-    <script>flatpickr('.flatpickr-deadline', { dateFormat: 'Y-m-d' });</script>
+    <script>document.addEventListener('DOMContentLoaded', () => flatpickr('.flatpickr-deadline', { dateFormat: 'Y-m-d' }));</script>
     @endpush
 </x-layouts::admin>

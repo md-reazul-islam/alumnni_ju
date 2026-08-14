@@ -48,6 +48,6 @@
     </div>
 
     @push('scripts')
-    <script>flatpickr('.flatpickr-expiry', { enableTime: true, dateFormat: 'Y-m-d H:i' });</script>
+    <script>document.addEventListener('DOMContentLoaded', () => flatpickr('.flatpickr-expiry', { enableTime: true, dateFormat: 'Y-m-d H:i' }));</script>
     @endpush
 </x-layouts::admin>

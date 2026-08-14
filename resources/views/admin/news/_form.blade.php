@@ -36,5 +36,5 @@
 </div>
 
 @push('scripts')
-<script>flatpickr('.flatpickr-publish', { enableTime: true, dateFormat: 'Y-m-d H:i' });</script>
+<script>document.addEventListener('DOMContentLoaded', () => flatpickr('.flatpickr-publish', { enableTime: true, dateFormat: 'Y-m-d H:i' }));</script>
 @endpush

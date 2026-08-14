@@ -69,8 +69,10 @@
 
 @push('scripts')
 <script>
-    flatpickr('.flatpickr-date', { dateFormat: 'Y-m-d' });
-    flatpickr('.flatpickr-datetime', { dateFormat: 'Y-m-d H:i', enableTime: true });
-    flatpickr('.flatpickr-time', { enableTime: true, noCalendar: true, dateFormat: 'H:i' });
+    document.addEventListener('DOMContentLoaded', () => {
+        flatpickr('.flatpickr-date', { dateFormat: 'Y-m-d' });
+        flatpickr('.flatpickr-datetime', { dateFormat: 'Y-m-d H:i', enableTime: true });
+        flatpickr('.flatpickr-time', { enableTime: true, noCalendar: true, dateFormat: 'H:i' });
+    });
 </script>
 @endpush
