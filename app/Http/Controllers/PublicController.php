@@ -7,6 +7,7 @@ use App\Models\AlumniStory;
 use App\Models\Event;
 use App\Models\JobPosting;
 use App\Models\News;
+use App\Models\Slider;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
@@ -17,6 +18,7 @@ class PublicController extends Controller
     {
         $data = Cache::remember('homepage.content', now()->addMinutes(15), function () {
             return [
+                'sliders' => Slider::active()->ordered()->get(),
                 'stats' => [
                     'total_alumni' => User::whereHas('role', fn ($q) => $q->where('slug', 'alumni'))->count(),
                     'verified_alumni' => User::verified()->whereHas('role', fn ($q) => $q->where('slug', 'alumni'))->count(),

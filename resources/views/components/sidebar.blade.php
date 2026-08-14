@@ -22,6 +22,10 @@
             ['label' => 'Stories', 'route' => 'admin.stories.index'],
             ['label' => 'Announcements', 'route' => 'admin.announcements.index'],
         ]],
+        ['label' => 'Homepage Slider', 'icon' => 'image', 'match' => 'admin.sliders.*', 'children' => [
+            ['label' => 'All Slides', 'route' => 'admin.sliders.index'],
+            ['label' => 'Add Slide', 'route' => 'admin.sliders.create'],
+        ]],
         ['label' => 'Community', 'icon' => 'message-square', 'match' => 'admin.community.*', 'children' => [
             ['label' => 'Posts', 'route' => 'admin.community.posts'],
             ['label' => 'Reports', 'route' => 'admin.community.reports'],

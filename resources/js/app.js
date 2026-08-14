@@ -7,6 +7,73 @@ import flatpickr from 'flatpickr';
 
 Alpine.plugin(intersect);
 
+Alpine.data('heroSlider', (count, intervalMs) => ({
+    active: 0,
+    count,
+    intervalMs,
+    progress: 0,
+    timer: null,
+    progressTimer: null,
+    touchStartX: null,
+
+    start() {
+        this.tick();
+    },
+
+    tick() {
+        this.clearTimers();
+        this.progress = 0;
+
+        const stepMs = 50;
+        this.progressTimer = setInterval(() => {
+            this.progress = Math.min(100, this.progress + (stepMs / this.intervalMs) * 100);
+        }, stepMs);
+        this.timer = setTimeout(() => this.next(), this.intervalMs);
+    },
+
+    clearTimers() {
+        clearTimeout(this.timer);
+        clearInterval(this.progressTimer);
+    },
+
+    pause() {
+        this.clearTimers();
+    },
+
+    resume() {
+        this.tick();
+    },
+
+    next() {
+        this.active = (this.active + 1) % this.count;
+        this.tick();
+    },
+
+    prev() {
+        this.active = (this.active - 1 + this.count) % this.count;
+        this.tick();
+    },
+
+    goTo(index) {
+        this.active = index;
+        this.tick();
+    },
+
+    handleTouchStart(e) {
+        this.touchStartX = e.changedTouches[0].clientX;
+    },
+
+    handleTouchEnd(e) {
+        if (this.touchStartX === null) return;
+
+        const deltaX = e.changedTouches[0].clientX - this.touchStartX;
+        if (Math.abs(deltaX) > 50) {
+            deltaX > 0 ? this.prev() : this.next();
+        }
+        this.touchStartX = null;
+    },
+}));
+
 window.Alpine = Alpine;
 window.Swal = Swal;
 window.flatpickr = flatpickr;

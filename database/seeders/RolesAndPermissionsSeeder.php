@@ -20,6 +20,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage-news' => 'content',
             'manage-stories' => 'content',
             'manage-announcements' => 'content',
+            'manage-sliders' => 'content',
             'manage-donations' => 'finance',
             'manage-scholarships' => 'finance',
             'manage-mentorship' => 'mentorship',

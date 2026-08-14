@@ -1,34 +1,36 @@
 <x-layouts::app>
     {{-- Hero --}}
-    <section class="relative overflow-hidden bg-navy-950 text-white">
-        <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
+    <x-hero-slider :slides="$sliders">
+        <section class="relative overflow-hidden bg-navy-950 text-white">
+            <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
 
-        <div class="section-container relative py-20 sm:py-28 lg:py-32">
-            <div class="mx-auto max-w-3xl text-center">
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-300 ring-1 ring-inset ring-white/20">
-                    <x-icon name="sparkles" class="h-3.5 w-3.5" /> {{ config('app.name') }}
-                </span>
+            <div class="section-container relative py-20 sm:py-28 lg:py-32">
+                <div class="mx-auto max-w-3xl text-center">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-300 ring-1 ring-inset ring-white/20">
+                        <x-icon name="sparkles" class="h-3.5 w-3.5" /> {{ config('app.name') }}
+                    </span>
 
-                <h1 class="mt-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
-                    Connect. Engage. Inspire. <span class="text-gold-400">Give Back.</span>
-                </h1>
+                    <h1 class="mt-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                        Connect. Engage. Inspire. <span class="text-gold-400">Give Back.</span>
+                    </h1>
 
-                <p class="mx-auto mt-5 max-w-xl text-lg text-navy-200">
-                    Reconnect with your university community and build meaningful professional relationships
-                    with alumni around the world.
-                </p>
+                    <p class="mx-auto mt-5 max-w-xl text-lg text-navy-200">
+                        Reconnect with your university community and build meaningful professional relationships
+                        with alumni around the world.
+                    </p>
 
-                <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                    <x-button :href="route('register')" variant="gold" class="w-full sm:w-auto">
-                        Join the Alumni Network
-                    </x-button>
-                    <x-button :href="route('alumni.directory')" variant="secondary" class="w-full bg-white/10 text-white ring-white/20 hover:bg-white/20 sm:w-auto">
-                        Explore Alumni Directory
-                    </x-button>
+                    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                        <x-button :href="route('register')" variant="gold" class="w-full sm:w-auto">
+                            Join the Alumni Network
+                        </x-button>
+                        <x-button :href="route('alumni.directory')" variant="secondary" class="w-full bg-white/10 text-white ring-white/20 hover:bg-white/20 sm:w-auto">
+                            Explore Alumni Directory
+                        </x-button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </x-hero-slider>
 
     {{-- Stats --}}
     <section

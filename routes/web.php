@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\ScholarshipController as AdminScholarshipController;
 use App\Http\Controllers\Admin\SettingsController as AdminSettingsController;
+use App\Http\Controllers\Admin\SliderController as AdminSliderController;
 use App\Http\Controllers\Admin\StoryController as AdminStoryController;
 use App\Http\Controllers\AlumniDirectoryController;
 use App\Http\Controllers\Alumni\DashboardController;
@@ -260,6 +261,15 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/', [AdminReportController::class, 'index'])->name('index');
             Route::get('/chart-data', [AdminReportController::class, 'chartData'])->name('chart-data');
             Route::get('/export/{type}', [AdminReportController::class, 'export'])->name('export');
+        });
+
+        Route::prefix('sliders')->name('sliders.')->group(function () {
+            Route::get('/', [AdminSliderController::class, 'index'])->name('index');
+            Route::get('/create', [AdminSliderController::class, 'create'])->name('create');
+            Route::post('/', [AdminSliderController::class, 'store'])->name('store');
+            Route::get('/{slider}/edit', [AdminSliderController::class, 'edit'])->name('edit');
+            Route::put('/{slider}', [AdminSliderController::class, 'update'])->name('update');
+            Route::delete('/{slider}', [AdminSliderController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('announcements')->name('announcements.')->group(function () {
