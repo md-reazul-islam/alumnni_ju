@@ -1,0 +1,283 @@
+# University Alumni Network
+
+A production-ready alumni management platform built for a university to connect graduates, run events, share job opportunities, collect donations, and manage its alumni community end-to-end.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Environment Configuration](#environment-configuration)
+- [Database Setup](#database-setup)
+- [Seed Data](#seed-data)
+- [Authentication & Roles](#authentication--roles)
+- [Development](#development)
+- [Testing](#testing)
+- [Production Build](#production-build)
+- [Hostinger Deployment](#hostinger-deployment)
+- [Storage Configuration](#storage-configuration)
+- [Email Configuration](#email-configuration)
+- [Payment Gateway Integration](#payment-gateway-integration)
+- [Security](#security)
+- [Troubleshooting](#troubleshooting)
+
+## Project Overview
+
+The system serves five roles — **Super Admin**, **Alumni Administrator**, **Moderator**, **Alumni**, and **Guest** — through one Laravel application with a public marketing site, a self-service alumni portal, and a full administrative back office. Controllers stay thin: business logic lives in service classes, input validation lives in Form Request classes, and authorization lives in Policies and Gates, so the codebase is straightforward to extend.
+
+## Features
+
+**Public site** — homepage with live stats, news, events and featured alumni stories; about/history/leadership pages; public events calendar; public job board; alumni story showcase; scholarships and giving pages; contact form.
+
+**Accounts** — multi-step alumni registration wizard, login/logout, password reset, email verification, pending/suspended account states, account settings (profile, password, account deletion).
+
+**Alumni portal** — personal dashboard, professional profile (education, employment, skills, achievements, certifications, publications, projects), searchable alumni directory with AJAX filtering, connection requests, private messaging, notification center.
+
+**Events** — CRUD with Flatpickr date/time pickers, registration and capacity tracking, cancellation, past/upcoming views.
+
+**Career center** — job board with submission/review workflow, applications, saved jobs.
+
+**Content** — alumni success stories with admin review, news & announcements CMS.
+
+**Giving** — donation checkout behind a swappable payment gateway abstraction, donation campaigns, scholarships.
+
+**Mentorship** — mentor profiles, mentorship requests and active mentorships.
+
+**Community** — posts, comments, likes, polls, and moderation/reporting.
+
+**Admin back office** — analytics dashboard (ApexCharts), alumni management (verify/suspend/bulk actions/export), full CRUD across events/jobs/news/announcements/stories/scholarships/donations/mentorship/community, audit log, CSV/report exports, settings.
+
+**Cross-cutting** — role-based access control, audit logging of sensitive actions, rate limiting, CSRF/XSS/SQL-injection hardening, security response headers, dark mode, branded error pages (403/404/419/429/500/503), Laravel Cache on hot read paths.
+
+## Technology Stack
+
+| Layer | Choice |
+|---|---|
+| Language / Framework | PHP 8.2+, Laravel 12 |
+| Database | MySQL 8 |
+| Templating | Blade |
+| CSS | Tailwind CSS |
+| Interactivity | Alpine.js + vanilla JavaScript (Fetch API — no jQuery) |
+| Icons | Lucide, pre-compiled to static Blade SVG components (no icon JS shipped) |
+| Charts | ApexCharts |
+| Dialogs / confirmations | SweetAlert2 |
+| Date & time inputs | Flatpickr |
+| Build tool | Vite |
+| Package managers | Composer, npm |
+| Auth | Laravel's built-in authentication (Breeze-scaffolded, customized) |
+| Caching | Laravel Cache (database driver) |
+| Target host | Hostinger (shared/VPS, Apache/LiteSpeed) |
+
+## Requirements
+
+- PHP 8.2 or higher, with extensions: `openssl`, `pdo_mysql`, `mbstring`, `tokenizer`, `xml`, `ctype`, `json`, `bcmath`, `fileinfo`, `gd`
+- MySQL 8.0+ (or MariaDB 10.4+ for local development)
+- Composer 2.x
+- Node.js 18+ and npm (build-time only — no Node.js process runs in production)
+
+## Installation
+
+```bash
+git clone <repository-url> alumni-network
+cd alumni-network
+
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
+```
+
+Then configure `.env` (see [Environment Configuration](#environment-configuration)), create the database, and continue with [Database Setup](#database-setup).
+
+## Environment Configuration
+
+Copy `.env.example` to `.env` and set at minimum:
+
+```
+APP_NAME="University Alumni Network"
+APP_ENV=local            # production on the live server
+APP_URL=http://localhost:8000
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=alumni_management
+DB_USERNAME=root
+DB_PASSWORD=
+
+MAIL_MAILER=log           # switch to smtp for real email delivery
+```
+
+`APP_KEY` is generated by `php artisan key:generate` — never commit a real `.env` file or a real application key to version control.
+
+## Database Setup
+
+Create an empty MySQL 8 database and matching user, then run migrations:
+
+```bash
+php artisan migrate
+```
+
+This creates the full normalized schema (roles/permissions, alumni profiles and related professional records, events, jobs, news, stories, donations, scholarships, mentorship, community, messaging, notifications, audit logs, sessions, cache, and queue tables).
+
+## Seed Data
+
+Two seeders always run and are safe for production:
+
+```bash
+php artisan db:seed --class=RolesAndPermissionsSeeder   # roles, permissions, role-permission map
+php artisan db:seed --class=ReferenceDataSeeder          # departments, degrees, campuses, skills, interests
+```
+
+Running `php artisan db:seed` with no arguments (or `migrate:fresh --seed`) executes `DatabaseSeeder`, which calls both of the above and creates one Super Admin account:
+
+```
+email:    admin@alumni.test
+password: password
+```
+
+**Change this password immediately after first login on any real deployment.**
+
+For a fully populated demo/staging environment — ~50 alumni profiles, 10 events, 15 job postings, 10 news articles, 10 alumni stories, community posts with comments/likes/polls, donations, and mentorship activity — also run:
+
+```bash
+php artisan db:seed --class=DemoContentSeeder
+```
+
+Do not run `DemoContentSeeder` against a live production database; it is intended for local development, staging, and demos only.
+
+## Authentication & Roles
+
+Registration is public and creates an **Alumni** account in a **pending** state; the account is activated once the alumnus verifies their email address (`EnsureAccountIsActive` middleware blocks pending/suspended accounts everywhere except the verification flow). Staff accounts (Super Admin, Alumni Administrator, Moderator) are created by a Super Admin from the admin panel — there is no public staff signup.
+
+Authorization is enforced in two layers: Laravel Policies for model-level actions, and two custom middleware aliases for route-level checks:
+
+```php
+Route::middleware('role:super-admin,alumni-admin')->group(...);
+Route::middleware('permission:manage-events')->group(...);
+```
+
+A `Gate::before` hook grants Super Admin unconditional access to every ability.
+
+## Development
+
+```bash
+composer run dev
+```
+
+This runs the Laravel dev server, queue listener, log tailer (Pail), and Vite dev server together. Or run pieces individually:
+
+```bash
+php artisan serve
+php artisan queue:listen
+npm run dev
+```
+
+## Testing
+
+```bash
+php artisan test
+```
+
+The suite runs against an isolated in-memory SQLite database (configured in `phpunit.xml`) and never touches your development MySQL database. It covers authentication (registration, login, password reset, email verification, suspended/pending account states), alumni profile management and directory visibility, events (creation, registration, cancellation, authorization), the job board (submission, approval workflow, authorization), networking/connections, and cross-cutting authorization boundaries between all five roles.
+
+## Production Build
+
+```bash
+composer install --no-dev --optimize-autoloader
+npm install
+npm run build
+
+php artisan migrate --force
+php artisan storage:link
+
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+```
+
+`npm run build` compiles and fingerprints assets into `public/build`; only `public/build`'s output is needed on the server, not the Node.js toolchain itself.
+
+To later clear cached config/routes/views (e.g. after an `.env` change):
+
+```bash
+php artisan optimize:clear
+```
+
+## Hostinger Deployment
+
+1. **Database** — In hPanel, create a MySQL 8 database and a database user under *Databases → MySQL Databases*. Note the host (usually `localhost`), database name, username, and password for `.env`.
+2. **Upload the application** — Deploy the repository outside of `public_html` (e.g. to `~/alumni-network`), keeping the full Laravel directory structure intact. Do not upload `.env`, `/vendor`, `/node_modules`, or `/storage/*.key` files directly — build them on the server or upload them separately over SFTP with correct permissions.
+3. **Point the web root at `public/`** — Either set the domain's document root to `~/alumni-network/public` (preferred, supported on Hostinger VPS and Business plans), or, on shared hosting where the document root can't be changed, copy `public/index.php` and `public/.htaccess` into `public_html`, editing the two `require`/`__DIR__` paths in `index.php` to point at your uploaded application's `vendor/autoload.php` and `bootstrap/app.php`.
+4. **Install dependencies on the server** (via SSH, if available on your plan) or upload a pre-built `/vendor` and `public/build` directory built locally with the same PHP version:
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   npm install && npm run build
+   ```
+5. **Configure `.env`** with production values — `APP_ENV=production`, `APP_DEBUG=false`, your real `APP_URL` (`https://...`), the MySQL credentials from step 1, and real mail credentials.
+6. **Generate the app key, migrate, link storage, and cache config**:
+   ```bash
+   php artisan key:generate
+   php artisan migrate --force
+   php artisan storage:link
+   php artisan config:cache
+   php artisan route:cache
+   php artisan view:cache
+   ```
+7. **File permissions** — ensure `storage/` and `bootstrap/cache/` are writable by the web server user (typically `755` for directories is sufficient on Hostinger's shared PHP-FPM setup; avoid `777`).
+8. **HTTPS** — issue a free SSL certificate from hPanel (*SSL* section) and force HTTPS; the app automatically forces the `https` URL scheme when `APP_ENV=production` (see `AppServiceProvider`).
+9. **Cron for scheduled tasks** (if any are added later) — add one cron entry in hPanel:
+   ```
+   * * * * * php /home/<user>/alumni-network/artisan schedule:run >> /dev/null 2>&1
+   ```
+10. **Queue worker** — the app uses the `database` queue driver for notification/email dispatch. On a Hostinger VPS you can run `php artisan queue:work --daemon` under a process supervisor (e.g. Supervisor); on shared hosting without persistent processes, a cron entry running `php artisan queue:work --stop-when-empty` every minute is a reasonable substitute.
+
+## Storage Configuration
+
+Uploaded files (profile photos, resumes, event/news/story images) are written to the `public` disk (`storage/app/public`) and served via the `storage/` symlink created by `php artisan storage:link`. If your Hostinger plan doesn't support symlinks, set `FILESYSTEM_DISK=s3` and configure the `AWS_*` variables in `.env` to use S3-compatible object storage instead — no application code changes are required, since all file access goes through Laravel's `Storage` facade.
+
+## Email Configuration
+
+All transactional email (verification, password reset, event/job/donation notifications) goes through Laravel's mail system. Set `MAIL_MAILER=smtp` with credentials from Hostinger's Titan Email (hPanel → *Emails*) or a transactional provider (Postmark, Mailgun, Resend, SES — drivers are pre-installed). `MAIL_MAILER=log` (the local default) writes emails to `storage/logs/laravel.log` instead of sending them, which is convenient for local development.
+
+## Payment Gateway Integration
+
+Donations are processed through `App\Services\Payment\PaymentGatewayInterface`, bound in `AppServiceProvider` to `ManualPaymentGateway` — a placeholder that records a donation as pending/manually-confirmed without contacting an external processor. To accept live card payments:
+
+1. Add the Stripe PHP SDK: `composer require stripe/stripe-php`.
+2. Implement a `StripeGateway` class satisfying `PaymentGatewayInterface`.
+3. Set `STRIPE_KEY`, `STRIPE_SECRET`, and `STRIPE_WEBHOOK_SECRET` in `.env`.
+4. Change the binding in `AppServiceProvider::register()` from `ManualPaymentGateway::class` to `StripeGateway::class`.
+
+No controller, view, or route changes are required — the donation flow is written against the interface, not a concrete gateway.
+
+## Security
+
+- CSRF protection on all state-changing routes (Laravel's default, enforced app-wide)
+- Output escaping via Blade (`{{ }}`) everywhere; `{!! !!}` is never used on user-supplied content
+- Parameterized queries via Eloquent/query builder throughout — no raw SQL string interpolation
+- Rate limiting on registration, password reset, contact form, and donation checkout
+- `AddSecurityHeaders` middleware sets standard hardening headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, etc.) on every response
+- Secure, HTTP-only, database-backed sessions; `SESSION_SECURE_COOKIE=true` in production
+- File upload validation (MIME type, extension, and size limits) on every upload endpoint
+- Audit logging (`App\Services\AuditLogger`) records sensitive admin actions (role changes, suspensions, content approvals, deletions) with before/after state
+- Account suspension and soft-deletion (`SoftDeletes` on `User`) instead of hard deletes
+- Role/permission checks enforced at both the policy layer and the route-middleware layer, never in Blade views alone
+
+## Troubleshooting
+
+**500 error with no detail in production** — set `APP_DEBUG=true` temporarily and check `storage/logs/laravel.log`, then set it back to `false`. Never leave `APP_DEBUG=true` on a live server.
+
+**"No application encryption key has been specified"** — run `php artisan key:generate`.
+
+**Blank page / stale styling after deploying** — run `php artisan optimize:clear` then re-run the `config:cache`/`route:cache`/`view:cache` sequence; also confirm `npm run build` was re-run after any frontend change so `public/build/manifest.json` is current.
+
+**Uploaded images 404** — the `storage/` symlink is missing; run `php artisan storage:link`, or switch to the S3 disk if your host doesn't support symlinks.
+
+**Migrations fail with a foreign key error** — ensure you're running `php artisan migrate` (not seeding) on a fresh database, and that `DB_DATABASE` in `.env` matches an existing, empty MySQL 8 database with `sql_mode` defaults (not a legacy MyISAM-only setup).
+
+**Emails not sending** — confirm `MAIL_MAILER` is not `log`, and that outbound SMTP (port 587/465) isn't blocked by your host or ISP; test with `php artisan tinker` and `Mail::raw('test', fn($m) => $m->to('you@example.com')->subject('test'));`.

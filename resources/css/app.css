@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import 'flatpickr/dist/flatpickr.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-slate-50 text-slate-800 antialiased dark:bg-navy-950 dark:text-slate-200;
+    }
+
+    [x-cloak] {
+        display: none !important;
+    }
+}
+
+@layer components {
+    /* Buttons */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60;
+    }
+    .btn-primary {
+        @apply btn bg-navy-800 text-white shadow-soft hover:bg-navy-700 focus-visible:ring-navy-600;
+    }
+    .btn-secondary {
+        @apply btn bg-white text-navy-800 ring-1 ring-inset ring-slate-300 hover:bg-slate-50 focus-visible:ring-navy-600
+        dark:bg-navy-900 dark:text-white dark:ring-navy-700 dark:hover:bg-navy-800;
+    }
+    .btn-gold {
+        @apply btn bg-gold-500 text-navy-950 shadow-soft hover:bg-gold-400 focus-visible:ring-gold-600;
+    }
+    .btn-ghost {
+        @apply btn bg-transparent text-slate-600 hover:bg-slate-100 focus-visible:ring-slate-400 dark:text-slate-300 dark:hover:bg-navy-900;
+    }
+    .btn-danger {
+        @apply btn bg-red-600 text-white shadow-soft hover:bg-red-700 focus-visible:ring-red-600;
+    }
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    /* Cards */
+    .card {
+        @apply rounded-2xl border border-slate-200 bg-white shadow-card dark:border-navy-800 dark:bg-navy-900;
+    }
+    .card-body {
+        @apply p-6;
+    }
+
+    /* Forms */
+    .form-label {
+        @apply mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+        @apply block w-full rounded-lg border-slate-300 text-sm shadow-sm placeholder:text-slate-400
+        focus:border-navy-500 focus:ring-navy-500 dark:border-navy-700 dark:bg-navy-900 dark:text-white;
+    }
+    .form-hint {
+        @apply mt-1.5 text-xs text-slate-500 dark:text-slate-400;
+    }
+    .form-error {
+        @apply mt-1.5 text-xs font-medium text-red-600 dark:text-red-400;
+    }
+
+    /* Badges */
+    .badge {
+        @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium;
+    }
+    .badge-success {
+        @apply badge bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300;
+    }
+    .badge-warning {
+        @apply badge bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300;
+    }
+    .badge-danger {
+        @apply badge bg-red-50 text-red-700 dark:bg-red-900/40 dark:text-red-300;
+    }
+    .badge-neutral {
+        @apply badge bg-slate-100 text-slate-600 dark:bg-navy-800 dark:text-slate-300;
+    }
+    .badge-info {
+        @apply badge bg-sky-50 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300;
+    }
+
+    /* Tables */
+    .table-base {
+        @apply min-w-full divide-y divide-slate-200 dark:divide-navy-800;
+    }
+    .table-base thead th {
+        @apply bg-slate-50 px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-navy-900/60 dark:text-slate-400;
+    }
+    .table-base tbody td {
+        @apply whitespace-nowrap px-4 py-3.5 text-sm text-slate-700 dark:text-slate-300;
+    }
+    .table-base tbody tr {
+        @apply border-b border-slate-100 last:border-0 hover:bg-slate-50/70 dark:border-navy-800 dark:hover:bg-navy-900/60;
+    }
+
+    /* Section container */
+    .section-container {
+        @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+    }
+}
