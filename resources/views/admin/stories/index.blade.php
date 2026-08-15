@@ -1,5 +1,10 @@
 <x-layouts::admin :title="'Alumni Stories'">
-    <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Alumni Stories</h1>
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Alumni Stories</h1>
+        <x-button :href="route('admin.stories.create')" size="sm">
+            <x-icon name="plus" class="h-4 w-4" /> Add Story
+        </x-button>
+    </div>
 
     <form method="GET" class="mt-6">
         <select name="status" onchange="this.form.submit()" class="form-select max-w-xs">

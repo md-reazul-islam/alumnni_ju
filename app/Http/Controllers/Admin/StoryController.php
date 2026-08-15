@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreStoryRequest;
+use App\Models\AlumniProfile;
 use App\Models\AlumniStory;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class StoryController extends Controller
@@ -24,6 +27,55 @@ class StoryController extends Controller
             ->withQueryString();
 
         return view('admin.stories.index', compact('stories'));
+    }
+
+    public function create(Request $request): View
+    {
+        abort_unless($request->user()->hasPermission('manage-stories'), 403);
+
+        $alumniProfiles = AlumniProfile::with('user')
+            ->whereNotNull('verified_at')
+            ->get()
+            ->sortBy(fn ($profile) => $profile->user->full_name);
+
+        return view('admin.stories.create', compact('alumniProfiles'));
+    }
+
+    public function store(StoreStoryRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        $data['slug'] = $this->uniqueSlug($data['title']);
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('stories', 'public');
+        }
+
+        if ($data['status'] === AlumniStory::STATUS_PUBLISHED) {
+            $data['reviewed_by'] = $request->user()->id;
+            $data['published_at'] = now();
+        }
+
+        $story = AlumniStory::create($data);
+
+        if ($story->status === AlumniStory::STATUS_PUBLISHED) {
+            AuditLogger::log('published_story', $story, "Published alumni story \"{$story->title}\".");
+            Cache::forget('homepage.content');
+        }
+
+        return redirect()->route('admin.stories.index')->with('status', 'Story created.');
+    }
+
+    protected function uniqueSlug(string $title): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $counter = 1;
+
+        while (AlumniStory::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $counter++;
+        }
+
+        return $slug;
     }
 
     public function publish(Request $request, AlumniStory $story): RedirectResponse
