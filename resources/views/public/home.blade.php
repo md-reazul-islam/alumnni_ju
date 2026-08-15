@@ -35,10 +35,7 @@
     {{-- Stats --}}
     <section
         x-data="{
-            counted: false,
             animate(el, target) {
-                if (this.counted) return;
-                let start = 0;
                 const duration = 1200;
                 const startTime = performance.now();
                 const step = (now) => {
@@ -49,7 +46,7 @@
                 requestAnimationFrame(step);
             }
         }"
-        x-intersect.once="counted = true; $refs.alumni && animate($refs.alumni, {{ $stats['total_alumni'] }}); $refs.verified && animate($refs.verified, {{ $stats['verified_alumni'] }}); $refs.countries && animate($refs.countries, {{ $stats['countries'] }}); $refs.events && animate($refs.events, {{ $stats['active_events'] }})"
+        x-intersect.once="$refs.alumni && animate($refs.alumni, {{ $stats['total_alumni'] }}); $refs.verified && animate($refs.verified, {{ $stats['verified_alumni'] }}); $refs.countries && animate($refs.countries, {{ $stats['countries'] }}); $refs.events && animate($refs.events, {{ $stats['active_events'] }})"
         class="border-b border-slate-200 bg-slate-50 dark:border-navy-800 dark:bg-navy-900"
     >
         <div class="section-container grid grid-cols-2 gap-8 py-12 sm:grid-cols-4">
