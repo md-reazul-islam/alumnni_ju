@@ -291,6 +291,7 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/', [AdminSettingsController::class, 'index'])->name('index');
             Route::put('/institution', [AdminSettingsController::class, 'updateInstitution'])->name('institution');
             Route::put('/association', [AdminSettingsController::class, 'updateAssociation'])->name('association');
+            Route::put('/general', [AdminSettingsController::class, 'updateGeneral'])->name('general');
         });
 
         Route::prefix('donations')->name('donations.')->group(function () {

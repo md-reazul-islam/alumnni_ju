@@ -14,10 +14,8 @@
 <header x-data="{ mobileOpen: false }" class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90">
     <div class="section-container flex h-16 items-center justify-between gap-4">
         <a href="{{ route('home') }}" class="flex flex-shrink-0 items-center gap-2 text-base font-bold text-navy-900 dark:text-white">
-            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-800 text-gold-400">
-                <x-icon name="graduation-cap" class="h-4 w-4" />
-            </span>
-            {{ config('app.name') }}
+            <x-brand-icon />
+            {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}
         </a>
 
         <nav class="hidden items-center gap-1 xl:flex">

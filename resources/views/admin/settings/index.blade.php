@@ -1,5 +1,5 @@
 <x-layouts::admin :title="'Settings'">
-    <div x-data="{ tab: '{{ $errors->association->any() ? 'association' : session('active_tab', 'institution') }}' }">
+    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : session('active_tab', 'institution')) }}' }">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
 
         @if (session('status'))
@@ -7,8 +7,48 @@
         @endif
 
         <div class="mt-6 flex gap-1 border-b border-slate-200 dark:border-navy-800">
+            <button @click="tab = 'general'" :class="tab === 'general' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">General</button>
             <button @click="tab = 'institution'" :class="tab === 'institution' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Institution</button>
             <button @click="tab = 'association'" :class="tab === 'association' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Alumni Association</button>
+        </div>
+
+        <div x-show="tab === 'general'" x-cloak class="mt-6">
+            <form method="POST" action="{{ route('admin.settings.general') }}" enctype="multipart/form-data" class="card card-body space-y-5">
+                @csrf @method('PUT')
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                    <x-input label="Site Text" name="site_text" bag="general" hint="Shown next to the logo across the site." :value="$errors->general->any() ? old('site_text') : $general['site_text']" />
+                    <x-input label="Website Title" name="site_title" bag="general" hint="Used in the browser tab / page title." :value="$errors->general->any() ? old('site_title') : $general['site_title']" />
+                </div>
+
+                @foreach ([
+                    'logo' => 'Logo — shown in the header instead of the icon box.',
+                    'icon' => 'Icon — shown in the small badge when no logo is set.',
+                    'favicon' => 'Favicon — the browser tab icon.',
+                ] as $field => $hint)
+                    <div class="border-t border-slate-100 pt-5 dark:border-navy-800">
+                        <label class="form-label">{{ ucfirst($field) }}</label>
+                        <p class="form-hint mb-2">{{ $hint }}</p>
+
+                        @if ($general[$field])
+                            <div class="mb-3 flex items-center gap-3">
+                                <img src="{{ asset('storage/' . $general[$field]) }}" class="h-12 w-12 rounded-lg border border-slate-200 object-contain dark:border-navy-700">
+                                <label class="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
+                                    <input type="checkbox" name="remove_{{ $field }}" value="1" class="rounded border-slate-300 text-navy-700 focus:ring-navy-500">
+                                    Remove current {{ $field }}
+                                </label>
+                            </div>
+                        @endif
+
+                        <input type="file" name="{{ $field }}" accept="image/*" class="form-input">
+                        @error($field, 'general')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                    </div>
+                @endforeach
+
+                <div class="flex justify-end"><x-button type="submit">Save General Settings</x-button></div>
+            </form>
         </div>
 
         <div x-show="tab === 'institution'" x-cloak class="mt-6">

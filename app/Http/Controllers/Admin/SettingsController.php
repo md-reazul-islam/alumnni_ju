@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
@@ -34,7 +35,15 @@ class SettingsController extends Controller
             'contact_email' => Setting::get('association', 'contact_email'),
         ];
 
-        return view('admin.settings.index', compact('institution', 'association'));
+        $general = [
+            'site_text' => Setting::get('general', 'site_text', config('app.name')),
+            'site_title' => Setting::get('general', 'site_title', config('app.name')),
+            'logo' => Setting::get('general', 'logo'),
+            'icon' => Setting::get('general', 'icon'),
+            'favicon' => Setting::get('general', 'favicon'),
+        ];
+
+        return view('admin.settings.index', compact('institution', 'association', 'general'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -75,5 +84,41 @@ class SettingsController extends Controller
         AuditLogger::log('updated_settings', null, 'Updated alumni association settings.', [], $data);
 
         return back()->with('status', 'Alumni association settings updated.')->with('active_tab', 'association');
+    }
+
+    public function updateGeneral(Request $request): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        $data = $request->validateWithBag('general', [
+            'site_text' => ['nullable', 'string', 'max:100'],
+            'site_title' => ['nullable', 'string', 'max:100'],
+            'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
+            'icon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:1024'],
+            'favicon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,ico', 'max:512'],
+        ]);
+
+        Setting::set('general', 'site_text', $data['site_text'] ?? null);
+        Setting::set('general', 'site_title', $data['site_title'] ?? null);
+
+        foreach (['logo', 'icon', 'favicon'] as $field) {
+            if ($request->hasFile($field)) {
+                $existing = Setting::get('general', $field);
+                if ($existing) {
+                    Storage::disk('public')->delete($existing);
+                }
+                Setting::set('general', $field, $request->file($field)->store('branding', 'public'));
+            } elseif ($request->boolean("remove_{$field}")) {
+                $existing = Setting::get('general', $field);
+                if ($existing) {
+                    Storage::disk('public')->delete($existing);
+                }
+                Setting::set('general', $field, null);
+            }
+        }
+
+        AuditLogger::log('updated_settings', null, 'Updated general branding settings.');
+
+        return back()->with('status', 'General settings updated.')->with('active_tab', 'general');
     }
 }

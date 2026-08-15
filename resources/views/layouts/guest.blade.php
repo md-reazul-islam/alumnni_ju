@@ -15,10 +15,8 @@
             <div class="absolute inset-0 opacity-[0.07]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
 
             <a href="{{ route('home') }}" class="relative flex items-center gap-2.5 text-lg font-bold">
-                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-gold-500 text-navy-950">
-                    <x-icon name="graduation-cap" class="h-5 w-5" />
-                </span>
-                {{ config('app.name') }}
+                <x-brand-icon box-class="bg-gold-500 text-navy-950" box-size="h-9 w-9" icon-size="h-5 w-5" logo-height="h-9" />
+                {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}
             </a>
 
             <div class="relative max-w-md">
@@ -50,10 +48,8 @@
         <div class="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-16">
             <div class="mx-auto w-full max-w-sm">
                 <a href="{{ route('home') }}" class="mb-8 flex items-center gap-2.5 text-lg font-bold text-navy-900 lg:hidden dark:text-white">
-                    <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-navy-800 text-gold-400">
-                        <x-icon name="graduation-cap" class="h-5 w-5" />
-                    </span>
-                    {{ config('app.name') }}
+                    <x-brand-icon box-size="h-9 w-9" icon-size="h-5 w-5" logo-height="h-9" />
+                    {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}
                 </a>
 
                 {{ $slot }}

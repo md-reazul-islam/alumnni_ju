@@ -73,9 +73,7 @@
     >
         <div class="flex h-16 flex-shrink-0 items-center justify-between px-5">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5 text-white">
-                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-gold-500 text-navy-950">
-                    <x-icon name="graduation-cap" class="h-4 w-4" />
-                </span>
+                <x-brand-icon box-class="bg-gold-500 text-navy-950" />
                 <span x-show="!collapsed" class="text-sm font-bold">Admin Panel</span>
             </a>
             <button @click="mobileOpen = false" class="text-navy-400 hover:text-white lg:hidden">

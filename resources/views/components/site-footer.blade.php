@@ -2,10 +2,8 @@
     <div class="section-container grid grid-cols-2 gap-8 py-12 sm:grid-cols-2 lg:grid-cols-5">
         <div class="col-span-2">
             <a href="{{ route('home') }}" class="flex items-center gap-2 text-base font-bold text-navy-900 dark:text-white">
-                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-800 text-gold-400">
-                    <x-icon name="graduation-cap" class="h-4 w-4" />
-                </span>
-                {{ config('app.name') }}
+                <x-brand-icon />
+                {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}
             </a>
             <p class="mt-3 max-w-sm text-sm text-slate-500 dark:text-slate-400">
                 Connecting graduates worldwide through networking, mentorship, career opportunities, and lifelong community.

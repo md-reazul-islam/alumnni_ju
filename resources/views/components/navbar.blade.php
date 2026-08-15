@@ -13,10 +13,8 @@
     <div class="section-container flex h-16 items-center justify-between gap-4">
         <div class="flex items-center gap-8">
             <a href="{{ route('home') }}" class="flex flex-shrink-0 items-center gap-2 text-base font-bold text-navy-900 dark:text-white">
-                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-800 text-gold-400">
-                    <x-icon name="graduation-cap" class="h-4 w-4" />
-                </span>
-                <span class="hidden sm:inline">{{ config('app.name') }}</span>
+                <x-brand-icon />
+                <span class="hidden sm:inline">{{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}</span>
             </a>
 
             <nav class="hidden items-center gap-1 lg:flex">

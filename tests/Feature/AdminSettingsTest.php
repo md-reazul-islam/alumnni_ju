@@ -5,6 +5,8 @@ namespace Tests\Feature;
 use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminSettingsTest extends TestCase
@@ -74,6 +76,56 @@ class AdminSettingsTest extends TestCase
 
         $response = $this->actingAs($user)->put(route('admin.settings.institution'), [
             'name' => 'Hacked Name',
+        ]);
+
+        $response->assertForbidden();
+    }
+
+    public function test_admin_can_update_general_settings_with_uploads(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.general'), [
+            'site_text' => 'Springfield Alumni',
+            'site_title' => 'Springfield Alumni Portal',
+            'logo' => UploadedFile::fake()->image('logo.png'),
+            'favicon' => UploadedFile::fake()->image('favicon.png'),
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $response->assertSessionHas('active_tab', 'general');
+        $this->assertSame('Springfield Alumni', Setting::get('general', 'site_text'));
+        $this->assertSame('Springfield Alumni Portal', Setting::get('general', 'site_title'));
+
+        $logoPath = Setting::get('general', 'logo');
+        $this->assertNotNull($logoPath);
+        Storage::disk('public')->assertExists($logoPath);
+    }
+
+    public function test_admin_can_remove_an_existing_logo(): void
+    {
+        Storage::fake('public');
+        $admin = User::factory()->admin()->create();
+        $path = UploadedFile::fake()->image('logo.png')->store('branding', 'public');
+        Setting::set('general', 'logo', $path);
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.general'), [
+            'remove_logo' => '1',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertNull(Setting::get('general', 'logo'));
+        Storage::disk('public')->assertMissing($path);
+    }
+
+    public function test_non_admin_cannot_update_general_settings(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->put(route('admin.settings.general'), [
+            'site_text' => 'Hacked',
         ]);
 
         $response->assertForbidden();
