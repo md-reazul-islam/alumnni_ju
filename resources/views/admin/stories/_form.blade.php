@@ -1,11 +1,12 @@
 @php $story = $story ?? null; @endphp
 
-<x-select
+<x-searchable-select
     label="Alumnus"
     name="alumni_profile_id"
     required
+    placeholder="Search alumni by name…"
     :selected="old('alumni_profile_id', $story?->alumni_profile_id)"
-    :options="$alumniProfiles->mapWithKeys(fn ($profile) => [$profile->id => $profile->user->full_name])"
+    :options="$alumniProfiles->map(fn ($profile) => ['value' => $profile->id, 'label' => $profile->user->full_name])"
 />
 
 <x-input label="Story Title" name="title" :value="old('title', $story?->title)" required />
