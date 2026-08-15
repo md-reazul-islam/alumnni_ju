@@ -9,7 +9,13 @@
         <div class="mt-6 flex items-center gap-3">
             <x-avatar :src="$story->alumniProfile->user->avatar_url" :name="$story->alumniProfile->user->full_name" />
             <div>
-                <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $story->alumniProfile->user->full_name }}</p>
+                @can('view', $story->alumniProfile)
+                    <a href="{{ route('alumni.profile.show', $story->alumniProfile->user) }}" class="text-sm font-semibold text-slate-900 hover:underline dark:text-white">
+                        {{ $story->alumniProfile->user->full_name }}
+                    </a>
+                @else
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $story->alumniProfile->user->full_name }}</p>
+                @endcan
                 <p class="text-xs text-slate-400">{{ $story->career_highlight }}</p>
             </div>
         </div>
