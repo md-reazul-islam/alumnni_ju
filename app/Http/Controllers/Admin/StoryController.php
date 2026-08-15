@@ -10,6 +10,7 @@ use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -65,13 +66,57 @@ class StoryController extends Controller
         return redirect()->route('admin.stories.index')->with('status', 'Story created.');
     }
 
-    protected function uniqueSlug(string $title): string
+    public function edit(AlumniStory $story): View
+    {
+        $this->authorize('update', $story);
+
+        $alumniProfiles = AlumniProfile::with('user')
+            ->whereNotNull('verified_at')
+            ->get()
+            ->sortBy(fn ($profile) => $profile->user->full_name);
+
+        return view('admin.stories.edit', compact('story', 'alumniProfiles'));
+    }
+
+    public function update(StoreStoryRequest $request, AlumniStory $story): RedirectResponse
+    {
+        $this->authorize('update', $story);
+
+        $data = $request->validated();
+
+        if ($data['title'] !== $story->title) {
+            $data['slug'] = $this->uniqueSlug($data['title'], $story->id);
+        }
+
+        if ($request->hasFile('cover_image')) {
+            if ($story->cover_image) {
+                Storage::disk('public')->delete($story->cover_image);
+            }
+            $data['cover_image'] = $request->file('cover_image')->store('stories', 'public');
+        }
+
+        $wasPublished = $story->status === AlumniStory::STATUS_PUBLISHED;
+
+        if ($data['status'] === AlumniStory::STATUS_PUBLISHED && ! $wasPublished) {
+            $data['reviewed_by'] = $request->user()->id;
+            $data['published_at'] = now();
+        }
+
+        $story->update($data);
+
+        AuditLogger::log('updated_story', $story, "Updated alumni story \"{$story->title}\".");
+        Cache::forget('homepage.content');
+
+        return redirect()->route('admin.stories.index')->with('status', 'Story updated.');
+    }
+
+    protected function uniqueSlug(string $title, ?int $ignoreId = null): string
     {
         $base = Str::slug($title);
         $slug = $base;
         $counter = 1;
 
-        while (AlumniStory::where('slug', $slug)->exists()) {
+        while (AlumniStory::where('slug', $slug)->when($ignoreId, fn ($q) => $q->where('id', '!=', $ignoreId))->exists()) {
             $slug = $base . '-' . $counter++;
         }
 

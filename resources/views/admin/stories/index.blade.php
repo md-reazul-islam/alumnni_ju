@@ -29,8 +29,8 @@
                                 {{ ucfirst(str_replace('_', ' ', $story->status)) }}
                             </x-badge>
                         </div>
-                        @if ($story->status === 'pending_review')
-                            <div class="flex flex-shrink-0 gap-2">
+                        <div class="flex flex-shrink-0 items-center gap-2">
+                            @if ($story->status === 'pending_review')
                                 <form method="POST" action="{{ route('admin.stories.publish', $story) }}">
                                     @csrf
                                     <button type="submit" class="btn-primary btn-sm">Publish</button>
@@ -39,8 +39,13 @@
                                     @csrf
                                     <button type="submit" class="btn-secondary btn-sm">Reject</button>
                                 </form>
-                            </div>
-                        @endif
+                            @endif
+                            <a href="{{ route('admin.stories.edit', $story) }}" class="text-slate-400 hover:text-navy-700" title="Edit"><x-icon name="pencil" class="h-4 w-4" /></a>
+                            <form method="POST" action="{{ route('admin.stories.destroy', $story) }}" onsubmit="event.preventDefault(); confirmDelete(this, '{{ $story->title }}');">
+                                @csrf @method('DELETE')
+                                <button type="submit" class="text-slate-400 hover:text-red-600" title="Delete"><x-icon name="trash-2" class="h-4 w-4" /></button>
+                            </form>
+                        </div>
                     </div>
                     <p class="mt-3 line-clamp-3 text-sm text-slate-500 dark:text-slate-400">{{ $story->story }}</p>
                 </div>
@@ -48,4 +53,19 @@
         </div>
         <div class="mt-6">{{ $stories->links() }}</div>
     @endif
+
+    @push('scripts')
+    <script>
+        function confirmDelete(form, title) {
+            Swal.fire({
+                title: `Delete "${title}"?`,
+                text: 'This action cannot be undone.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Delete',
+                confirmButtonColor: '#dc2626',
+            }).then((result) => { if (result.isConfirmed) form.submit(); });
+        }
+    </script>
+    @endpush
 </x-layouts::admin>

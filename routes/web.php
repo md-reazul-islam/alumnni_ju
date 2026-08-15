@@ -236,6 +236,8 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/', [AdminStoryController::class, 'index'])->name('index');
             Route::get('/create', [AdminStoryController::class, 'create'])->name('create');
             Route::post('/', [AdminStoryController::class, 'store'])->name('store');
+            Route::get('/{story}/edit', [AdminStoryController::class, 'edit'])->name('edit');
+            Route::put('/{story}', [AdminStoryController::class, 'update'])->name('update');
             Route::post('/{story}/publish', [AdminStoryController::class, 'publish'])->name('publish');
             Route::post('/{story}/reject', [AdminStoryController::class, 'reject'])->name('reject');
             Route::delete('/{story}', [AdminStoryController::class, 'destroy'])->name('destroy');

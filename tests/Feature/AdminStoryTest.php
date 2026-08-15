@@ -51,4 +51,48 @@ class AdminStoryTest extends TestCase
         $response->assertForbidden();
         $this->assertDatabaseMissing('alumni_stories', ['title' => 'Should Not Save']);
     }
+
+    public function test_admin_can_update_a_story(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $profile = AlumniProfile::factory()->verified()->create();
+        $story = AlumniStory::create([
+            'alumni_profile_id' => $profile->id,
+            'title' => 'Original Title',
+            'slug' => 'original-title',
+            'story' => 'Original story body.',
+            'status' => AlumniStory::STATUS_DRAFT,
+        ]);
+
+        $response = $this->actingAs($admin)->put(route('admin.stories.update', $story), [
+            'alumni_profile_id' => $profile->id,
+            'title' => 'Updated Title',
+            'story' => 'Updated story body.',
+            'status' => AlumniStory::STATUS_PUBLISHED,
+        ]);
+
+        $response->assertRedirect(route('admin.stories.index'));
+        $story->refresh();
+        $this->assertSame('Updated Title', $story->title);
+        $this->assertSame('published', $story->status);
+        $this->assertNotNull($story->published_at);
+    }
+
+    public function test_admin_can_delete_a_story(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $profile = AlumniProfile::factory()->verified()->create();
+        $story = AlumniStory::create([
+            'alumni_profile_id' => $profile->id,
+            'title' => 'To Be Deleted',
+            'slug' => 'to-be-deleted',
+            'story' => 'Body text.',
+            'status' => AlumniStory::STATUS_DRAFT,
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.stories.destroy', $story));
+
+        $response->assertRedirect();
+        $this->assertSoftDeleted($story);
+    }
 }
