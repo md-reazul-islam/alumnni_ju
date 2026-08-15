@@ -187,6 +187,7 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/export', [AdminAlumniController::class, 'export'])->name('export');
             Route::get('/{user}', [AdminAlumniController::class, 'show'])->name('show');
             Route::post('/{user}/verify', [AdminAlumniController::class, 'verify'])->name('verify');
+            Route::post('/{user}/visibility', [AdminAlumniController::class, 'updateVisibility'])->name('visibility');
             Route::post('/{user}/reject', [AdminAlumniController::class, 'reject'])->name('reject');
             Route::post('/{user}/suspend', [AdminAlumniController::class, 'suspend'])->name('suspend');
             Route::post('/{user}/restore', [AdminAlumniController::class, 'restore'])->name('restore');

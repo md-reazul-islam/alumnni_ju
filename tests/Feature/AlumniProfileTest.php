@@ -68,4 +68,29 @@ class AlumniProfileTest extends TestCase
         $this->assertTrue($profile->user->fresh()->isVerified());
         $this->assertNotNull($profile->fresh()->verified_at);
     }
+
+    public function test_admin_can_change_an_alumnus_profile_visibility(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $profile = AlumniProfile::factory()->verified()->create(['profile_visibility' => AlumniProfile::VISIBILITY_ALUMNI]);
+
+        $response = $this->actingAs($admin)->post(route('admin.alumni.visibility', $profile->user), [
+            'profile_visibility' => AlumniProfile::VISIBILITY_PUBLIC,
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame(AlumniProfile::VISIBILITY_PUBLIC, $profile->fresh()->profile_visibility);
+    }
+
+    public function test_non_admin_cannot_change_profile_visibility(): void
+    {
+        $user = User::factory()->create();
+        $profile = AlumniProfile::factory()->verified()->create();
+
+        $response = $this->actingAs($user)->post(route('admin.alumni.visibility', $profile->user), [
+            'profile_visibility' => AlumniProfile::VISIBILITY_PUBLIC,
+        ]);
+
+        $response->assertForbidden();
+    }
 }

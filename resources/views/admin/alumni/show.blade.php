@@ -76,6 +76,20 @@
                     <p class="mt-1.5 text-xs text-slate-400">{{ $profile->profile_completion }}% complete</p>
                 </div>
 
+                <div class="card card-body">
+                    <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Profile Visibility</h2>
+                    <p class="mt-1 text-xs text-slate-400">Who can see this profile in the alumni directory.</p>
+                    <form method="POST" action="{{ route('admin.alumni.visibility', $alumnus) }}" class="mt-3 flex items-center gap-2">
+                        @csrf
+                        <select name="profile_visibility" class="form-select">
+                            <option value="public" @selected($profile->profile_visibility === 'public')>Public</option>
+                            <option value="alumni" @selected($profile->profile_visibility === 'alumni')>Alumni Only</option>
+                            <option value="private" @selected($profile->profile_visibility === 'private')>Private</option>
+                        </select>
+                        <button type="submit" class="btn-secondary btn-sm">Save</button>
+                    </form>
+                </div>
+
                 @if ($profile->skills->isNotEmpty())
                     <div class="card card-body">
                         <h2 class="text-sm font-semibold text-slate-900 dark:text-white">Skills</h2>

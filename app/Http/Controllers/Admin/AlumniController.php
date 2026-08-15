@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\AlumniProfile;
 use App\Models\Role;
 use App\Models\User;
 use App\Notifications\AdminAnnouncementPosted;
@@ -11,7 +12,9 @@ use App\Services\AuditLogger;
 use App\Services\ProfileCompletionCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -100,6 +103,25 @@ class AlumniController extends Controller
         AuditLogger::log('verified_alumni', $user, "Verified alumni account for {$user->full_name}.");
 
         return back()->with('status', $user->full_name . ' has been verified.');
+    }
+
+    public function updateVisibility(Request $request, User $user): RedirectResponse
+    {
+        $this->ensurePermission($request);
+        abort_unless($user->alumniProfile, 404);
+
+        $data = $request->validate([
+            'profile_visibility' => ['required', Rule::in([
+                AlumniProfile::VISIBILITY_PUBLIC, AlumniProfile::VISIBILITY_ALUMNI, AlumniProfile::VISIBILITY_PRIVATE,
+            ])],
+        ]);
+
+        $user->alumniProfile->update($data);
+
+        AuditLogger::log('updated_alumni_visibility', $user, "Set profile visibility for {$user->full_name} to \"{$data['profile_visibility']}\".");
+        Cache::forget('homepage.content');
+
+        return back()->with('status', $user->full_name . "'s profile visibility is now \"" . $data['profile_visibility'] . '".');
     }
 
     public function reject(Request $request, User $user): RedirectResponse
