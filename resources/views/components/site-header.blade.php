@@ -54,6 +54,17 @@
                     Log In
                 </a>
                 <x-button :href="route('register')" size="sm" class="hidden sm:inline-flex">Join the Alumni Network</x-button>
+
+                <button
+                    type="button"
+                    x-data="{ dark: document.documentElement.classList.contains('dark') }"
+                    @click="document.documentElement.classList.toggle('dark'); dark = document.documentElement.classList.contains('dark'); localStorage.theme = dark ? 'dark' : 'light'"
+                    class="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-navy-800"
+                    aria-label="Toggle dark mode"
+                >
+                    <x-icon name="moon" x-show="!dark" class="h-5 w-5" />
+                    <x-icon name="sun" x-show="dark" x-cloak class="h-5 w-5" />
+                </button>
             @endauth
 
             <button
@@ -79,6 +90,17 @@
             <div class="mt-3 space-y-2 border-t border-slate-100 pt-3 dark:border-navy-800">
                 <x-button :href="route('login')" variant="secondary" class="w-full">Log In</x-button>
                 <x-button :href="route('register')" class="w-full">Join the Alumni Network</x-button>
+
+                <button
+                    type="button"
+                    x-data="{ dark: document.documentElement.classList.contains('dark') }"
+                    @click="document.documentElement.classList.toggle('dark'); dark = document.documentElement.classList.contains('dark'); localStorage.theme = dark ? 'dark' : 'light'"
+                    class="flex w-full items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-navy-800"
+                >
+                    <x-icon name="moon" x-show="!dark" class="h-4 w-4" />
+                    <x-icon name="sun" x-show="dark" x-cloak class="h-4 w-4" />
+                    <span x-text="dark ? 'Switch to Light Mode' : 'Switch to Dark Mode'"></span>
+                </button>
             </div>
         @endguest
     </nav>
