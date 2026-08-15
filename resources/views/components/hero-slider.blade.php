@@ -4,7 +4,7 @@
     {{ $slot }}
 @else
     <section
-        x-data="heroSlider({{ $slides->count() }}, 6000)"
+        x-data="heroSlider({{ $slides->count() }}, 4000)"
         x-init="start()"
         @mouseenter="pause()"
         @mouseleave="resume()"
@@ -18,19 +18,29 @@
         aria-label="Featured highlights"
         class="group relative h-[80vh] min-h-[480px] max-h-[720px] overflow-hidden bg-navy-950 text-white outline-none"
     >
-        <div class="flex h-full transition-transform duration-700 ease-in-out" :style="`transform: translateX(-${active * 100}%)`">
+        <div class="absolute inset-0 h-full w-full">
             @foreach ($slides as $slide)
-                <div class="relative h-full w-full flex-shrink-0" aria-hidden="{{ $loop->index === 0 ? 'false' : 'true' }}">
+                <div
+                    class="absolute inset-0 h-full w-full transition-all ease-in-out"
+                    style="transition-duration: 1200ms;"
+                    :class="active === {{ $loop->index }} ? 'opacity-100 blur-0 z-10' : 'opacity-0 blur-lg z-0'"
+                    :aria-hidden="active === {{ $loop->index }} ? 'false' : 'true'"
+                >
                     <img
                         src="{{ $slide->image_url }}"
                         alt="{{ $slide->title }}"
-                        class="absolute inset-0 h-full w-full object-cover"
+                        class="absolute inset-0 h-full w-full object-cover transition-transform ease-out"
+                        style="transition-duration: 5200ms;"
+                        :class="active === {{ $loop->index }} ? 'scale-110' : 'scale-100'"
                         loading="{{ $loop->first ? 'eager' : 'lazy' }}"
                     >
                     <div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/60 to-navy-950/10"></div>
 
                     <div class="section-container relative flex h-full items-end pb-20 sm:items-center sm:pb-0">
-                        <div class="max-w-2xl">
+                        <div
+                            class="max-w-2xl transition-all duration-700 ease-out"
+                            :class="active === {{ $loop->index }} ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 translate-y-4'"
+                        >
                             @if ($slide->subtitle)
                                 <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-300 ring-1 ring-inset ring-white/20">
                                     <x-icon name="sparkles" class="h-3.5 w-3.5" /> {{ config('app.name') }}
