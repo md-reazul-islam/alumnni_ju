@@ -1,4 +1,4 @@
-@props(['label' => null, 'name', 'type' => 'text', 'hint' => null, 'required' => false])
+@props(['label' => null, 'name', 'type' => 'text', 'hint' => null, 'required' => false, 'bag' => 'default'])
 
 <div>
     @if ($label)
@@ -12,14 +12,14 @@
         name="{{ $name }}"
         id="{{ $name }}"
         {{ $required ? 'required' : '' }}
-        {{ $attributes->class(['form-input', 'border-red-400 focus:border-red-500 focus:ring-red-500' => $errors->has($name)]) }}
+        {{ $attributes->class(['form-input', 'border-red-400 focus:border-red-500 focus:ring-red-500' => $errors->getBag($bag)->has($name)]) }}
     />
 
-    @if ($hint && !$errors->has($name))
+    @if ($hint && !$errors->getBag($bag)->has($name))
         <p class="form-hint">{{ $hint }}</p>
     @endif
 
-    @error($name)
+    @error($name, $bag)
         <p class="form-error">{{ $message }}</p>
     @enderror
 </div>

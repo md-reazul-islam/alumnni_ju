@@ -41,7 +41,7 @@ class SettingsController extends Controller
     {
         $this->ensurePermission($request);
 
-        $data = $request->validate([
+        $data = $request->validateWithBag('institution', [
             'name' => ['required', 'string', 'max:150'],
             'email' => ['nullable', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
@@ -55,14 +55,14 @@ class SettingsController extends Controller
 
         AuditLogger::log('updated_settings', null, 'Updated institution settings.', [], $data);
 
-        return back()->with('status', 'Institution settings updated.');
+        return back()->with('status', 'Institution settings updated.')->with('active_tab', 'institution');
     }
 
     public function updateAssociation(Request $request): RedirectResponse
     {
         $this->ensurePermission($request);
 
-        $data = $request->validate([
+        $data = $request->validateWithBag('association', [
             'name' => ['nullable', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:2000'],
             'contact_email' => ['nullable', 'email', 'max:255'],
@@ -74,6 +74,6 @@ class SettingsController extends Controller
 
         AuditLogger::log('updated_settings', null, 'Updated alumni association settings.', [], $data);
 
-        return back()->with('status', 'Alumni association settings updated.');
+        return back()->with('status', 'Alumni association settings updated.')->with('active_tab', 'association');
     }
 }

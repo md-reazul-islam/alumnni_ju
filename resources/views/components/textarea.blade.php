@@ -1,4 +1,4 @@
-@props(['label' => null, 'name', 'rows' => 4, 'required' => false])
+@props(['label' => null, 'name', 'rows' => 4, 'required' => false, 'bag' => 'default'])
 
 <div>
     @if ($label)
@@ -12,10 +12,10 @@
         id="{{ $name }}"
         rows="{{ $rows }}"
         {{ $required ? 'required' : '' }}
-        {{ $attributes->class(['form-textarea', 'border-red-400 focus:border-red-500 focus:ring-red-500' => $errors->has($name)]) }}
+        {{ $attributes->class(['form-textarea', 'border-red-400 focus:border-red-500 focus:ring-red-500' => $errors->getBag($bag)->has($name)]) }}
     >{{ $slot }}</textarea>
 
-    @error($name)
+    @error($name, $bag)
         <p class="form-error">{{ $message }}</p>
     @enderror
 </div>
