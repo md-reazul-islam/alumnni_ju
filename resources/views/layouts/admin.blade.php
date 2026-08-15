@@ -42,6 +42,8 @@
         </div>
     </div>
 
+    <x-command-palette />
+
     @stack('scripts')
 </body>
 </html>

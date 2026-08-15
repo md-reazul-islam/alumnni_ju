@@ -74,6 +74,90 @@ Alpine.data('heroSlider', (count, intervalMs) => ({
     },
 }));
 
+Alpine.data('commandPalette', () => ({
+    open: false,
+    query: '',
+    loading: false,
+    groups: [],
+    activeIndex: -1,
+    debounceTimer: null,
+
+    init() {
+        window.addEventListener('open-command-palette', () => this.openPalette());
+        window.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                this.openPalette();
+            }
+        });
+    },
+
+    openPalette() {
+        this.open = true;
+        this.query = '';
+        this.groups = [];
+        this.activeIndex = -1;
+        this.$nextTick(() => this.$refs.paletteInput?.focus());
+    },
+
+    close() {
+        this.open = false;
+    },
+
+    onInput() {
+        clearTimeout(this.debounceTimer);
+        this.activeIndex = -1;
+
+        const term = this.query.trim();
+        if (term.length < 2) {
+            this.groups = [];
+            this.loading = false;
+            return;
+        }
+
+        this.loading = true;
+        this.debounceTimer = setTimeout(() => this.runSearch(term), 300);
+    },
+
+    runSearch(term) {
+        fetch(`/search?q=${encodeURIComponent(term)}`, { headers: { Accept: 'application/json' } })
+            .then((r) => r.json())
+            .then((data) => {
+                this.groups = data.groups || [];
+                this.loading = false;
+            })
+            .catch(() => {
+                this.loading = false;
+            });
+    },
+
+    flatItems() {
+        return this.groups.flatMap((g) => g.items);
+    },
+
+    isActive(url) {
+        const items = this.flatItems();
+        return items[this.activeIndex]?.url === url;
+    },
+
+    moveDown() {
+        const items = this.flatItems();
+        if (!items.length) return;
+        this.activeIndex = Math.min(this.activeIndex + 1, items.length - 1);
+    },
+
+    moveUp() {
+        const items = this.flatItems();
+        if (!items.length) return;
+        this.activeIndex = Math.max(this.activeIndex - 1, 0);
+    },
+
+    selectActive() {
+        const item = this.flatItems()[this.activeIndex];
+        if (item) window.location.href = item.url;
+    },
+}));
+
 window.Alpine = Alpine;
 window.Swal = Swal;
 window.flatpickr = flatpickr;

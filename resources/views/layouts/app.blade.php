@@ -12,6 +12,8 @@
 
     <x-site-footer />
 
+    <x-command-palette />
+
     @stack('scripts')
 </body>
 </html>
