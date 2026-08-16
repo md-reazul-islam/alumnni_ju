@@ -104,6 +104,35 @@ class AdminSettingsTest extends TestCase
         Storage::disk('public')->assertExists($logoPath);
     }
 
+    public function test_admin_can_update_the_footer_tagline(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.general'), [
+            'footer_tagline' => 'Building lifelong bonds, one graduate at a time.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $this->assertSame('Building lifelong bonds, one graduate at a time.', Setting::get('general', 'footer_tagline'));
+    }
+
+    public function test_clearing_the_footer_tagline_restores_the_default(): void
+    {
+        $admin = User::factory()->admin()->create();
+        Setting::set('general', 'footer_tagline', 'Custom tagline');
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.general'), [
+            'footer_tagline' => '',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame(
+            \App\Http\Controllers\Admin\SettingsController::DEFAULT_FOOTER_TAGLINE,
+            Setting::get('general', 'footer_tagline', \App\Http\Controllers\Admin\SettingsController::DEFAULT_FOOTER_TAGLINE)
+        );
+    }
+
     public function test_admin_can_remove_an_existing_logo(): void
     {
         Storage::fake('public');

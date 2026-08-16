@@ -21,6 +21,9 @@
                     <x-input label="Website Title" name="site_title" bag="general" hint="Used in the browser tab / page title." :value="$errors->general->any() ? old('site_title') : $general['site_title']" />
                 </div>
 
+                <x-textarea label="Footer Tagline" name="footer_tagline" bag="general" rows="2">{{ $errors->general->any() ? old('footer_tagline') : $general['footer_tagline'] }}</x-textarea>
+                <p class="form-hint -mt-3">Shown in the footer below the site name. Leave blank to restore the default text.</p>
+
                 @foreach ([
                     'logo' => 'Logo — shown in the header instead of the icon box.',
                     'icon' => 'Icon — shown in the small badge when no logo is set.',

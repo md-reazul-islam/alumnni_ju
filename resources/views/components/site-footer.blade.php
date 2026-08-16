@@ -6,7 +6,7 @@
                 {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}
             </a>
             <p class="mt-3 max-w-sm text-sm text-slate-500 dark:text-slate-400">
-                Connecting graduates worldwide through networking, mentorship, career opportunities, and lifelong community.
+                {{ \App\Models\Setting::get('general', 'footer_tagline', \App\Http\Controllers\Admin\SettingsController::DEFAULT_FOOTER_TAGLINE) }}
             </p>
         </div>
 

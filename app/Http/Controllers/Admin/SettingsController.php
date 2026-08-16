@@ -12,6 +12,8 @@ use Illuminate\View\View;
 
 class SettingsController extends Controller
 {
+    public const DEFAULT_FOOTER_TAGLINE = 'Connecting graduates worldwide through networking, mentorship, career opportunities, and lifelong community.';
+
     protected function ensurePermission(Request $request): void
     {
         abort_unless($request->user()->hasPermission('manage-settings'), 403);
@@ -38,6 +40,7 @@ class SettingsController extends Controller
         $general = [
             'site_text' => Setting::get('general', 'site_text', config('app.name')),
             'site_title' => Setting::get('general', 'site_title', config('app.name')),
+            'footer_tagline' => Setting::get('general', 'footer_tagline', self::DEFAULT_FOOTER_TAGLINE),
             'logo' => Setting::get('general', 'logo'),
             'icon' => Setting::get('general', 'icon'),
             'favicon' => Setting::get('general', 'favicon'),
@@ -93,6 +96,7 @@ class SettingsController extends Controller
         $data = $request->validateWithBag('general', [
             'site_text' => ['nullable', 'string', 'max:100'],
             'site_title' => ['nullable', 'string', 'max:100'],
+            'footer_tagline' => ['nullable', 'string', 'max:300'],
             'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:2048'],
             'icon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,svg', 'max:1024'],
             'favicon' => ['nullable', 'image', 'mimes:jpg,jpeg,png,ico', 'max:512'],
@@ -100,6 +104,7 @@ class SettingsController extends Controller
 
         Setting::set('general', 'site_text', $data['site_text'] ?? null);
         Setting::set('general', 'site_title', $data['site_title'] ?? null);
+        Setting::set('general', 'footer_tagline', $data['footer_tagline'] ?? null);
 
         foreach (['logo', 'icon', 'favicon'] as $field) {
             if ($request->hasFile($field)) {
