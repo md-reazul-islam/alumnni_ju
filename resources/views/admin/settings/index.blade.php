@@ -64,6 +64,10 @@
                 </div>
                 <x-input label="Website" name="website" type="url" bag="institution" :value="$errors->institution->any() ? old('website') : $institution['website']" />
                 <x-textarea label="Address" name="address" rows="2" bag="institution">{{ $errors->institution->any() ? old('address') : $institution['address'] }}</x-textarea>
+
+                <x-textarea label="Contact Page Message" name="contact_message" rows="2" bag="institution">{{ $errors->institution->any() ? old('contact_message') : $institution['contact_message'] }}</x-textarea>
+                <p class="form-hint -mt-3">Shown on the Contact page below "Get in Touch". Leave blank to restore the default text.</p>
+
                 <div class="flex justify-end"><x-button type="submit">Save Institution Settings</x-button></div>
             </form>
         </div>

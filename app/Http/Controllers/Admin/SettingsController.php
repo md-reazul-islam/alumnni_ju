@@ -13,6 +13,7 @@ use Illuminate\View\View;
 class SettingsController extends Controller
 {
     public const DEFAULT_FOOTER_TAGLINE = 'Connecting graduates worldwide through networking, mentorship, career opportunities, and lifelong community.';
+    public const DEFAULT_CONTACT_MESSAGE = 'Questions about your account, an upcoming event, or the alumni association in general? Send us a message.';
 
     protected function ensurePermission(Request $request): void
     {
@@ -29,6 +30,7 @@ class SettingsController extends Controller
             'phone' => Setting::get('institution', 'phone'),
             'address' => Setting::get('institution', 'address'),
             'website' => Setting::get('institution', 'website'),
+            'contact_message' => Setting::get('institution', 'contact_message', self::DEFAULT_CONTACT_MESSAGE),
         ];
 
         $association = [
@@ -59,6 +61,7 @@ class SettingsController extends Controller
             'phone' => ['nullable', 'string', 'max:30'],
             'address' => ['nullable', 'string', 'max:500'],
             'website' => ['nullable', 'url', 'max:255'],
+            'contact_message' => ['nullable', 'string', 'max:500'],
         ]);
 
         foreach ($data as $key => $value) {

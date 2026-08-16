@@ -31,6 +31,41 @@ class AdminSettingsTest extends TestCase
         $this->assertSame('info@springfield.edu', Setting::get('institution', 'email'));
     }
 
+    public function test_admin_can_update_the_contact_page_message(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.institution'), [
+            'name' => config('app.name'),
+            'contact_message' => 'Reach out any time — our alumni office responds within one business day.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $this->assertSame(
+            'Reach out any time — our alumni office responds within one business day.',
+            Setting::get('institution', 'contact_message')
+        );
+    }
+
+    public function test_contact_page_shows_the_configured_message(): void
+    {
+        Setting::set('institution', 'contact_message', 'Custom contact page message.');
+
+        $response = $this->get(route('contact'));
+
+        $response->assertOk();
+        $response->assertSee('Custom contact page message.');
+    }
+
+    public function test_contact_page_falls_back_to_the_default_message(): void
+    {
+        $response = $this->get(route('contact'));
+
+        $response->assertOk();
+        $response->assertSee(\App\Http\Controllers\Admin\SettingsController::DEFAULT_CONTACT_MESSAGE);
+    }
+
     public function test_admin_can_update_association_settings(): void
     {
         $admin = User::factory()->admin()->create();

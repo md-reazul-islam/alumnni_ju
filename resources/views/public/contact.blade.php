@@ -3,7 +3,7 @@
         <div class="lg:col-span-2">
             <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Get in Touch</h1>
             <p class="mt-3 text-slate-500 dark:text-slate-400">
-                Questions about your account, an upcoming event, or the alumni association in general? Send us a message.
+                {{ \App\Models\Setting::get('institution', 'contact_message', \App\Http\Controllers\Admin\SettingsController::DEFAULT_CONTACT_MESSAGE) }}
             </p>
 
             <div class="mt-8 space-y-5">
