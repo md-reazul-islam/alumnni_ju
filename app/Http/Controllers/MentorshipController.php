@@ -89,16 +89,13 @@ class MentorshipController extends Controller
         abort_unless($mentorshipRequest->mentor_id === $request->user()->id, 403);
 
         $mentorshipRequest->update(['status' => MentorshipRequest::STATUS_ACCEPTED, 'responded_at' => now()]);
+        $mentorshipRequest->activateIfFullyApproved();
 
-        Mentorship::create([
-            'mentorship_request_id' => $mentorshipRequest->id,
-            'mentor_id' => $mentorshipRequest->mentor_id,
-            'mentee_id' => $mentorshipRequest->mentee_id,
-            'started_at' => now(),
-            'status' => Mentorship::STATUS_ACTIVE,
-        ]);
+        $message = $mentorshipRequest->isFullyApproved()
+            ? 'Mentorship request accepted.'
+            : 'Mentorship request accepted. It will become active once the admin office also approves it.';
 
-        return back()->with('status', 'Mentorship request accepted.');
+        return back()->with('status', $message);
     }
 
     public function reject(Request $request, MentorshipRequest $mentorshipRequest): RedirectResponse

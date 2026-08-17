@@ -40,6 +40,9 @@
                     <x-avatar :src="$req->mentor->avatar_url" :name="$req->mentor->full_name" />
                     <div class="min-w-0 flex-1">
                         <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $req->mentor->full_name }}</p>
+                        @if ($req->status === 'accepted' && ! $req->isFullyApproved())
+                            <p class="truncate text-xs text-slate-500 dark:text-slate-400">Accepted by mentor — awaiting admin approval</p>
+                        @endif
                     </div>
                     <x-badge :variant="match($req->status) { 'accepted' => 'success', 'rejected' => 'danger', default => 'warning' }">{{ ucfirst($req->status) }}</x-badge>
                 </div>

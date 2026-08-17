@@ -257,6 +257,8 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
         Route::prefix('mentorship')->name('mentorship.')->group(function () {
             Route::get('/mentors', [AdminMentorshipController::class, 'mentors'])->name('mentors');
             Route::get('/requests', [AdminMentorshipController::class, 'requests'])->name('requests');
+            Route::post('/requests/{mentorshipRequest}/approve', [AdminMentorshipController::class, 'approve'])->name('requests.approve');
+            Route::post('/requests/{mentorshipRequest}/reject', [AdminMentorshipController::class, 'reject'])->name('requests.reject');
         });
 
         Route::prefix('scholarships')->name('scholarships.')->group(function () {

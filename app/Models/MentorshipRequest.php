@@ -16,11 +16,21 @@ class MentorshipRequest extends Model
     public const STATUS_REJECTED = 'rejected';
     public const STATUS_COMPLETED = 'completed';
 
-    protected $fillable = ['mentee_id', 'mentor_id', 'message', 'status', 'responded_at'];
+    public const ADMIN_STATUS_PENDING = 'pending';
+    public const ADMIN_STATUS_APPROVED = 'approved';
+    public const ADMIN_STATUS_REJECTED = 'rejected';
+
+    protected $fillable = [
+        'mentee_id', 'mentor_id', 'message', 'status', 'responded_at',
+        'admin_status', 'admin_reviewed_by', 'admin_reviewed_at',
+    ];
 
     protected function casts(): array
     {
-        return ['responded_at' => 'datetime'];
+        return [
+            'responded_at' => 'datetime',
+            'admin_reviewed_at' => 'datetime',
+        ];
     }
 
     public function mentee(): BelongsTo
@@ -33,8 +43,34 @@ class MentorshipRequest extends Model
         return $this->belongsTo(User::class, 'mentor_id');
     }
 
+    public function adminReviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'admin_reviewed_by');
+    }
+
     public function mentorship(): HasOne
     {
         return $this->hasOne(Mentorship::class);
+    }
+
+    public function isFullyApproved(): bool
+    {
+        return $this->status === self::STATUS_ACCEPTED && $this->admin_status === self::ADMIN_STATUS_APPROVED;
+    }
+
+    /**
+     * Once the mentor has accepted AND the admin has approved, create the active Mentorship.
+     * Safe to call after either side's decision — only activates when both are in.
+     */
+    public function activateIfFullyApproved(): void
+    {
+        if ($this->isFullyApproved() && ! $this->mentorship) {
+            $this->mentorship()->create([
+                'mentor_id' => $this->mentor_id,
+                'mentee_id' => $this->mentee_id,
+                'started_at' => now(),
+                'status' => Mentorship::STATUS_ACTIVE,
+            ]);
+        }
     }
 }
