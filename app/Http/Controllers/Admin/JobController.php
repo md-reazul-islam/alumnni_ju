@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreJobPostingRequest;
 use App\Models\JobPosting;
+use App\Models\Role;
+use App\Models\User;
 use App\Notifications\JobApproved;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class JobController extends Controller
@@ -24,6 +28,52 @@ class JobController extends Controller
             ->withQueryString();
 
         return view('admin.jobs.index', compact('jobs'));
+    }
+
+    public function create(Request $request): View
+    {
+        abort_unless($request->user()->hasPermission('manage-jobs'), 403);
+
+        $posters = User::verified()
+            ->whereHas('role', fn ($q) => $q->where('slug', Role::ALUMNI))
+            ->get()
+            ->sortBy(fn ($user) => $user->full_name);
+
+        return view('admin.jobs.create', compact('posters'));
+    }
+
+    public function store(StoreJobPostingRequest $request): RedirectResponse
+    {
+        $data = $request->validated();
+        $data['slug'] = $this->uniqueSlug($data['title'] . '-' . $data['company_name']);
+
+        if ($data['status'] === JobPosting::STATUS_APPROVED) {
+            $data['approved_by'] = $request->user()->id;
+            $data['approved_at'] = now();
+        }
+
+        $job = JobPosting::create($data);
+
+        AuditLogger::log('created_job', $job, "Created job posting \"{$job->title}\".");
+
+        if ($job->status === JobPosting::STATUS_APPROVED) {
+            Cache::forget('homepage.content');
+        }
+
+        return redirect()->route('admin.jobs.index')->with('status', 'Job posting created.');
+    }
+
+    protected function uniqueSlug(string $title): string
+    {
+        $base = Str::slug($title);
+        $slug = $base;
+        $counter = 1;
+
+        while (JobPosting::where('slug', $slug)->exists()) {
+            $slug = $base . '-' . $counter++;
+        }
+
+        return $slug;
     }
 
     public function pending(): View

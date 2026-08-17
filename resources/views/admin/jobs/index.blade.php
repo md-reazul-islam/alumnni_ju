@@ -1,7 +1,10 @@
 <x-layouts::admin :title="'Jobs'">
     <div class="flex items-center justify-between">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">All Jobs</h1>
-        <x-button :href="route('admin.jobs.pending')" variant="secondary" size="sm">View Pending</x-button>
+        <div class="flex gap-2">
+            <x-button :href="route('admin.jobs.pending')" variant="secondary" size="sm">View Pending</x-button>
+            <x-button :href="route('admin.jobs.create')" size="sm">+ Create Job</x-button>
+        </div>
     </div>
 
     <form method="GET" class="mt-6 flex flex-col gap-3 sm:flex-row">

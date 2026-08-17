@@ -210,6 +210,8 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
 
         Route::prefix('jobs')->name('jobs.')->group(function () {
             Route::get('/', [AdminJobController::class, 'index'])->name('index');
+            Route::get('/create', [AdminJobController::class, 'create'])->name('create');
+            Route::post('/', [AdminJobController::class, 'store'])->name('store');
             Route::get('/pending', [AdminJobController::class, 'pending'])->name('pending');
             Route::post('/{job}/approve', [AdminJobController::class, 'approve'])->name('approve');
             Route::post('/{job}/reject', [AdminJobController::class, 'reject'])->name('reject');

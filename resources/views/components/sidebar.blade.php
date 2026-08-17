@@ -14,6 +14,7 @@
         ]],
         ['label' => 'Career', 'icon' => 'briefcase', 'match' => 'admin.jobs.*,admin.companies.*', 'children' => [
             ['label' => 'Jobs', 'route' => 'admin.jobs.index'],
+            ['label' => 'Create Job', 'route' => 'admin.jobs.create'],
             ['label' => 'Pending Jobs', 'route' => 'admin.jobs.pending'],
             ['label' => 'Companies', 'route' => 'admin.companies.index'],
         ]],
