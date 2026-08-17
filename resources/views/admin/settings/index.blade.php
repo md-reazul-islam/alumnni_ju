@@ -87,8 +87,11 @@
             <form method="POST" action="{{ route('admin.settings.about') }}" class="card card-body space-y-5">
                 @csrf @method('PUT')
 
+                <x-input label="Hero Title" name="hero_title" bag="about" :value="$errors->about->any() ? old('hero_title') : $about['hero_title']" />
+                <p class="form-hint -mt-3">The big heading at the top of the About page. Leave blank to restore the default ("About {{ config('app.name') }}").</p>
+
                 <x-textarea label="Hero Subtitle" name="hero_subtitle" bag="about" rows="2">{{ $errors->about->any() ? old('hero_subtitle') : $about['hero_subtitle'] }}</x-textarea>
-                <p class="form-hint -mt-3">Shown under the "About {{ config('app.name') }}" heading at the top of the page.</p>
+                <p class="form-hint -mt-3">Shown under the hero title at the top of the page.</p>
 
                 <div class="border-t border-slate-100 pt-5 dark:border-navy-800">
                     <x-input label="Mission Heading" name="mission_heading" bag="about" :value="$errors->about->any() ? old('mission_heading') : $about['mission_heading']" />

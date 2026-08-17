@@ -6,7 +6,7 @@
 
     <section class="bg-navy-950 py-16 text-center text-white sm:py-20">
         <div class="section-container">
-            <h1 class="text-3xl font-bold sm:text-4xl">About {{ config('app.name') }}</h1>
+            <h1 class="text-3xl font-bold sm:text-4xl">{{ \App\Models\Setting::get('about', 'hero_title', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_HERO_TITLE_PREFIX . config('app.name')) }}</h1>
             <p class="mx-auto mt-3 max-w-2xl text-navy-200">
                 {{ \App\Models\Setting::get('about', 'hero_subtitle', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_HERO_SUBTITLE) }}
             </p>

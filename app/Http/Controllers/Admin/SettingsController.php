@@ -16,6 +16,7 @@ class SettingsController extends Controller
     public const DEFAULT_CONTACT_MESSAGE = 'Questions about your account, an upcoming event, or the alumni association in general? Send us a message.';
 
     public const DEFAULT_ABOUT_HERO_SUBTITLE = 'A lifelong community connecting graduates, faculty, and friends of the university across the world.';
+    public const DEFAULT_ABOUT_HERO_TITLE_PREFIX = 'About ';
     public const DEFAULT_ABOUT_MISSION_HEADING = 'Our Mission';
     public const DEFAULT_ABOUT_MISSION_TEXT = 'The Alumni Association exists to strengthen the bond between the university and its graduates — fostering professional networking, mentorship, philanthropy, and community engagement that spans generations. We believe an alumni network is a lifelong resource, not a one-time membership.';
     public const DEFAULT_ABOUT_ITEMS_HEADING = 'What We Do';
@@ -71,6 +72,7 @@ class SettingsController extends Controller
         $aboutItems = $aboutItemsRaw ? json_decode($aboutItemsRaw, true) : self::DEFAULT_ABOUT_ITEMS;
 
         $about = [
+            'hero_title' => Setting::get('about', 'hero_title', self::DEFAULT_ABOUT_HERO_TITLE_PREFIX . config('app.name')),
             'hero_subtitle' => Setting::get('about', 'hero_subtitle', self::DEFAULT_ABOUT_HERO_SUBTITLE),
             'mission_heading' => Setting::get('about', 'mission_heading', self::DEFAULT_ABOUT_MISSION_HEADING),
             'mission_text' => Setting::get('about', 'mission_text', self::DEFAULT_ABOUT_MISSION_TEXT),
@@ -168,6 +170,7 @@ class SettingsController extends Controller
         $this->ensurePermission($request);
 
         $data = $request->validateWithBag('about', [
+            'hero_title' => ['nullable', 'string', 'max:150'],
             'hero_subtitle' => ['nullable', 'string', 'max:300'],
             'mission_heading' => ['nullable', 'string', 'max:150'],
             'mission_text' => ['nullable', 'string', 'max:2000'],
@@ -186,6 +189,7 @@ class SettingsController extends Controller
             ->values()
             ->all();
 
+        Setting::set('about', 'hero_title', $data['hero_title'] ?? null);
         Setting::set('about', 'hero_subtitle', $data['hero_subtitle'] ?? null);
         Setting::set('about', 'mission_heading', $data['mission_heading'] ?? null);
         Setting::set('about', 'mission_text', $data['mission_text'] ?? null);
