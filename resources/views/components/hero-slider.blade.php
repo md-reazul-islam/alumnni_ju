@@ -41,13 +41,7 @@
                             class="max-w-2xl transition-all duration-700 ease-out"
                             :class="active === {{ $loop->index }} ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 translate-y-4'"
                         >
-                            @if ($slide->subtitle)
-                                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-300 ring-1 ring-inset ring-white/20">
-                                    <x-icon name="sparkles" class="h-3.5 w-3.5" /> {{ config('app.name') }}
-                                </span>
-                            @endif
-
-                            <h1 class="mt-5 text-3xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                            <h1 class="text-2xl font-bold leading-tight sm:text-4xl lg:text-5xl">
                                 {{ $slide->title }}
                             </h1>
 

@@ -6,11 +6,7 @@
 
             <div class="section-container relative py-20 sm:py-28 lg:py-32">
                 <div class="mx-auto max-w-3xl text-center">
-                    <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-gold-300 ring-1 ring-inset ring-white/20">
-                        <x-icon name="sparkles" class="h-3.5 w-3.5" /> {{ config('app.name') }}
-                    </span>
-
-                    <h1 class="mt-6 text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+                    <h1 class="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
                         Connect. Engage. Inspire. <span class="text-gold-400">Give Back.</span>
                     </h1>
 
