@@ -4,7 +4,7 @@
     {{ $slot }}
 @else
     <section
-        x-data="heroSlider({{ $slides->count() }}, 4000)"
+        x-data="heroSlider({{ $slides->count() }}, 3000)"
         x-init="start()"
         @mouseenter="pause()"
         @mouseleave="resume()"
@@ -38,8 +38,8 @@
 
                     <div class="section-container relative flex h-full items-end pb-20 sm:items-center sm:pb-0">
                         <div
-                            class="max-w-2xl transition-all duration-700 ease-out"
-                            :class="active === {{ $loop->index }} ? 'opacity-100 translate-y-0 delay-300' : 'opacity-0 translate-y-4'"
+                            class="max-w-2xl"
+                            :class="active === {{ $loop->index }} ? 'animate-hero-text' : 'opacity-0'"
                         >
                             <h1 class="text-2xl font-bold leading-tight sm:text-4xl lg:text-5xl">
                                 {{ $slide->title }}
