@@ -177,8 +177,8 @@ Alpine.data('networkBackground', () => ({
                     const b = particles[j];
                     const dist = Math.hypot(a.x - b.x, a.y - b.y);
                     if (dist < linkDist) {
-                        ctx.strokeStyle = `rgba(230, 173, 48, ${0.55 * (1 - dist / linkDist)})`;
-                        ctx.lineWidth = 1;
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.6 * (1 - dist / linkDist)})`;
+                        ctx.lineWidth = 2;
                         ctx.beginPath();
                         ctx.moveTo(a.x, a.y);
                         ctx.lineTo(b.x, b.y);
@@ -189,8 +189,8 @@ Alpine.data('networkBackground', () => ({
 
             particles.forEach((p) => {
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
                 ctx.fill();
             });
 
