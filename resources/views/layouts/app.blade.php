@@ -11,7 +11,7 @@
     <div class="relative z-10">
         <x-site-header />
 
-        <main class="mx-3 my-6 overflow-hidden rounded-3xl bg-white shadow-2xl dark:bg-navy-900 sm:mx-6 sm:my-10 lg:mx-10">
+        <main class="mx-3 my-6 space-y-6 sm:mx-6 sm:my-10 sm:space-y-8 lg:mx-10 lg:space-y-10">
             {{ $slot }}
         </main>
 

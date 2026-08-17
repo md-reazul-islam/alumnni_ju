@@ -1,4 +1,5 @@
 <x-layouts::app>
+  <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
     <div class="h-48 bg-gradient-to-r from-navy-900 to-navy-700 sm:h-56">
         @if ($profile->cover_image_url)
             <img src="{{ $profile->cover_image_url }}" class="h-full w-full object-cover" alt="">
@@ -168,4 +169,5 @@
             </div>
         </div>
     </div>
+  </div>
 </x-layouts::app>

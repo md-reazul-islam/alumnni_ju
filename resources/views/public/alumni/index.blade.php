@@ -1,4 +1,5 @@
 <x-layouts::app>
+  <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
     <div
         x-data="{
             loading: false,
@@ -116,4 +117,5 @@
             </div>
         </div>
     </div>
+  </div>
 </x-layouts::app>

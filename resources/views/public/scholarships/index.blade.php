@@ -1,5 +1,6 @@
 <x-layouts::app>
-    <div class="section-container py-12">
+    <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+      <div class="section-container py-12">
         <x-breadcrumb :items="[['label' => 'Scholarships']]" class="mb-4" />
 
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Scholarships</h1>
@@ -27,5 +28,6 @@
 
             <div class="mt-8">{{ $scholarships->links() }}</div>
         @endif
+      </div>
     </div>
 </x-layouts::app>

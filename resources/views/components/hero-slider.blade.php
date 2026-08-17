@@ -16,7 +16,7 @@
         role="region"
         aria-roledescription="carousel"
         aria-label="Featured highlights"
-        class="group relative h-[80vh] min-h-[480px] max-h-[720px] overflow-hidden bg-navy-950 text-white outline-none"
+        class="group relative h-[80vh] min-h-[480px] max-h-[720px] overflow-hidden rounded-3xl bg-navy-950 text-white shadow-xl outline-none"
     >
         <div class="absolute inset-0 h-full w-full">
             @foreach ($slides as $slide)

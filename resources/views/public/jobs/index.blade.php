@@ -1,5 +1,6 @@
 <x-layouts::app>
-    <div class="section-container py-12">
+    <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+      <div class="section-container py-12">
         <x-breadcrumb :items="[['label' => 'Career Center']]" class="mb-4" />
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -46,5 +47,6 @@
 
             <div class="mt-8">{{ $jobs->links() }}</div>
         @endif
+      </div>
     </div>
 </x-layouts::app>

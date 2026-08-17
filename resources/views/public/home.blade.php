@@ -1,7 +1,7 @@
 <x-layouts::app>
     {{-- Hero --}}
     <x-hero-slider :slides="$sliders">
-        <section class="relative overflow-hidden bg-navy-950 text-white">
+        <section class="relative overflow-hidden rounded-3xl bg-navy-950 text-white shadow-xl">
             <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
 
             <div class="section-container relative py-20 sm:py-28 lg:py-32">
@@ -43,7 +43,7 @@
             }
         }"
         x-intersect.once="$refs.alumni && animate($refs.alumni, {{ $stats['total_alumni'] }}); $refs.verified && animate($refs.verified, {{ $stats['verified_alumni'] }}); $refs.countries && animate($refs.countries, {{ $stats['countries'] }}); $refs.events && animate($refs.events, {{ $stats['active_events'] }})"
-        class="border-b border-slate-200 bg-slate-50 dark:border-navy-800 dark:bg-navy-900"
+        class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900"
     >
         <div class="section-container py-14 sm:py-16">
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
@@ -87,7 +87,8 @@
     </section>
 
     {{-- Featured Alumni --}}
-    <section class="section-container py-16 sm:py-20">
+    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+      <div class="section-container py-16 sm:py-20">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Featured Alumni</h2>
@@ -112,11 +113,12 @@
                 @endforeach
             </div>
         @endif
+      </div>
     </section>
 
     {{-- Upcoming Events --}}
-    <section class="border-t border-slate-100 bg-slate-50 py-16 dark:border-navy-800 dark:bg-navy-900 sm:py-20">
-        <div class="section-container">
+    <section class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900">
+        <div class="section-container py-16 sm:py-20">
             <div class="flex items-end justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Upcoming Events</h2>
@@ -158,7 +160,8 @@
     </section>
 
     {{-- Career Opportunities --}}
-    <section class="section-container py-16 sm:py-20">
+    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+      <div class="section-container py-16 sm:py-20">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Career Opportunities</h2>
@@ -187,11 +190,12 @@
                 @endforeach
             </div>
         @endif
+      </div>
     </section>
 
     {{-- Alumni Stories --}}
-    <section class="border-t border-slate-100 bg-slate-50 py-16 dark:border-navy-800 dark:bg-navy-900 sm:py-20">
-        <div class="section-container">
+    <section class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900">
+        <div class="section-container py-16 sm:py-20">
             <div class="flex items-end justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Alumni Stories</h2>
@@ -238,7 +242,8 @@
     </section>
 
     {{-- News --}}
-    <section class="section-container py-16 sm:py-20">
+    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+      <div class="section-container py-16 sm:py-20">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">News &amp; Announcements</h2>
@@ -270,10 +275,11 @@
                 @endforeach
             </div>
         @endif
+      </div>
     </section>
 
     {{-- CTA --}}
-    <section class="bg-navy-900">
+    <section class="overflow-hidden rounded-3xl bg-navy-900 shadow-xl">
         <div class="section-container flex flex-col items-center justify-between gap-6 py-14 text-center sm:flex-row sm:text-left">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Your university journey continues.</h2>

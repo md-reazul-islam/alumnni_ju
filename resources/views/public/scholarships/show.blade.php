@@ -1,4 +1,5 @@
 <x-layouts::app>
+  <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
     <div class="section-container max-w-3xl py-12">
         <x-breadcrumb :items="[['label' => 'Scholarships', 'url' => route('scholarships.index')], ['label' => $scholarship->name]]" class="mb-6" />
 
@@ -34,4 +35,5 @@
             @endif
         </div>
     </div>
+  </div>
 </x-layouts::app>
