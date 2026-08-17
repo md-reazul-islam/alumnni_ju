@@ -35,6 +35,9 @@ class SettingsController extends Controller
         'globe', 'award', 'gift', 'megaphone', 'book-open', 'target', 'star', 'map-pin', 'building',
     ];
 
+    public const DEFAULT_LOGIN_HERO_TITLE = 'Connect. Engage. Inspire. Give Back.';
+    public const DEFAULT_LOGIN_HERO_SUBTITLE = 'Reconnect with your university community and build meaningful professional relationships with alumni around the world.';
+
     protected function ensurePermission(Request $request): void
     {
         abort_unless($request->user()->hasPermission('manage-settings'), 403);
@@ -83,7 +86,12 @@ class SettingsController extends Controller
             'cta_button_text' => Setting::get('about', 'cta_button_text', self::DEFAULT_ABOUT_CTA_BUTTON_TEXT),
         ];
 
-        return view('admin.settings.index', compact('institution', 'association', 'general', 'about'));
+        $login = [
+            'hero_title' => Setting::get('login', 'hero_title', self::DEFAULT_LOGIN_HERO_TITLE),
+            'hero_subtitle' => Setting::get('login', 'hero_subtitle', self::DEFAULT_LOGIN_HERO_SUBTITLE),
+        ];
+
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -202,5 +210,22 @@ class SettingsController extends Controller
         AuditLogger::log('updated_settings', null, 'Updated about page settings.', [], $data);
 
         return back()->with('status', 'About page settings updated.')->with('active_tab', 'about');
+    }
+
+    public function updateLoginPage(Request $request): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        $data = $request->validateWithBag('login', [
+            'hero_title' => ['nullable', 'string', 'max:150'],
+            'hero_subtitle' => ['nullable', 'string', 'max:300'],
+        ]);
+
+        Setting::set('login', 'hero_title', $data['hero_title'] ?? null);
+        Setting::set('login', 'hero_subtitle', $data['hero_subtitle'] ?? null);
+
+        AuditLogger::log('updated_settings', null, 'Updated login page settings.', [], $data);
+
+        return back()->with('status', 'Login page settings updated.')->with('active_tab', 'login');
     }
 }

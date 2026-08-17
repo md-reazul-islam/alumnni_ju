@@ -1,5 +1,5 @@
 <x-layouts::admin :title="'Settings'">
-    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : session('active_tab', 'institution'))) }}' }">
+    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : ($errors->login->any() ? 'login' : session('active_tab', 'institution')))) }}' }">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
 
         @if (session('status'))
@@ -11,6 +11,7 @@
             <button @click="tab = 'institution'" :class="tab === 'institution' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Institution</button>
             <button @click="tab = 'association'" :class="tab === 'association' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Alumni Association</button>
             <button @click="tab = 'about'" :class="tab === 'about' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">About Page</button>
+            <button @click="tab = 'login'" :class="tab === 'login' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Login Page</button>
         </div>
 
         <div x-show="tab === 'general'" x-cloak class="mt-6">
@@ -130,6 +131,22 @@
                 </div>
 
                 <div class="flex justify-end"><x-button type="submit">Save About Page Settings</x-button></div>
+            </form>
+        </div>
+
+        <div x-show="tab === 'login'" x-cloak class="mt-6">
+            <form method="POST" action="{{ route('admin.settings.login-page') }}" class="card card-body space-y-5">
+                @csrf @method('PUT')
+
+                <x-input label="Hero Title" name="hero_title" bag="login" :value="$errors->login->any() ? old('hero_title') : $login['hero_title']" />
+                <p class="form-hint -mt-3">The big heading on the left panel of the login, register, and password pages. Leave blank to restore the default.</p>
+
+                <x-textarea label="Hero Subtitle" name="hero_subtitle" bag="login" rows="2">{{ $errors->login->any() ? old('hero_subtitle') : $login['hero_subtitle'] }}</x-textarea>
+                <p class="form-hint -mt-3">Shown under the hero title on the same panel.</p>
+
+                <p class="form-hint">The "Verified Alumni", "Countries", and "Annual Events" numbers below it are calculated automatically from platform data and aren't editable here.</p>
+
+                <div class="flex justify-end"><x-button type="submit">Save Login Page Settings</x-button></div>
             </form>
         </div>
     </div>

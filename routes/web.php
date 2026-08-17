@@ -297,6 +297,7 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::put('/association', [AdminSettingsController::class, 'updateAssociation'])->name('association');
             Route::put('/general', [AdminSettingsController::class, 'updateGeneral'])->name('general');
             Route::put('/about', [AdminSettingsController::class, 'updateAbout'])->name('about');
+            Route::put('/login-page', [AdminSettingsController::class, 'updateLoginPage'])->name('login-page');
         });
 
         Route::prefix('donations')->name('donations.')->group(function () {

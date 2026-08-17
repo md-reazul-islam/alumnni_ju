@@ -1,3 +1,14 @@
+@php
+    $loginHeroTitle = \App\Models\Setting::get('login', 'hero_title', \App\Http\Controllers\Admin\SettingsController::DEFAULT_LOGIN_HERO_TITLE);
+    $loginHeroSubtitle = \App\Models\Setting::get('login', 'hero_subtitle', \App\Http\Controllers\Admin\SettingsController::DEFAULT_LOGIN_HERO_SUBTITLE);
+    $loginStats = \Illuminate\Support\Facades\Cache::remember('login.stats', now()->addMinutes(15), function () {
+        return [
+            'verified_alumni' => \App\Models\User::verified()->whereHas('role', fn ($q) => $q->where('slug', 'alumni'))->count(),
+            'countries' => \App\Models\AlumniProfile::whereNotNull('country')->distinct('country')->count('country'),
+            'annual_events' => \App\Models\Event::published()->whereYear('event_date', now()->year)->count(),
+        ];
+    });
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
@@ -20,23 +31,22 @@
             </a>
 
             <div class="relative max-w-md">
-                <p class="text-3xl font-bold leading-tight">Connect. Engage. Inspire. Give Back.</p>
+                <p class="text-3xl font-bold leading-tight">{{ $loginHeroTitle }}</p>
                 <p class="mt-4 text-navy-200">
-                    Reconnect with your university community and build meaningful professional relationships
-                    with alumni around the world.
+                    {{ $loginHeroSubtitle }}
                 </p>
 
                 <div class="mt-10 flex gap-8 border-t border-white/10 pt-8">
                     <div>
-                        <p class="text-2xl font-bold text-gold-400">12,000+</p>
+                        <p class="text-2xl font-bold text-gold-400">{{ number_format($loginStats['verified_alumni']) }}</p>
                         <p class="text-sm text-navy-300">Verified Alumni</p>
                     </div>
                     <div>
-                        <p class="text-2xl font-bold text-gold-400">80+</p>
+                        <p class="text-2xl font-bold text-gold-400">{{ number_format($loginStats['countries']) }}</p>
                         <p class="text-sm text-navy-300">Countries</p>
                     </div>
                     <div>
-                        <p class="text-2xl font-bold text-gold-400">150+</p>
+                        <p class="text-2xl font-bold text-gold-400">{{ number_format($loginStats['annual_events']) }}</p>
                         <p class="text-sm text-navy-300">Annual Events</p>
                     </div>
                 </div>
