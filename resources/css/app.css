@@ -108,16 +108,4 @@
     .section-container {
         @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
     }
-
-    /* Hero slider title/subtitle: slides in from the left over the first half
-       of the slide's display time, then reverses back out over the second half. */
-    .animate-hero-text {
-        animation: hero-text-slide 3s ease-in-out forwards;
-    }
-}
-
-@keyframes hero-text-slide {
-    0% { opacity: 0; transform: translateX(-40px); }
-    50% { opacity: 1; transform: translateX(0); }
-    100% { opacity: 0; transform: translateX(-40px); }
 }

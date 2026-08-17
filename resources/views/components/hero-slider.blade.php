@@ -39,15 +39,17 @@
                     <div class="section-container relative flex h-full items-end pb-20 sm:items-center sm:pb-0">
                         <div
                             class="max-w-2xl"
-                            :class="active === {{ $loop->index }} ? 'animate-hero-text' : 'opacity-0'"
+                            :class="active === {{ $loop->index }} ? '' : 'opacity-0'"
+                            x-data="typewriterSlide(@js($slide->title), @js($slide->subtitle))"
+                            x-effect="active === {{ $loop->index }} ? type() : reset()"
                         >
                             <h1 class="text-2xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-                                {{ $slide->title }}
+                                <span x-text="typedTitle"></span><span x-show="typingTitle" class="animate-pulse">|</span>
                             </h1>
 
                             @if ($slide->subtitle)
                                 <p class="mt-4 max-w-xl text-base text-navy-100 sm:text-lg">
-                                    {{ $slide->subtitle }}
+                                    <span x-text="typedSubtitle"></span><span x-show="typingSubtitle" class="animate-pulse">|</span>
                                 </p>
                             @endif
 

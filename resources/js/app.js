@@ -74,6 +74,58 @@ Alpine.data('heroSlider', (count, intervalMs) => ({
     },
 }));
 
+Alpine.data('typewriterSlide', (title, subtitle) => ({
+    typedTitle: '',
+    typedSubtitle: '',
+    typingTitle: false,
+    typingSubtitle: false,
+    timers: [],
+
+    type() {
+        this.reset();
+        this.typingTitle = true;
+
+        let i = 0;
+        const typeTitleChar = () => {
+            this.typedTitle = title.slice(0, i);
+            i++;
+            if (i <= title.length) {
+                this.timers.push(setTimeout(typeTitleChar, 45));
+            } else {
+                this.typingTitle = false;
+                this.typeSubtitle();
+            }
+        };
+        typeTitleChar();
+    },
+
+    typeSubtitle() {
+        if (!subtitle) return;
+        this.typingSubtitle = true;
+
+        let j = 0;
+        const typeSubtitleChar = () => {
+            this.typedSubtitle = subtitle.slice(0, j);
+            j++;
+            if (j <= subtitle.length) {
+                this.timers.push(setTimeout(typeSubtitleChar, 20));
+            } else {
+                this.typingSubtitle = false;
+            }
+        };
+        typeSubtitleChar();
+    },
+
+    reset() {
+        this.timers.forEach((t) => clearTimeout(t));
+        this.timers = [];
+        this.typedTitle = '';
+        this.typedSubtitle = '';
+        this.typingTitle = false;
+        this.typingSubtitle = false;
+    },
+}));
+
 Alpine.data('commandPalette', () => ({
     open: false,
     query: '',
