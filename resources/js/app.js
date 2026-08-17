@@ -141,7 +141,7 @@ Alpine.data('networkBackground', () => ({
         let particles = [];
 
         const spawn = () => {
-            const count = Math.max(28, Math.round((width * height) / 9000));
+            const count = Math.min(110, Math.max(28, Math.round((width * height) / 9000)));
             particles = Array.from({ length: count }, () => ({
                 x: Math.random() * width,
                 y: Math.random() * height,
