@@ -126,6 +126,92 @@ Alpine.data('typewriterSlide', (title, subtitle) => ({
     },
 }));
 
+Alpine.data('networkBackground', () => ({
+    raf: null,
+    resizeHandler: null,
+
+    start() {
+        if (this.raf) return;
+
+        const canvas = this.$refs.networkCanvas;
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width = 0;
+        let height = 0;
+        let particles = [];
+
+        const spawn = () => {
+            const count = Math.max(28, Math.round((width * height) / 9000));
+            particles = Array.from({ length: count }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                vx: (Math.random() - 0.5) * 0.25,
+                vy: (Math.random() - 0.5) * 0.25,
+            }));
+        };
+
+        const resize = () => {
+            width = canvas.width = canvas.offsetWidth;
+            height = canvas.height = canvas.offsetHeight;
+            spawn();
+        };
+        this.resizeHandler = resize;
+        window.addEventListener('resize', resize);
+        requestAnimationFrame(resize);
+
+        const linkDist = 110;
+
+        const draw = () => {
+            ctx.clearRect(0, 0, width, height);
+
+            particles.forEach((p) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const a = particles[i];
+                    const b = particles[j];
+                    const dist = Math.hypot(a.x - b.x, a.y - b.y);
+                    if (dist < linkDist) {
+                        ctx.strokeStyle = `rgba(230, 173, 48, ${0.55 * (1 - dist / linkDist)})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            particles.forEach((p) => {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+                ctx.fill();
+            });
+
+            this.raf = requestAnimationFrame(draw);
+        };
+
+        this.raf = requestAnimationFrame(draw);
+    },
+
+    stop() {
+        if (this.raf) {
+            cancelAnimationFrame(this.raf);
+            this.raf = null;
+        }
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
+        }
+    },
+}));
+
 Alpine.data('commandPalette', () => ({
     open: false,
     query: '',
