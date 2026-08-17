@@ -15,6 +15,25 @@ class SettingsController extends Controller
     public const DEFAULT_FOOTER_TAGLINE = 'Connecting graduates worldwide through networking, mentorship, career opportunities, and lifelong community.';
     public const DEFAULT_CONTACT_MESSAGE = 'Questions about your account, an upcoming event, or the alumni association in general? Send us a message.';
 
+    public const DEFAULT_ABOUT_HERO_SUBTITLE = 'A lifelong community connecting graduates, faculty, and friends of the university across the world.';
+    public const DEFAULT_ABOUT_MISSION_HEADING = 'Our Mission';
+    public const DEFAULT_ABOUT_MISSION_TEXT = 'The Alumni Association exists to strengthen the bond between the university and its graduates — fostering professional networking, mentorship, philanthropy, and community engagement that spans generations. We believe an alumni network is a lifelong resource, not a one-time membership.';
+    public const DEFAULT_ABOUT_ITEMS_HEADING = 'What We Do';
+    public const DEFAULT_ABOUT_ITEMS = [
+        ['icon' => 'users', 'text' => 'Connect alumni with each other through a searchable global directory.'],
+        ['icon' => 'briefcase', 'text' => 'Power a career center for job postings, mentorship, and referrals.'],
+        ['icon' => 'calendar', 'text' => 'Host reunions, workshops, and regional meetups worldwide.'],
+        ['icon' => 'heart', 'text' => 'Support scholarships and student programs through alumni giving.'],
+    ];
+    public const DEFAULT_ABOUT_CTA_HEADING = 'Ready to reconnect?';
+    public const DEFAULT_ABOUT_CTA_TEXT = 'Join thousands of alumni already part of the network.';
+    public const DEFAULT_ABOUT_CTA_BUTTON_TEXT = 'Join the Alumni Network';
+
+    public const ABOUT_ICON_OPTIONS = [
+        'users', 'briefcase', 'calendar', 'heart', 'graduation-cap', 'handshake',
+        'globe', 'award', 'gift', 'megaphone', 'book-open', 'target', 'star', 'map-pin', 'building',
+    ];
+
     protected function ensurePermission(Request $request): void
     {
         abort_unless($request->user()->hasPermission('manage-settings'), 403);
@@ -48,7 +67,21 @@ class SettingsController extends Controller
             'favicon' => Setting::get('general', 'favicon'),
         ];
 
-        return view('admin.settings.index', compact('institution', 'association', 'general'));
+        $aboutItemsRaw = Setting::get('about', 'items');
+        $aboutItems = $aboutItemsRaw ? json_decode($aboutItemsRaw, true) : self::DEFAULT_ABOUT_ITEMS;
+
+        $about = [
+            'hero_subtitle' => Setting::get('about', 'hero_subtitle', self::DEFAULT_ABOUT_HERO_SUBTITLE),
+            'mission_heading' => Setting::get('about', 'mission_heading', self::DEFAULT_ABOUT_MISSION_HEADING),
+            'mission_text' => Setting::get('about', 'mission_text', self::DEFAULT_ABOUT_MISSION_TEXT),
+            'items_heading' => Setting::get('about', 'items_heading', self::DEFAULT_ABOUT_ITEMS_HEADING),
+            'items' => $aboutItems,
+            'cta_heading' => Setting::get('about', 'cta_heading', self::DEFAULT_ABOUT_CTA_HEADING),
+            'cta_text' => Setting::get('about', 'cta_text', self::DEFAULT_ABOUT_CTA_TEXT),
+            'cta_button_text' => Setting::get('about', 'cta_button_text', self::DEFAULT_ABOUT_CTA_BUTTON_TEXT),
+        ];
+
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -128,5 +161,42 @@ class SettingsController extends Controller
         AuditLogger::log('updated_settings', null, 'Updated general branding settings.');
 
         return back()->with('status', 'General settings updated.')->with('active_tab', 'general');
+    }
+
+    public function updateAbout(Request $request): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        $data = $request->validateWithBag('about', [
+            'hero_subtitle' => ['nullable', 'string', 'max:300'],
+            'mission_heading' => ['nullable', 'string', 'max:150'],
+            'mission_text' => ['nullable', 'string', 'max:2000'],
+            'items_heading' => ['nullable', 'string', 'max:150'],
+            'items' => ['nullable', 'array'],
+            'items.*.icon' => ['nullable', 'string', 'in:' . implode(',', self::ABOUT_ICON_OPTIONS)],
+            'items.*.text' => ['nullable', 'string', 'max:300'],
+            'cta_heading' => ['nullable', 'string', 'max:150'],
+            'cta_text' => ['nullable', 'string', 'max:300'],
+            'cta_button_text' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $items = collect($data['items'] ?? [])
+            ->filter(fn ($item) => filled($item['text'] ?? null))
+            ->map(fn ($item) => ['icon' => $item['icon'] ?? 'star', 'text' => $item['text']])
+            ->values()
+            ->all();
+
+        Setting::set('about', 'hero_subtitle', $data['hero_subtitle'] ?? null);
+        Setting::set('about', 'mission_heading', $data['mission_heading'] ?? null);
+        Setting::set('about', 'mission_text', $data['mission_text'] ?? null);
+        Setting::set('about', 'items_heading', $data['items_heading'] ?? null);
+        Setting::set('about', 'items', $items ? json_encode($items) : null);
+        Setting::set('about', 'cta_heading', $data['cta_heading'] ?? null);
+        Setting::set('about', 'cta_text', $data['cta_text'] ?? null);
+        Setting::set('about', 'cta_button_text', $data['cta_button_text'] ?? null);
+
+        AuditLogger::log('updated_settings', null, 'Updated about page settings.', [], $data);
+
+        return back()->with('status', 'About page settings updated.')->with('active_tab', 'about');
     }
 }

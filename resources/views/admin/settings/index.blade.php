@@ -1,5 +1,5 @@
 <x-layouts::admin :title="'Settings'">
-    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : session('active_tab', 'institution')) }}' }">
+    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : session('active_tab', 'institution'))) }}' }">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
 
         @if (session('status'))
@@ -10,6 +10,7 @@
             <button @click="tab = 'general'" :class="tab === 'general' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">General</button>
             <button @click="tab = 'institution'" :class="tab === 'institution' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Institution</button>
             <button @click="tab = 'association'" :class="tab === 'association' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Alumni Association</button>
+            <button @click="tab = 'about'" :class="tab === 'about' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">About Page</button>
         </div>
 
         <div x-show="tab === 'general'" x-cloak class="mt-6">
@@ -79,6 +80,53 @@
                 <x-textarea label="Description" name="description" rows="3" bag="association">{{ $errors->association->any() ? old('description') : $association['description'] }}</x-textarea>
                 <x-input label="Contact Email" name="contact_email" type="email" bag="association" :value="$errors->association->any() ? old('contact_email') : $association['contact_email']" />
                 <div class="flex justify-end"><x-button type="submit">Save Association Settings</x-button></div>
+            </form>
+        </div>
+
+        <div x-show="tab === 'about'" x-cloak class="mt-6">
+            <form method="POST" action="{{ route('admin.settings.about') }}" class="card card-body space-y-5">
+                @csrf @method('PUT')
+
+                <x-textarea label="Hero Subtitle" name="hero_subtitle" bag="about" rows="2">{{ $errors->about->any() ? old('hero_subtitle') : $about['hero_subtitle'] }}</x-textarea>
+                <p class="form-hint -mt-3">Shown under the "About {{ config('app.name') }}" heading at the top of the page.</p>
+
+                <div class="border-t border-slate-100 pt-5 dark:border-navy-800">
+                    <x-input label="Mission Heading" name="mission_heading" bag="about" :value="$errors->about->any() ? old('mission_heading') : $about['mission_heading']" />
+                    <x-textarea label="Mission Text" name="mission_text" bag="about" rows="4" class="mt-5">{{ $errors->about->any() ? old('mission_text') : $about['mission_text'] }}</x-textarea>
+                </div>
+
+                <div class="border-t border-slate-100 pt-5 dark:border-navy-800" x-data="{ items: @js($errors->about->any() ? old('items', $about['items']) : $about['items']) }">
+                    <x-input label="'What We Do' Heading" name="items_heading" bag="about" :value="$errors->about->any() ? old('items_heading') : $about['items_heading']" />
+
+                    <label class="form-label mt-5 block">Items</label>
+                    <p class="form-hint mb-3">Each item pairs an icon with a line of text. Add, edit, or remove items as needed.</p>
+
+                    <div class="space-y-3">
+                        <template x-for="(item, index) in items" :key="index">
+                            <div class="flex flex-col gap-3 rounded-lg border border-slate-200 p-4 dark:border-navy-800 sm:flex-row sm:items-start">
+                                <select :name="'items[' + index + '][icon]'" x-model="item.icon" class="form-select sm:w-44">
+                                    @foreach (\App\Http\Controllers\Admin\SettingsController::ABOUT_ICON_OPTIONS as $icon)
+                                        <option value="{{ $icon }}">{{ $icon }}</option>
+                                    @endforeach
+                                </select>
+                                <textarea :name="'items[' + index + '][text]'" x-model="item.text" rows="2" class="form-textarea flex-1" placeholder="Item text"></textarea>
+                                <button type="button" @click="items.splice(index, 1)" class="text-slate-400 hover:text-red-500" title="Remove item">
+                                    <x-icon name="trash-2" class="h-5 w-5" />
+                                </button>
+                            </div>
+                        </template>
+                    </div>
+
+                    <button type="button" @click="items.push({ icon: 'star', text: '' })" class="btn-secondary mt-3">+ Add Item</button>
+                </div>
+
+                <div class="border-t border-slate-100 pt-5 dark:border-navy-800 space-y-5">
+                    <x-input label="CTA Heading" name="cta_heading" bag="about" :value="$errors->about->any() ? old('cta_heading') : $about['cta_heading']" />
+                    <x-textarea label="CTA Text" name="cta_text" bag="about" rows="2">{{ $errors->about->any() ? old('cta_text') : $about['cta_text'] }}</x-textarea>
+                    <x-input label="CTA Button Text" name="cta_button_text" bag="about" :value="$errors->about->any() ? old('cta_button_text') : $about['cta_button_text']" />
+                </div>
+
+                <div class="flex justify-end"><x-button type="submit">Save About Page Settings</x-button></div>
             </form>
         </div>
     </div>
