@@ -18,10 +18,11 @@
             ['label' => 'Pending Jobs', 'route' => 'admin.jobs.pending'],
             ['label' => 'Companies', 'route' => 'admin.companies.index'],
         ]],
-        ['label' => 'Content', 'icon' => 'file-text', 'match' => 'admin.news.*,admin.stories.*,admin.announcements.*', 'children' => [
+        ['label' => 'Content', 'icon' => 'file-text', 'match' => 'admin.news.*,admin.stories.*,admin.announcements.*,admin.gallery.*', 'children' => [
             ['label' => 'News', 'route' => 'admin.news.index'],
             ['label' => 'Stories', 'route' => 'admin.stories.index'],
             ['label' => 'Announcements', 'route' => 'admin.announcements.index'],
+            ['label' => 'Gallery', 'route' => 'admin.gallery.index'],
         ]],
         ['label' => 'Homepage Slider', 'icon' => 'image', 'match' => 'admin.sliders.*', 'children' => [
             ['label' => 'All Slides', 'route' => 'admin.sliders.index'],

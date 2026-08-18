@@ -6,6 +6,7 @@
         ['label' => 'Careers', 'route' => 'jobs.index'],
         ['label' => 'Stories', 'route' => 'stories.index'],
         ['label' => 'News', 'route' => 'news.index'],
+        ['label' => 'Gallery', 'route' => 'gallery.index'],
         ['label' => 'Donate', 'route' => 'donations.index'],
         ['label' => 'Contact', 'route' => 'contact'],
     ];

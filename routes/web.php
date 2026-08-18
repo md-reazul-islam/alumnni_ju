@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\JobController as AdminJobController;
 use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Admin\SliderController as AdminSliderController;
 use App\Http\Controllers\Admin\StoryController as AdminStoryController;
 use App\Http\Controllers\AlumniDirectoryController;
 use App\Http\Controllers\Alumni\DashboardController;
+use App\Http\Controllers\Alumni\GalleryController as AlumniGalleryController;
 use App\Http\Controllers\Alumni\ProfileController as AlumniProfileController;
 use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
@@ -26,6 +28,7 @@ use App\Http\Controllers\ConnectionController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\Admin\MentorshipController as AdminMentorshipController;
@@ -87,6 +90,19 @@ Route::prefix('stories')->name('stories.')->group(function () {
     });
 
     Route::get('/{story:slug}', [StoryController::class, 'show'])->name('show');
+});
+
+Route::prefix('gallery')->name('gallery.')->group(function () {
+    Route::get('/', [GalleryController::class, 'index'])->name('index');
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/create', [AlumniGalleryController::class, 'create'])->name('create');
+        Route::post('/create', [AlumniGalleryController::class, 'store'])->name('store');
+        Route::get('/mine', [AlumniGalleryController::class, 'mine'])->name('mine');
+        Route::get('/{galleryPhoto}/edit', [AlumniGalleryController::class, 'edit'])->name('edit');
+        Route::put('/{galleryPhoto}', [AlumniGalleryController::class, 'update'])->name('update');
+        Route::delete('/{galleryPhoto}', [AlumniGalleryController::class, 'destroy'])->name('destroy');
+    });
 });
 
 Route::prefix('news')->name('news.')->group(function () {
@@ -243,6 +259,17 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{story}/publish', [AdminStoryController::class, 'publish'])->name('publish');
             Route::post('/{story}/reject', [AdminStoryController::class, 'reject'])->name('reject');
             Route::delete('/{story}', [AdminStoryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('gallery')->name('gallery.')->group(function () {
+            Route::get('/', [AdminGalleryController::class, 'index'])->name('index');
+            Route::get('/create', [AdminGalleryController::class, 'create'])->name('create');
+            Route::post('/', [AdminGalleryController::class, 'store'])->name('store');
+            Route::get('/{galleryPhoto}/edit', [AdminGalleryController::class, 'edit'])->name('edit');
+            Route::put('/{galleryPhoto}', [AdminGalleryController::class, 'update'])->name('update');
+            Route::post('/{galleryPhoto}/approve', [AdminGalleryController::class, 'approve'])->name('approve');
+            Route::post('/{galleryPhoto}/reject', [AdminGalleryController::class, 'reject'])->name('reject');
+            Route::delete('/{galleryPhoto}', [AdminGalleryController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('community')->name('community.')->group(function () {

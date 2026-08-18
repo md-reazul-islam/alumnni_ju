@@ -126,6 +126,35 @@ Alpine.data('typewriterSlide', (title, subtitle) => ({
     },
 }));
 
+Alpine.data('photoGallery', (photos) => ({
+    photos,
+    open: false,
+    activeIndex: 0,
+
+    show(index) {
+        this.activeIndex = index;
+        this.open = true;
+        document.body.classList.add('overflow-hidden');
+    },
+
+    close() {
+        this.open = false;
+        document.body.classList.remove('overflow-hidden');
+    },
+
+    next() {
+        this.activeIndex = (this.activeIndex + 1) % this.photos.length;
+    },
+
+    prev() {
+        this.activeIndex = (this.activeIndex - 1 + this.photos.length) % this.photos.length;
+    },
+
+    get active() {
+        return this.photos[this.activeIndex] ?? { url: '', description: '' };
+    },
+}));
+
 Alpine.data('networkBackground', () => ({
     raf: null,
     resizeHandler: null,
