@@ -57,7 +57,7 @@
                 <a href="{{ route('login') }}" class="hidden rounded-full px-3 py-2 text-sm font-medium text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white sm:inline-block">
                     Log In
                 </a>
-                <x-button :href="route('register')" size="sm" class="hidden !rounded-full sm:inline-flex">Join the Alumni Network</x-button>
+                <x-button :href="route('register')" size="sm" class="hidden !rounded-full sm:inline-flex">Join The Network</x-button>
 
                 <button
                     type="button"
@@ -124,7 +124,7 @@
                 @guest
                     <div class="mt-6 space-y-2 border-t border-white/10 pt-6">
                         <x-button :href="route('login')" variant="secondary" class="w-full !border-white/20 !bg-white/5 !text-white hover:!bg-white/10">Log In</x-button>
-                        <x-button :href="route('register')" variant="gold" class="w-full">Join the Alumni Network</x-button>
+                        <x-button :href="route('register')" variant="gold" class="w-full">Join The Network</x-button>
 
                         <button
                             type="button"
