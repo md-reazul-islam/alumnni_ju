@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreJobPostingRequest;
+use App\Http\Requests\Admin\UpdateJobPostingRequest;
 use App\Models\JobPosting;
 use App\Models\Role;
 use App\Models\User;
@@ -74,6 +75,35 @@ class JobController extends Controller
         }
 
         return $slug;
+    }
+
+    public function edit(JobPosting $job): View
+    {
+        $this->authorize('update', $job);
+
+        $posters = User::verified()
+            ->whereHas('role', fn ($q) => $q->where('slug', Role::ALUMNI))
+            ->get()
+            ->sortBy(fn ($user) => $user->full_name);
+
+        return view('admin.jobs.edit', compact('job', 'posters'));
+    }
+
+    public function update(UpdateJobPostingRequest $request, JobPosting $job): RedirectResponse
+    {
+        $data = $request->validated();
+
+        if ($data['status'] === JobPosting::STATUS_APPROVED && $job->status !== JobPosting::STATUS_APPROVED) {
+            $data['approved_by'] = $request->user()->id;
+            $data['approved_at'] = now();
+        }
+
+        $job->update($data);
+
+        AuditLogger::log('updated_job', $job, "Updated job posting \"{$job->title}\".");
+        Cache::forget('homepage.content');
+
+        return redirect()->route('admin.jobs.index')->with('status', 'Job posting updated.');
     }
 
     public function pending(): View

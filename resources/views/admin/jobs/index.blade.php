@@ -31,10 +31,13 @@
                         <td>{{ $job->poster->full_name }}</td>
                         <td><x-badge :variant="match($job->status) { 'approved' => 'success', 'pending' => 'warning', 'rejected' => 'danger', default => 'neutral' }">{{ ucfirst($job->status) }}</x-badge></td>
                         <td>
-                            <form method="POST" action="{{ route('admin.jobs.destroy', $job) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Delete this job?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Delete'}).then(r=>r.isConfirmed&&this.submit())">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="text-slate-400 hover:text-red-600"><x-icon name="trash-2" class="h-4 w-4" /></button>
-                            </form>
+                            <div class="flex items-center gap-2">
+                                <a href="{{ route('admin.jobs.edit', $job) }}" class="text-slate-400 hover:text-navy-700" title="Edit"><x-icon name="pencil" class="h-4 w-4" /></a>
+                                <form method="POST" action="{{ route('admin.jobs.destroy', $job) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Delete this job?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Delete'}).then(r=>r.isConfirmed&&this.submit())">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-slate-400 hover:text-red-600" title="Delete"><x-icon name="trash-2" class="h-4 w-4" /></button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

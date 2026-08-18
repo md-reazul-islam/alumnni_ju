@@ -229,6 +229,8 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/create', [AdminJobController::class, 'create'])->name('create');
             Route::post('/', [AdminJobController::class, 'store'])->name('store');
             Route::get('/pending', [AdminJobController::class, 'pending'])->name('pending');
+            Route::get('/{job}/edit', [AdminJobController::class, 'edit'])->name('edit');
+            Route::put('/{job}', [AdminJobController::class, 'update'])->name('update');
             Route::post('/{job}/approve', [AdminJobController::class, 'approve'])->name('approve');
             Route::post('/{job}/reject', [AdminJobController::class, 'reject'])->name('reject');
             Route::delete('/{job}', [AdminJobController::class, 'destroy'])->name('destroy');
