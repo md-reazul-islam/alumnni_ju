@@ -57,6 +57,34 @@ class AlumniDirectoryController extends Controller
             ->when($request->user() && ! $request->user()->isAdminStaff(), fn ($q) => $q->visibleToAlumni());
 
         $query
+            ->when($request->filled('q'), function ($q) use ($request) {
+                $term = $request->string('q')->toString();
+                $like = '%' . $term . '%';
+
+                $q->where(function ($sub) use ($term, $like) {
+                    $sub->whereHas('user', fn ($u) => $u->where('first_name', 'like', $like)->orWhere('last_name', 'like', $like))
+                        ->orWhere('student_id', 'like', $like)
+                        ->orWhere('major', 'like', $like)
+                        ->orWhere('batch', 'like', $like)
+                        ->orWhere('country', 'like', $like)
+                        ->orWhere('city', 'like', $like)
+                        ->orWhere('organization', 'like', $like)
+                        ->orWhere('industry', 'like', $like)
+                        ->orWhere('job_title', 'like', $like)
+                        ->orWhere('work_location', 'like', $like)
+                        ->orWhere('bio', 'like', $like)
+                        ->orWhereHas('department', fn ($d) => $d->where('name', 'like', $like))
+                        ->orWhereHas('program', fn ($p) => $p->where('name', 'like', $like))
+                        ->orWhereHas('degree', fn ($dg) => $dg->where('name', 'like', $like)->orWhere('abbreviation', 'like', $like))
+                        ->orWhereHas('campus', fn ($c) => $c->where('name', 'like', $like))
+                        ->orWhereHas('skills', fn ($s) => $s->where('name', 'like', $like));
+
+                    if (is_numeric($term)) {
+                        $sub->orWhere('graduation_year', (int) $term)
+                            ->orWhere('admission_year', (int) $term);
+                    }
+                });
+            })
             ->when($request->filled('name'), function ($q) use ($request) {
                 $term = $request->string('name');
                 $q->whereHas('user', fn ($u) => $u->where(fn ($w) => $w

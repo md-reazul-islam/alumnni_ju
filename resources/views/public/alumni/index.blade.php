@@ -3,6 +3,7 @@
     <div
         x-data="{
             loading: false,
+            q: @js(request('q', '')),
             search(resetPage = true) {
                 this.loading = true;
                 const form = document.getElementById('directory-filters');
@@ -107,6 +108,35 @@
             </form>
 
             <div class="lg:col-span-3">
+                <div class="card card-body mb-6">
+                    <label class="form-label" for="global-search">Search the alumni directory</label>
+                    <div class="relative">
+                        <x-icon name="search" class="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+                        <input
+                            id="global-search"
+                            type="text"
+                            name="q"
+                            form="directory-filters"
+                            x-model="q"
+                            @input.debounce.400ms="search()"
+                            placeholder="Search by name, student ID, department, program, degree, batch, year, country, city, employer, industry, job title, or skill…"
+                            autocomplete="off"
+                            class="form-input !rounded-full !py-3 pl-11 pr-11 text-base"
+                        >
+                        <button
+                            type="button"
+                            x-show="q.length > 0"
+                            x-cloak
+                            @click="q = ''; $nextTick(() => search())"
+                            aria-label="Clear search"
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                        >
+                            <x-icon name="x" class="h-4 w-4" />
+                        </button>
+                    </div>
+                    <p class="mt-2 text-xs text-slate-400">Matches any registration field &mdash; not just name. Try a department, degree, batch, graduation year, country, city, employer, industry, job title, or skill.</p>
+                </div>
+
                 <div x-show="loading" x-cloak class="mb-4 flex items-center gap-2 text-sm text-slate-400">
                     <x-loading size="sm" /> Searching...
                 </div>
