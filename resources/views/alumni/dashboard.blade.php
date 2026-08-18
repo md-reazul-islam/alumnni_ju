@@ -7,6 +7,8 @@
         ['label' => 'Send Message', 'icon' => 'message-circle', 'route' => 'messages.index'],
         ['label' => 'Make Donation', 'icon' => 'heart', 'route' => 'donations.index'],
         ['label' => 'Find Mentor', 'icon' => 'handshake', 'route' => 'mentorship.index'],
+        ['label' => 'My Gallery', 'icon' => 'image', 'route' => 'gallery.mine'],
+        ['label' => 'Add Photo', 'icon' => 'camera', 'route' => 'gallery.create'],
     ];
 @endphp
 
