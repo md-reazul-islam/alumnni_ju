@@ -68,6 +68,8 @@
                     <x-button :href="$calendarUrl" variant="ghost" size="sm">
                         <x-icon name="calendar-days" class="h-4 w-4" /> Add to Calendar
                     </x-button>
+
+                    <x-share-button :url="route('events.show', $event)" :title="$event->title" class="!bg-slate-100 dark:!bg-navy-800" />
                 </div>
             </div>
         </div>
