@@ -1,6 +1,6 @@
 <x-layouts::app>
     <section>
-      <div class="section-container grid grid-cols-1 gap-12 py-16 sm:py-20 lg:grid-cols-5">
+      <div class="section-container grid grid-cols-1 gap-12 py-10 sm:py-14 lg:grid-cols-5">
         <div class="lg:col-span-2">
             <h1 class="text-3xl font-bold text-white">Get in Touch</h1>
             <p class="mt-3 text-navy-200">

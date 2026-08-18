@@ -36,7 +36,7 @@
                     });
             });
         "
-        class="section-container py-12"
+        class="section-container py-8"
     >
         <x-breadcrumb :items="[['label' => 'Alumni Directory']]" onDark class="mb-4" />
 

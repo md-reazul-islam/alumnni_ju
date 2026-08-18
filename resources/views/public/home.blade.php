@@ -4,7 +4,7 @@
         <section class="relative overflow-hidden rounded-3xl bg-navy-950 text-white shadow-xl">
             <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
 
-            <div class="section-container relative py-20 sm:py-28 lg:py-32">
+            <div class="section-container relative py-14 sm:py-20 lg:py-24">
                 <div class="mx-auto max-w-3xl text-center">
                     <h1 class="text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
                         Connect. Engage. Inspire. <span class="text-gold-400">Give Back.</span>
@@ -44,7 +44,7 @@
         }"
         x-intersect.once="$refs.alumni && animate($refs.alumni, {{ $stats['total_alumni'] }}); $refs.verified && animate($refs.verified, {{ $stats['verified_alumni'] }}); $refs.countries && animate($refs.countries, {{ $stats['countries'] }}); $refs.events && animate($refs.events, {{ $stats['active_events'] }})"
     >
-        <div class="section-container py-14 sm:py-16">
+        <div class="section-container py-8 sm:py-10">
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
                 <div class="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-navy-200 hover:shadow-lg dark:border-white/10 dark:bg-white/5 dark:hover:border-navy-400/30">
                     <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-navy-50 text-navy-700 transition-transform duration-300 group-hover:scale-110 dark:bg-navy-400/10 dark:text-navy-300">
@@ -87,7 +87,7 @@
 
     {{-- Featured Alumni --}}
     <section>
-      <div class="section-container py-16 sm:py-20">
+      <div class="section-container py-10 sm:py-14">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Featured Alumni</h2>
@@ -117,7 +117,7 @@
 
     {{-- Upcoming Events --}}
     <section>
-        <div class="section-container py-16 sm:py-20">
+        <div class="section-container py-10 sm:py-14">
             <div class="flex items-end justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Upcoming Events</h2>
@@ -160,7 +160,7 @@
 
     {{-- Career Opportunities --}}
     <section>
-      <div class="section-container py-16 sm:py-20">
+      <div class="section-container py-10 sm:py-14">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Career Opportunities</h2>
@@ -194,7 +194,7 @@
 
     {{-- Alumni Stories --}}
     <section>
-        <div class="section-container py-16 sm:py-20">
+        <div class="section-container py-10 sm:py-14">
             <div class="flex items-end justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Alumni Stories</h2>
@@ -242,7 +242,7 @@
 
     {{-- News --}}
     <section>
-      <div class="section-container py-16 sm:py-20">
+      <div class="section-container py-10 sm:py-14">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">News &amp; Announcements</h2>
@@ -279,7 +279,7 @@
 
     {{-- CTA --}}
     <section class="overflow-hidden rounded-3xl bg-navy-900 shadow-xl">
-        <div class="section-container flex flex-col items-center justify-between gap-6 py-14 text-center sm:flex-row sm:text-left">
+        <div class="section-container flex flex-col items-center justify-between gap-6 py-8 text-center sm:flex-row sm:text-left">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Your university journey continues.</h2>
                 <p class="mt-2 text-navy-200">Update your profile and stay connected with your alma mater.</p>

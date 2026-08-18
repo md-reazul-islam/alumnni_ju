@@ -1,6 +1,6 @@
 <x-layouts::app>
     <div>
-      <div class="section-container py-12">
+      <div class="section-container py-8">
         <x-breadcrumb :items="[['label' => 'News']]" onDark class="mb-4" />
 
         <h1 class="text-3xl font-bold text-white">News &amp; Announcements</h1>

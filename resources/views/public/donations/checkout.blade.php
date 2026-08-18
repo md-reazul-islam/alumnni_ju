@@ -1,6 +1,6 @@
 <x-layouts::app>
   <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
-    <div class="section-container max-w-2xl py-12">
+    <div class="section-container max-w-2xl py-8">
         <x-breadcrumb :items="[['label' => 'Donate', 'url' => route('donations.index')], ['label' => 'Checkout']]" class="mb-6" />
 
         <div class="card card-body">

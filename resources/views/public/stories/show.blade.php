@@ -1,6 +1,6 @@
 <x-layouts::app>
   <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
-    <div class="section-container max-w-3xl py-12">
+    <div class="section-container max-w-3xl py-8">
         <x-breadcrumb :items="[['label' => 'Alumni Stories', 'url' => route('stories.index')], ['label' => $story->title]]" class="mb-6" />
 
         @if ($story->cover_image_url)

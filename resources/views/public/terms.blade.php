@@ -1,6 +1,6 @@
 <x-layouts::app>
     <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
-      <div class="section-container max-w-3xl py-16 sm:py-20">
+      <div class="section-container max-w-3xl py-10 sm:py-14">
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Terms &amp; Conditions</h1>
         <p class="mt-2 text-sm text-slate-400">Last updated {{ now()->format('F Y') }}</p>
 

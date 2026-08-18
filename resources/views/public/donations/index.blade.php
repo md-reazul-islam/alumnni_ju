@@ -1,6 +1,6 @@
 <x-layouts::app>
     <div>
-      <div class="section-container py-12">
+      <div class="section-container py-8">
         <x-breadcrumb :items="[['label' => 'Donate']]" onDark class="mb-4" />
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">

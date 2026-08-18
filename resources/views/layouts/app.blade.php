@@ -11,7 +11,7 @@
     <div class="relative z-10">
         <x-site-header />
 
-        <main class="mx-3 my-6 space-y-6 sm:mx-6 sm:my-10 sm:space-y-8 lg:mx-10 lg:space-y-10">
+        <main class="mx-3 my-4 space-y-3 sm:mx-6 sm:my-6 sm:space-y-4 lg:mx-10 lg:space-y-5">
             {{ $slot }}
         </main>
 
