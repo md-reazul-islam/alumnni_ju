@@ -45,7 +45,7 @@
         <p class="mt-1.5 text-navy-200">Search and connect with graduates around the world.</p>
 
         <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-4">
-            <form id="directory-filters" @submit.prevent="search()" @change="search()" class="space-y-4 lg:col-span-1">
+            <form id="directory-filters" @submit.prevent="search()" @change="search()" class="hidden space-y-4 lg:col-span-1 lg:block">
                 <div class="card card-body space-y-4">
                     <div class="relative">
                         <x-icon name="search" class="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
