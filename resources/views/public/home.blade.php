@@ -86,8 +86,8 @@
     </section>
 
     {{-- Featured Alumni --}}
-    <section>
-      <div class="section-container py-10 sm:py-14">
+    <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
+      <div class="section-container py-5 sm:py-7">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Featured Alumni</h2>
@@ -116,8 +116,8 @@
     </section>
 
     {{-- Upcoming Events --}}
-    <section>
-        <div class="section-container py-10 sm:py-14">
+    <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
+        <div class="section-container py-5 sm:py-7">
             <div class="flex items-end justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Upcoming Events</h2>
@@ -159,8 +159,8 @@
     </section>
 
     {{-- Career Opportunities --}}
-    <section>
-      <div class="section-container py-10 sm:py-14">
+    <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
+      <div class="section-container py-5 sm:py-7">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Career Opportunities</h2>
@@ -193,8 +193,8 @@
     </section>
 
     {{-- Alumni Stories --}}
-    <section>
-        <div class="section-container py-10 sm:py-14">
+    <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
+        <div class="section-container py-5 sm:py-7">
             <div class="flex items-end justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Alumni Stories</h2>
@@ -241,8 +241,8 @@
     </section>
 
     {{-- News --}}
-    <section>
-      <div class="section-container py-10 sm:py-14">
+    <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
+      <div class="section-container py-5 sm:py-7">
         <div class="flex items-end justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">News &amp; Announcements</h2>
