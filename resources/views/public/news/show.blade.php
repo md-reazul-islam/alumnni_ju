@@ -7,11 +7,14 @@
             <img src="{{ $article->featured_image_url }}" class="h-64 w-full rounded-2xl object-cover" alt="{{ $article->title }}">
         @endif
 
-        <div class="mt-6 flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
-            @if ($article->category)<x-badge variant="info">{{ $article->category->name }}</x-badge>@endif
-            <span>{{ $article->published_at?->format('F j, Y') }}</span>
-            <span>&middot;</span>
-            <span>By {{ $article->author->full_name }}</span>
+        <div class="mt-6 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
+                @if ($article->category)<x-badge variant="info">{{ $article->category->name }}</x-badge>@endif
+                <span>{{ $article->published_at?->format('F j, Y') }}</span>
+                <span>&middot;</span>
+                <span>By {{ $article->author->full_name }}</span>
+            </div>
+            <x-share-button :url="route('news.show', $article)" :title="$article->title" label="Share this article" class="!bg-slate-100 dark:!bg-navy-800" />
         </div>
 
         <h1 class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ $article->title }}</h1>
