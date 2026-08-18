@@ -88,12 +88,12 @@
     {{-- Featured Alumni --}}
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
       <div class="section-container py-5 sm:py-7">
-        <div class="flex items-end justify-between">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Featured Alumni</h2>
                 <p class="mt-1.5 text-navy-200">Meet graduates making an impact around the world.</p>
             </div>
-            <a href="{{ route('alumni.directory') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
+            <a href="{{ route('alumni.directory') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
                 View directory <x-icon name="arrow-right" class="h-4 w-4" />
             </a>
         </div>
@@ -118,12 +118,12 @@
     {{-- Upcoming Events --}}
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
-            <div class="flex items-end justify-between">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Upcoming Events</h2>
                     <p class="mt-1.5 text-navy-200">Reunions, workshops, and networking mixers near you.</p>
                 </div>
-                <a href="{{ route('events.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
+                <a href="{{ route('events.index') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
                     View all events <x-icon name="arrow-right" class="h-4 w-4" />
                 </a>
             </div>
@@ -161,12 +161,12 @@
     {{-- Career Opportunities --}}
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
       <div class="section-container py-5 sm:py-7">
-        <div class="flex items-end justify-between">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">Career Opportunities</h2>
                 <p class="mt-1.5 text-navy-200">Jobs and internships shared by fellow alumni.</p>
             </div>
-            <a href="{{ route('jobs.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
+            <a href="{{ route('jobs.index') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
                 Visit career center <x-icon name="arrow-right" class="h-4 w-4" />
             </a>
         </div>
@@ -195,12 +195,12 @@
     {{-- Alumni Stories --}}
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
-            <div class="flex items-end justify-between">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Alumni Stories</h2>
                     <p class="mt-1.5 text-navy-200">Inspiring journeys from our graduates.</p>
                 </div>
-                <a href="{{ route('stories.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
+                <a href="{{ route('stories.index') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
                     Read all stories <x-icon name="arrow-right" class="h-4 w-4" />
                 </a>
             </div>
@@ -243,12 +243,12 @@
     {{-- Gallery --}}
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
-            <div class="flex items-end justify-between">
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-white sm:text-3xl">Gallery</h2>
                     <p class="mt-1.5 text-navy-200">Moments from our alumni community.</p>
                 </div>
-                <a href="{{ route('gallery.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
+                <a href="{{ route('gallery.index') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
                     View gallery <x-icon name="arrow-right" class="h-4 w-4" />
                 </a>
             </div>
@@ -266,12 +266,12 @@
     {{-- News --}}
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
       <div class="section-container py-5 sm:py-7">
-        <div class="flex items-end justify-between">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
                 <h2 class="text-2xl font-bold text-white sm:text-3xl">News &amp; Announcements</h2>
                 <p class="mt-1.5 text-navy-200">The latest from our institution and alumni association.</p>
             </div>
-            <a href="{{ route('news.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
+            <a href="{{ route('news.index') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
                 View all news <x-icon name="arrow-right" class="h-4 w-4" />
             </a>
         </div>
