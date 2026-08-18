@@ -43,7 +43,6 @@
             }
         }"
         x-intersect.once="$refs.alumni && animate($refs.alumni, {{ $stats['total_alumni'] }}); $refs.verified && animate($refs.verified, {{ $stats['verified_alumni'] }}); $refs.countries && animate($refs.countries, {{ $stats['countries'] }}); $refs.events && animate($refs.events, {{ $stats['active_events'] }})"
-        class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900"
     >
         <div class="section-container py-14 sm:py-16">
             <div class="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
@@ -87,14 +86,14 @@
     </section>
 
     {{-- Featured Alumni --}}
-    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <section>
       <div class="section-container py-16 sm:py-20">
         <div class="flex items-end justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Featured Alumni</h2>
-                <p class="mt-1.5 text-slate-500 dark:text-slate-400">Meet graduates making an impact around the world.</p>
+                <h2 class="text-2xl font-bold text-white sm:text-3xl">Featured Alumni</h2>
+                <p class="mt-1.5 text-navy-200">Meet graduates making an impact around the world.</p>
             </div>
-            <a href="{{ route('alumni.directory') }}" class="hidden text-sm font-semibold text-navy-700 hover:text-navy-900 dark:text-navy-300 sm:flex sm:items-center sm:gap-1">
+            <a href="{{ route('alumni.directory') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
                 View directory <x-icon name="arrow-right" class="h-4 w-4" />
             </a>
         </div>
@@ -117,14 +116,14 @@
     </section>
 
     {{-- Upcoming Events --}}
-    <section class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900">
+    <section>
         <div class="section-container py-16 sm:py-20">
             <div class="flex items-end justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Upcoming Events</h2>
-                    <p class="mt-1.5 text-slate-500 dark:text-slate-400">Reunions, workshops, and networking mixers near you.</p>
+                    <h2 class="text-2xl font-bold text-white sm:text-3xl">Upcoming Events</h2>
+                    <p class="mt-1.5 text-navy-200">Reunions, workshops, and networking mixers near you.</p>
                 </div>
-                <a href="{{ route('events.index') }}" class="hidden text-sm font-semibold text-navy-700 hover:text-navy-900 dark:text-navy-300 sm:flex sm:items-center sm:gap-1">
+                <a href="{{ route('events.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
                     View all events <x-icon name="arrow-right" class="h-4 w-4" />
                 </a>
             </div>
@@ -160,14 +159,14 @@
     </section>
 
     {{-- Career Opportunities --}}
-    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <section>
       <div class="section-container py-16 sm:py-20">
         <div class="flex items-end justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Career Opportunities</h2>
-                <p class="mt-1.5 text-slate-500 dark:text-slate-400">Jobs and internships shared by fellow alumni.</p>
+                <h2 class="text-2xl font-bold text-white sm:text-3xl">Career Opportunities</h2>
+                <p class="mt-1.5 text-navy-200">Jobs and internships shared by fellow alumni.</p>
             </div>
-            <a href="{{ route('jobs.index') }}" class="hidden text-sm font-semibold text-navy-700 hover:text-navy-900 dark:text-navy-300 sm:flex sm:items-center sm:gap-1">
+            <a href="{{ route('jobs.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
                 Visit career center <x-icon name="arrow-right" class="h-4 w-4" />
             </a>
         </div>
@@ -194,14 +193,14 @@
     </section>
 
     {{-- Alumni Stories --}}
-    <section class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900">
+    <section>
         <div class="section-container py-16 sm:py-20">
             <div class="flex items-end justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Alumni Stories</h2>
-                    <p class="mt-1.5 text-slate-500 dark:text-slate-400">Inspiring journeys from our graduates.</p>
+                    <h2 class="text-2xl font-bold text-white sm:text-3xl">Alumni Stories</h2>
+                    <p class="mt-1.5 text-navy-200">Inspiring journeys from our graduates.</p>
                 </div>
-                <a href="{{ route('stories.index') }}" class="hidden text-sm font-semibold text-navy-700 hover:text-navy-900 dark:text-navy-300 sm:flex sm:items-center sm:gap-1">
+                <a href="{{ route('stories.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
                     Read all stories <x-icon name="arrow-right" class="h-4 w-4" />
                 </a>
             </div>
@@ -242,14 +241,14 @@
     </section>
 
     {{-- News --}}
-    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <section>
       <div class="section-container py-16 sm:py-20">
         <div class="flex items-end justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">News &amp; Announcements</h2>
-                <p class="mt-1.5 text-slate-500 dark:text-slate-400">The latest from our institution and alumni association.</p>
+                <h2 class="text-2xl font-bold text-white sm:text-3xl">News &amp; Announcements</h2>
+                <p class="mt-1.5 text-navy-200">The latest from our institution and alumni association.</p>
             </div>
-            <a href="{{ route('news.index') }}" class="hidden text-sm font-semibold text-navy-700 hover:text-navy-900 dark:text-navy-300 sm:flex sm:items-center sm:gap-1">
+            <a href="{{ route('news.index') }}" class="hidden text-sm font-semibold text-gold-400 hover:text-gold-300 sm:flex sm:items-center sm:gap-1">
                 View all news <x-icon name="arrow-right" class="h-4 w-4" />
             </a>
         </div>

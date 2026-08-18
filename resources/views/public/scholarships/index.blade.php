@@ -1,10 +1,10 @@
 <x-layouts::app>
-    <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <div>
       <div class="section-container py-12">
-        <x-breadcrumb :items="[['label' => 'Scholarships']]" class="mb-4" />
+        <x-breadcrumb :items="[['label' => 'Scholarships']]" onDark class="mb-4" />
 
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Scholarships</h1>
-        <p class="mt-1.5 text-slate-500 dark:text-slate-400">Financial support opportunities for current and prospective students.</p>
+        <h1 class="text-3xl font-bold text-white">Scholarships</h1>
+        <p class="mt-1.5 text-navy-200">Financial support opportunities for current and prospective students.</p>
 
         @if ($scholarships->isEmpty())
             <x-empty-state icon="award" title="No scholarships currently open" description="New scholarship opportunities are posted regularly — check back soon." class="mt-8" />
@@ -26,7 +26,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-8">{{ $scholarships->links() }}</div>
+            <div class="mt-8">{{ $scholarships->links('vendor.pagination.tailwind-dark') }}</div>
         @endif
       </div>
     </div>

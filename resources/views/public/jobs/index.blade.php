@@ -1,12 +1,12 @@
 <x-layouts::app>
-    <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <div>
       <div class="section-container py-12">
-        <x-breadcrumb :items="[['label' => 'Career Center']]" class="mb-4" />
+        <x-breadcrumb :items="[['label' => 'Career Center']]" onDark class="mb-4" />
 
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Career Center</h1>
-                <p class="mt-1.5 text-slate-500 dark:text-slate-400">Jobs, internships, and remote opportunities shared by alumni employers.</p>
+                <h1 class="text-3xl font-bold text-white">Career Center</h1>
+                <p class="mt-1.5 text-navy-200">Jobs, internships, and remote opportunities shared by alumni employers.</p>
             </div>
             @auth
                 @if (Route::has('jobs.create'))
@@ -45,7 +45,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-8">{{ $jobs->links() }}</div>
+            <div class="mt-8">{{ $jobs->links('vendor.pagination.tailwind-dark') }}</div>
         @endif
       </div>
     </div>

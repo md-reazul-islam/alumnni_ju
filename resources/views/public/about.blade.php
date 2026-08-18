@@ -13,30 +13,30 @@
         </div>
     </section>
 
-    <section class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <section>
       <div class="section-container grid grid-cols-1 gap-10 py-16 sm:py-20 lg:grid-cols-2">
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ \App\Models\Setting::get('about', 'mission_heading', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_MISSION_HEADING) }}</h2>
-            <p class="mt-3 text-slate-600 dark:text-slate-300">
+            <h2 class="text-2xl font-bold text-white">{{ \App\Models\Setting::get('about', 'mission_heading', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_MISSION_HEADING) }}</h2>
+            <p class="mt-3 text-navy-200">
                 {{ \App\Models\Setting::get('about', 'mission_text', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_MISSION_TEXT) }}
             </p>
         </div>
         <div>
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ \App\Models\Setting::get('about', 'items_heading', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_ITEMS_HEADING) }}</h2>
-            <ul class="mt-3 space-y-3 text-slate-600 dark:text-slate-300">
+            <h2 class="text-2xl font-bold text-white">{{ \App\Models\Setting::get('about', 'items_heading', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_ITEMS_HEADING) }}</h2>
+            <ul class="mt-3 space-y-3 text-navy-200">
                 @foreach ($aboutItems as $item)
-                    <li class="flex gap-3"><x-icon :name="$item['icon']" class="mt-0.5 h-5 w-5 flex-shrink-0 text-navy-600" /> {{ $item['text'] }}</li>
+                    <li class="flex gap-3"><x-icon :name="$item['icon']" class="mt-0.5 h-5 w-5 flex-shrink-0 text-gold-400" /> {{ $item['text'] }}</li>
                 @endforeach
             </ul>
         </div>
       </div>
     </section>
 
-    <section class="overflow-hidden rounded-3xl bg-slate-50 shadow-xl dark:bg-navy-900">
+    <section>
         <div class="section-container py-16 text-center sm:py-20">
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ \App\Models\Setting::get('about', 'cta_heading', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_CTA_HEADING) }}</h2>
-            <p class="mt-2 text-slate-500 dark:text-slate-400">{{ \App\Models\Setting::get('about', 'cta_text', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_CTA_TEXT) }}</p>
-            <x-button :href="route('register')" class="mt-6">{{ \App\Models\Setting::get('about', 'cta_button_text', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_CTA_BUTTON_TEXT) }}</x-button>
+            <h2 class="text-2xl font-bold text-white">{{ \App\Models\Setting::get('about', 'cta_heading', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_CTA_HEADING) }}</h2>
+            <p class="mt-2 text-navy-200">{{ \App\Models\Setting::get('about', 'cta_text', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_CTA_TEXT) }}</p>
+            <x-button :href="route('register')" variant="gold" class="mt-6">{{ \App\Models\Setting::get('about', 'cta_button_text', \App\Http\Controllers\Admin\SettingsController::DEFAULT_ABOUT_CTA_BUTTON_TEXT) }}</x-button>
         </div>
     </section>
 </x-layouts::app>

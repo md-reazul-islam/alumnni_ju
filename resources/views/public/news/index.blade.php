@@ -1,10 +1,10 @@
 <x-layouts::app>
-    <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <div>
       <div class="section-container py-12">
-        <x-breadcrumb :items="[['label' => 'News']]" class="mb-4" />
+        <x-breadcrumb :items="[['label' => 'News']]" onDark class="mb-4" />
 
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">News &amp; Announcements</h1>
-        <p class="mt-1.5 text-slate-500 dark:text-slate-400">The latest updates from the university and alumni association.</p>
+        <h1 class="text-3xl font-bold text-white">News &amp; Announcements</h1>
+        <p class="mt-1.5 text-navy-200">The latest updates from the university and alumni association.</p>
 
         @if ($articles->isEmpty())
             <x-empty-state icon="newspaper" title="No news published yet" class="mt-8" />
@@ -31,7 +31,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-8">{{ $articles->links() }}</div>
+            <div class="mt-8">{{ $articles->links('vendor.pagination.tailwind-dark') }}</div>
         @endif
       </div>
     </div>

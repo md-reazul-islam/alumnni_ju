@@ -1,10 +1,10 @@
 <x-layouts::app>
-    <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+    <div>
       <div class="section-container py-12">
-        <x-breadcrumb :items="[['label' => 'Events']]" class="mb-4" />
+        <x-breadcrumb :items="[['label' => 'Events']]" onDark class="mb-4" />
 
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Alumni Events</h1>
-        <p class="mt-1.5 text-slate-500 dark:text-slate-400">Reunions, workshops, webinars, and networking mixers.</p>
+        <h1 class="text-3xl font-bold text-white">Alumni Events</h1>
+        <p class="mt-1.5 text-navy-200">Reunions, workshops, webinars, and networking mixers.</p>
 
         @if ($events->isEmpty())
             <x-empty-state icon="calendar" title="No upcoming events" description="Check back soon — new events are added regularly." class="mt-8" />
@@ -33,7 +33,7 @@
                 @endforeach
             </div>
 
-            <div class="mt-8">{{ $events->links() }}</div>
+            <div class="mt-8">{{ $events->links('vendor.pagination.tailwind-dark') }}</div>
         @endif
       </div>
     </div>

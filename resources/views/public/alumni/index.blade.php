@@ -1,5 +1,5 @@
 <x-layouts::app>
-  <div class="overflow-hidden rounded-3xl bg-white shadow-xl dark:bg-navy-900">
+  <div>
     <div
         x-data="{
             loading: false,
@@ -38,10 +38,10 @@
         "
         class="section-container py-12"
     >
-        <x-breadcrumb :items="[['label' => 'Alumni Directory']]" class="mb-4" />
+        <x-breadcrumb :items="[['label' => 'Alumni Directory']]" onDark class="mb-4" />
 
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white">Alumni Directory</h1>
-        <p class="mt-1.5 text-slate-500 dark:text-slate-400">Search and connect with graduates around the world.</p>
+        <h1 class="text-3xl font-bold text-white">Alumni Directory</h1>
+        <p class="mt-1.5 text-navy-200">Search and connect with graduates around the world.</p>
 
         <div class="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-4">
             <form id="directory-filters" @submit.prevent="search()" @change="search()" class="space-y-4 lg:col-span-1">

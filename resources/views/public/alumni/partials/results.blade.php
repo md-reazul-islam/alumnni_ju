@@ -36,5 +36,5 @@
         @endforeach
     </div>
 
-    <div class="mt-8">{{ $profiles->links() }}</div>
+    <div class="mt-8">{{ $profiles->links('vendor.pagination.tailwind-dark') }}</div>
 @endif
