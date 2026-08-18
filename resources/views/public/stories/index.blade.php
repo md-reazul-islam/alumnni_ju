@@ -34,14 +34,15 @@
                                 <p class="mt-1 line-clamp-2 text-sm text-slate-500 dark:text-slate-400">{{ Str::limit(strip_tags($story->story), 110) }}</p>
                             </div>
                         </a>
-                        <div class="card-body pt-3">
+                        <div class="card-body flex items-center justify-between gap-2 pt-3">
                             @can('view', $story->alumniProfile)
-                                <a href="{{ route('alumni.profile.show', $story->alumniProfile->user) }}" class="text-xs font-medium text-navy-600 hover:underline dark:text-navy-300">
+                                <a href="{{ route('alumni.profile.show', $story->alumniProfile->user) }}" class="min-w-0 truncate text-xs font-medium text-navy-600 hover:underline dark:text-navy-300">
                                     {{ $story->alumniProfile->user->full_name }}
                                 </a>
                             @else
-                                <p class="text-xs font-medium text-navy-600 dark:text-navy-300">{{ $story->alumniProfile->user->full_name }}</p>
+                                <p class="min-w-0 truncate text-xs font-medium text-navy-600 dark:text-navy-300">{{ $story->alumniProfile->user->full_name }}</p>
                             @endcan
+                            <x-share-button :url="route('stories.show', $story)" :title="$story->title" label="Share this story" class="!h-8 !w-8 flex-shrink-0 !bg-slate-100 dark:!bg-navy-800" />
                         </div>
                     </div>
                 @endforeach
