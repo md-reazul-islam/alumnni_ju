@@ -59,6 +59,8 @@
                 @else
                     <x-button :href="route('login')">Log In to Apply</x-button>
                 @endauth
+
+                <x-share-button :url="route('jobs.show', $job)" :title="$job->title" label="Share this job" class="!bg-slate-100 dark:!bg-navy-800" />
             </div>
         </div>
     </div>

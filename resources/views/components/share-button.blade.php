@@ -1,11 +1,11 @@
-@props(['url', 'title' => ''])
+@props(['url', 'title' => '', 'label' => 'Share this event'])
 
 <div class="relative inline-block" x-data="{ open: false, copied: false }" @click.outside="open = false" @keydown.escape.window="open = false">
     <button
         type="button"
         @click="open = !open"
         {{ $attributes->class(['flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-sm hover:bg-white dark:bg-navy-900/90 dark:text-slate-300']) }}
-        aria-label="Share this event"
+        aria-label="Share"
     >
         <x-icon name="share-2" class="h-4 w-4" />
     </button>
@@ -16,7 +16,7 @@
         x-transition
         class="absolute right-0 z-30 mt-2 w-72 rounded-xl border border-slate-200 bg-white p-4 text-left shadow-popover dark:border-navy-700 dark:bg-navy-900"
     >
-        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Share this event</p>
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">{{ $label }}</p>
 
         <div class="mt-2 flex items-center gap-2">
             <input

@@ -32,16 +32,21 @@
         @else
             <div class="mt-8 space-y-4">
                 @foreach ($jobs as $job)
-                    <a href="{{ route('jobs.show', $job) }}" class="card card-body flex flex-col gap-3 transition hover:shadow-popover sm:flex-row sm:items-center">
-                        <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-navy-50 text-navy-700 dark:bg-navy-800 dark:text-navy-200">
-                            <x-icon name="briefcase" class="h-6 w-6" />
-                        </span>
-                        <div class="min-w-0 flex-1">
-                            <p class="truncate font-semibold text-slate-900 dark:text-white">{{ $job->title }}</p>
-                            <p class="truncate text-sm text-slate-500 dark:text-slate-400">{{ $job->displayCompanyName() }} &middot; {{ $job->location }}</p>
+                    <div class="card card-body flex flex-col gap-3 transition hover:shadow-popover sm:flex-row sm:items-center">
+                        <a href="{{ route('jobs.show', $job) }}" class="flex min-w-0 flex-1 items-center gap-3">
+                            <span class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-navy-50 text-navy-700 dark:bg-navy-800 dark:text-navy-200">
+                                <x-icon name="briefcase" class="h-6 w-6" />
+                            </span>
+                            <div class="min-w-0 flex-1">
+                                <p class="truncate font-semibold text-slate-900 dark:text-white">{{ $job->title }}</p>
+                                <p class="truncate text-sm text-slate-500 dark:text-slate-400">{{ $job->displayCompanyName() }} &middot; {{ $job->location }}</p>
+                            </div>
+                        </a>
+                        <div class="flex flex-shrink-0 items-center gap-2">
+                            <x-badge variant="neutral">{{ ucfirst(str_replace('_', ' ', $job->employment_type)) }}</x-badge>
+                            <x-share-button :url="route('jobs.show', $job)" :title="$job->title" label="Share this job" class="!bg-slate-100 dark:!bg-navy-800" />
                         </div>
-                        <x-badge variant="neutral">{{ ucfirst(str_replace('_', ' ', $job->employment_type)) }}</x-badge>
-                    </a>
+                    </div>
                 @endforeach
             </div>
 
