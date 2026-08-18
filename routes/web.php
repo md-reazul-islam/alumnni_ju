@@ -313,6 +313,7 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
         Route::prefix('announcements')->name('announcements.')->group(function () {
             Route::get('/', [AdminAnnouncementController::class, 'index'])->name('index');
             Route::post('/', [AdminAnnouncementController::class, 'store'])->name('store');
+            Route::put('/{announcement}', [AdminAnnouncementController::class, 'update'])->name('update');
             Route::delete('/{announcement}', [AdminAnnouncementController::class, 'destroy'])->name('destroy');
         });
 

@@ -58,6 +58,25 @@ class AnnouncementController extends Controller
         return back()->with('status', 'Announcement published and members notified.');
     }
 
+    public function update(Request $request, Announcement $announcement): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string', 'max:3000'],
+            'audience' => ['required', Rule::in(['all', 'alumni', 'admins'])],
+            'is_pinned' => ['nullable', 'boolean'],
+            'expires_at' => ['nullable', 'date'],
+        ]);
+
+        $data['is_pinned'] = $request->boolean('is_pinned');
+
+        $announcement->update($data);
+
+        return back()->with('status', 'Announcement updated.');
+    }
+
     public function destroy(Request $request, Announcement $announcement): RedirectResponse
     {
         $this->ensurePermission($request);
