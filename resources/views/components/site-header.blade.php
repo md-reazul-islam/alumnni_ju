@@ -1,5 +1,9 @@
 @php
-    $navItems = [
+    $navItems = [];
+    if (auth()->check()) {
+        $navItems[] = ['label' => 'Dashboard', 'route' => 'dashboard'];
+    }
+    $navItems = array_merge($navItems, [
         ['label' => 'About', 'route' => 'about'],
         ['label' => 'Alumni', 'route' => 'alumni.directory'],
         ['label' => 'Events', 'route' => 'events.index'],
@@ -9,7 +13,7 @@
         ['label' => 'Gallery', 'route' => 'gallery.index'],
         ['label' => 'Donate', 'route' => 'donations.index'],
         ['label' => 'Contact', 'route' => 'contact'],
-    ];
+    ]);
 @endphp
 
 <div x-data="{ mobileOpen: false }">
