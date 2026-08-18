@@ -5,7 +5,7 @@
 @endphp
 
 <div x-data="{ open: false }" class="relative">
-    <button @click="open = !open" @click.outside="open = false" class="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-navy-800">
+    <button @click="open = !open" @click.outside="open = false" class="relative flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-navy-900 dark:text-slate-400 dark:hover:bg-navy-800">
         <x-icon name="bell" class="h-5 w-5" />
         @if ($unreadCount > 0)
             <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-navy-900"></span>
