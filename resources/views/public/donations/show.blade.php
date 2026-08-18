@@ -26,9 +26,12 @@
                     <p class="whitespace-pre-line">{{ $campaign->description }}</p>
                 </div>
 
-                @if (Route::has('donations.checkout'))
-                    <x-button :href="route('donations.checkout', $campaign)" variant="gold" class="mt-6">Donate to This Campaign</x-button>
-                @endif
+                <div class="mt-6 flex flex-wrap items-center gap-3">
+                    @if (Route::has('donations.checkout'))
+                        <x-button :href="route('donations.checkout', $campaign)" variant="gold">Donate to This Campaign</x-button>
+                    @endif
+                    <x-share-button :url="route('donations.show', $campaign)" :title="$campaign->title" label="Share this campaign" class="!bg-slate-100 dark:!bg-navy-800" />
+                </div>
             </div>
         </div>
     </div>

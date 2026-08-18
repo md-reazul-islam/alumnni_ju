@@ -16,28 +16,33 @@
         @else
             <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($campaigns as $campaign)
-                    <a href="{{ route('donations.show', $campaign) }}" class="card overflow-hidden transition hover:shadow-popover">
-                        <div class="flex h-32 items-center justify-center bg-gold-50 text-gold-500 dark:bg-navy-800">
-                            @if ($campaign->image_url)
-                                <img src="{{ $campaign->image_url }}" class="h-full w-full object-cover" alt="{{ $campaign->title }}">
-                            @else
-                                <x-icon name="heart" class="h-9 w-9" />
-                            @endif
-                        </div>
-                        <div class="card-body">
-                            <x-badge variant="neutral">{{ ucfirst(str_replace('_', ' ', $campaign->category)) }}</x-badge>
-                            <p class="mt-2 font-semibold text-slate-900 dark:text-white">{{ $campaign->title }}</p>
+                    <div class="relative">
+                        <a href="{{ route('donations.show', $campaign) }}" class="card block overflow-hidden transition hover:shadow-popover">
+                            <div class="flex h-32 items-center justify-center bg-gold-50 text-gold-500 dark:bg-navy-800">
+                                @if ($campaign->image_url)
+                                    <img src="{{ $campaign->image_url }}" class="h-full w-full object-cover" alt="{{ $campaign->title }}">
+                                @else
+                                    <x-icon name="heart" class="h-9 w-9" />
+                                @endif
+                            </div>
+                            <div class="card-body">
+                                <x-badge variant="neutral">{{ ucfirst(str_replace('_', ' ', $campaign->category)) }}</x-badge>
+                                <p class="mt-2 font-semibold text-slate-900 dark:text-white">{{ $campaign->title }}</p>
 
-                            @if ($campaign->goal_amount)
-                                <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-navy-800">
-                                    <div class="h-full rounded-full bg-gold-500" style="width: {{ $campaign->progressPercentage() }}%"></div>
-                                </div>
-                                <p class="mt-1.5 text-xs text-slate-400">
-                                    ${{ number_format((float) $campaign->raised_amount) }} raised of ${{ number_format((float) $campaign->goal_amount) }}
-                                </p>
-                            @endif
+                                @if ($campaign->goal_amount)
+                                    <div class="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-navy-800">
+                                        <div class="h-full rounded-full bg-gold-500" style="width: {{ $campaign->progressPercentage() }}%"></div>
+                                    </div>
+                                    <p class="mt-1.5 text-xs text-slate-400">
+                                        ${{ number_format((float) $campaign->raised_amount) }} raised of ${{ number_format((float) $campaign->goal_amount) }}
+                                    </p>
+                                @endif
+                            </div>
+                        </a>
+                        <div class="absolute right-3 top-3 z-10">
+                            <x-share-button :url="route('donations.show', $campaign)" :title="$campaign->title" label="Share this campaign" />
                         </div>
-                    </a>
+                    </div>
                 @endforeach
             </div>
 
