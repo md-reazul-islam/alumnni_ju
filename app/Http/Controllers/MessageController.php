@@ -18,7 +18,7 @@ class MessageController extends Controller
         $user = $request->user();
 
         $conversations = $user->conversations()
-            ->with(['participants' => fn ($q) => $q->where('users.id', '!=', $user->id), 'latestMessage'])
+            ->with(['participants' => fn ($q) => $q->where('users.id', '!=', $user->id)->with('mentorProfile'), 'latestMessage'])
             ->when($request->filled('q'), function ($q) use ($request) {
                 $term = $request->string('q');
                 $q->whereHas('participants', fn ($p) => $p->where('users.id', '!=', $user->id)
@@ -27,6 +27,10 @@ class MessageController extends Controller
             ->get()
             ->sortByDesc(fn ($c) => $c->latestMessage?->created_at ?? $c->created_at)
             ->values();
+
+        [$mentorConversations, $otherConversations] = $conversations->partition(
+            fn ($c) => $c->participants->first()?->isMentor()
+        );
 
         if ($conversation) {
             abort_unless($user->conversations()->where('conversations.id', $conversation->id)->exists(), 403);
@@ -48,7 +52,7 @@ class MessageController extends Controller
             return view('alumni.messages.partials.thread', compact('activeConversation', 'messages', 'otherParticipant'));
         }
 
-        return view('alumni.messages.index', compact('conversations', 'activeConversation', 'messages', 'otherParticipant'));
+        return view('alumni.messages.index', compact('conversations', 'mentorConversations', 'otherConversations', 'activeConversation', 'messages', 'otherParticipant'));
     }
 
     public function create(Request $request, User $user): RedirectResponse

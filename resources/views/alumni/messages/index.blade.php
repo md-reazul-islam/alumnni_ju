@@ -10,26 +10,30 @@
                 </form>
             </div>
 
-            <div class="flex-1 divide-y divide-slate-100 overflow-y-auto dark:divide-navy-800" id="conversation-list">
-                @forelse ($conversations as $conversation)
-                    @php $other = $conversation->participants->first(); @endphp
-                    <button
-                        type="button"
-                        onclick="AlumniMessages.openConversation({{ $conversation->id }}, this)"
-                        data-conversation-id="{{ $conversation->id }}"
-                        class="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-navy-800 {{ $activeConversation?->id === $conversation->id ? 'bg-navy-50 dark:bg-navy-800' : '' }}"
-                    >
-                        <x-avatar :src="$other?->avatar_url" :name="$other?->full_name ?? 'Unknown'" />
-                        <div class="min-w-0 flex-1">
-                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $other?->full_name ?? 'Unknown user' }}</p>
-                            <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ Str::limit($conversation->latestMessage?->body, 40) ?: 'No messages yet' }}</p>
-                        </div>
-                    </button>
-                @empty
+            <div class="flex-1 overflow-y-auto" id="conversation-list">
+                @if ($conversations->isEmpty())
                     <div class="p-6">
                         <x-empty-state icon="message-circle" title="No conversations yet" description="Start a conversation from any alumni profile." />
                     </div>
-                @endforelse
+                @else
+                    @if ($mentorConversations->isNotEmpty())
+                        <p class="bg-slate-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-950/60">Mentors</p>
+                        <div class="divide-y divide-slate-100 dark:divide-navy-800">
+                            @foreach ($mentorConversations as $conversation)
+                                @include('alumni.messages.partials.conversation-item')
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if ($otherConversations->isNotEmpty())
+                        <p class="bg-slate-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-950/60">Messages</p>
+                        <div class="divide-y divide-slate-100 dark:divide-navy-800">
+                            @foreach ($otherConversations as $conversation)
+                                @include('alumni.messages.partials.conversation-item')
+                            @endforeach
+                        </div>
+                    @endif
+                @endif
             </div>
         </div>
 

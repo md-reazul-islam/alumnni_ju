@@ -242,6 +242,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasRole(Role::ALUMNI);
     }
 
+    public function isMentor(): bool
+    {
+        return (bool) $this->mentorProfile?->is_active;
+    }
+
     public function isAdminStaff(): bool
     {
         return $this->hasRole(Role::SUPER_ADMIN, Role::ALUMNI_ADMIN, Role::MODERATOR);
