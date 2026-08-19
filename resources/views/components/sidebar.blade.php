@@ -1,58 +1,93 @@
 @php
     $sections = [
         ['label' => 'Dashboard', 'icon' => 'layout-dashboard', 'route' => 'admin.dashboard'],
-        ['label' => 'Alumni', 'icon' => 'graduation-cap', 'match' => 'admin.alumni.*', 'children' => [
+        ['label' => 'Alumni', 'icon' => 'graduation-cap', 'match' => 'admin.alumni.*', 'permission' => 'manage-alumni', 'children' => [
             ['label' => 'All Alumni', 'route' => 'admin.alumni.index'],
             ['label' => 'Pending Verification', 'route' => 'admin.alumni.pending'],
             ['label' => 'Verified Alumni', 'route' => 'admin.alumni.verified'],
             ['label' => 'Suspended Alumni', 'route' => 'admin.alumni.suspended'],
         ]],
-        ['label' => 'Moderators', 'icon' => 'shield', 'match' => 'admin.moderators.*', 'children' => [
+        ['label' => 'Moderators', 'icon' => 'shield', 'match' => 'admin.moderators.*', 'permission' => 'manage-administrators', 'children' => [
             ['label' => 'All Moderators', 'route' => 'admin.moderators.index'],
             ['label' => 'Create Moderator', 'route' => 'admin.moderators.create'],
         ]],
-        ['label' => 'Events', 'icon' => 'calendar', 'match' => 'admin.events.*', 'children' => [
+        ['label' => 'Events', 'icon' => 'calendar', 'match' => 'admin.events.*', 'permission' => 'manage-events', 'children' => [
             ['label' => 'All Events', 'route' => 'admin.events.index'],
             ['label' => 'Create Event', 'route' => 'admin.events.create'],
             ['label' => 'Registrations', 'route' => 'admin.events.registrations'],
         ]],
-        ['label' => 'Career', 'icon' => 'briefcase', 'match' => 'admin.jobs.*,admin.companies.*', 'children' => [
+        ['label' => 'Career', 'icon' => 'briefcase', 'match' => 'admin.jobs.*,admin.companies.*', 'permission' => 'manage-jobs', 'children' => [
             ['label' => 'Jobs', 'route' => 'admin.jobs.index'],
             ['label' => 'Create Job', 'route' => 'admin.jobs.create'],
             ['label' => 'Pending Jobs', 'route' => 'admin.jobs.pending'],
             ['label' => 'Companies', 'route' => 'admin.companies.index'],
         ]],
         ['label' => 'Content', 'icon' => 'file-text', 'match' => 'admin.news.*,admin.stories.*,admin.announcements.*,admin.gallery.*', 'children' => [
-            ['label' => 'News', 'route' => 'admin.news.index'],
-            ['label' => 'Stories', 'route' => 'admin.stories.index'],
-            ['label' => 'Announcements', 'route' => 'admin.announcements.index'],
-            ['label' => 'Gallery', 'route' => 'admin.gallery.index'],
+            ['label' => 'News', 'route' => 'admin.news.index', 'permission' => 'manage-news'],
+            ['label' => 'Stories', 'route' => 'admin.stories.index', 'permission' => 'manage-stories'],
+            ['label' => 'Announcements', 'route' => 'admin.announcements.index', 'permission' => 'manage-announcements'],
+            ['label' => 'Gallery', 'route' => 'admin.gallery.index', 'permission' => 'manage-gallery'],
         ]],
-        ['label' => 'Homepage Slider', 'icon' => 'image', 'match' => 'admin.sliders.*', 'children' => [
+        ['label' => 'Homepage Slider', 'icon' => 'image', 'match' => 'admin.sliders.*', 'permission' => 'manage-sliders', 'children' => [
             ['label' => 'All Slides', 'route' => 'admin.sliders.index'],
             ['label' => 'Add Slide', 'route' => 'admin.sliders.create'],
         ]],
-        ['label' => 'Community', 'icon' => 'message-square', 'match' => 'admin.community.*', 'children' => [
+        ['label' => 'Community', 'icon' => 'message-square', 'match' => 'admin.community.*', 'permission' => 'moderate-community', 'children' => [
             ['label' => 'Posts', 'route' => 'admin.community.posts'],
             ['label' => 'Reports', 'route' => 'admin.community.reports'],
             ['label' => 'Moderation', 'route' => 'admin.community.moderation'],
         ]],
-        ['label' => 'Mentorship', 'icon' => 'handshake', 'match' => 'admin.mentorship.*', 'children' => [
+        ['label' => 'Mentorship', 'icon' => 'handshake', 'match' => 'admin.mentorship.*', 'permission' => 'manage-mentorship', 'children' => [
             ['label' => 'Mentors', 'route' => 'admin.mentorship.mentors'],
             ['label' => 'Requests', 'route' => 'admin.mentorship.requests'],
         ]],
-        ['label' => 'Scholarships', 'icon' => 'award', 'route' => 'admin.scholarships.index'],
-        ['label' => 'Donations', 'icon' => 'dollar-sign', 'match' => 'admin.donations.*', 'children' => [
+        ['label' => 'Scholarships', 'icon' => 'award', 'route' => 'admin.scholarships.index', 'permission' => 'manage-scholarships'],
+        ['label' => 'Donations', 'icon' => 'dollar-sign', 'match' => 'admin.donations.*', 'permission' => 'manage-donations', 'children' => [
             ['label' => 'Donations', 'route' => 'admin.donations.index'],
             ['label' => 'Campaigns', 'route' => 'admin.donations.campaigns'],
             ['label' => 'Reports', 'route' => 'admin.donations.reports'],
         ]],
         ['label' => 'Messages', 'icon' => 'message-circle', 'route' => 'admin.messages.index'],
         ['label' => 'Notifications', 'icon' => 'bell', 'route' => 'notifications.index'],
-        ['label' => 'Reports', 'icon' => 'chart-bar', 'route' => 'admin.reports.index'],
-        ['label' => 'Audit Logs', 'icon' => 'clipboard-list', 'route' => 'admin.audit-logs.index'],
-        ['label' => 'Settings', 'icon' => 'settings', 'route' => 'admin.settings.index'],
+        ['label' => 'Reports', 'icon' => 'chart-bar', 'route' => 'admin.reports.index', 'permission' => ['manage-reports', 'manage-alumni']],
+        ['label' => 'Audit Logs', 'icon' => 'clipboard-list', 'route' => 'admin.audit-logs.index', 'permission' => 'view-audit-logs'],
+        ['label' => 'Settings', 'icon' => 'settings', 'route' => 'admin.settings.index', 'permission' => 'manage-settings'],
     ];
+
+    $hasAccess = function ($permission) {
+        if (! $permission) {
+            return true;
+        }
+
+        foreach ((array) $permission as $slug) {
+            if (auth()->user()->hasPermission($slug)) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    $sections = collect($sections)
+        ->map(function ($section) use ($hasAccess) {
+            if (isset($section['children'])) {
+                $section['children'] = array_values(array_filter(
+                    $section['children'],
+                    fn ($child) => $hasAccess($child['permission'] ?? ($section['permission'] ?? null))
+                ));
+            }
+
+            return $section;
+        })
+        ->filter(function ($section) use ($hasAccess) {
+            if (isset($section['children'])) {
+                return count($section['children']) > 0;
+            }
+
+            return $hasAccess($section['permission'] ?? null);
+        })
+        ->values()
+        ->all();
 
     $isActiveSection = function ($section) {
         if (isset($section['route'])) {
