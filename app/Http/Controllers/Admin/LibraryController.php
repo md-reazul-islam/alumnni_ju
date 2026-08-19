@@ -196,6 +196,25 @@ class LibraryController extends Controller
         return view('admin.library.borrowed-report', compact('borrowRequests'));
     }
 
+    public function history(Request $request): View
+    {
+        $this->ensurePermission($request);
+
+        $borrowRequests = BorrowRequest::returned()
+            ->with(['book.donor', 'borrower'])
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $term = $request->string('search');
+                $q->where(fn ($sub) => $sub
+                    ->whereHas('book', fn ($b) => $b->where('title', 'like', "%{$term}%"))
+                    ->orWhereHas('borrower', fn ($u) => $u->where('first_name', 'like', "%{$term}%")->orWhere('last_name', 'like', "%{$term}%")));
+            })
+            ->latest('returned_at')
+            ->paginate(20)
+            ->withQueryString();
+
+        return view('admin.library.history', compact('borrowRequests'));
+    }
+
     // Borrow request actions
 
     public function approveRequest(Request $request, BorrowRequest $borrowRequest): RedirectResponse

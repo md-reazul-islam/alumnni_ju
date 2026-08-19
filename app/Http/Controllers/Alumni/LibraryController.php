@@ -40,7 +40,7 @@ class LibraryController extends Controller
     public function donations(Request $request): View
     {
         $books = $request->user()->donatedBooks()
-            ->with(['borrowRequests' => fn ($q) => $q->whereIn('status', [BorrowRequest::STATUS_APPROVED, BorrowRequest::STATUS_HANDED_OVER])->with('borrower')])
+            ->with(['borrowRequests' => fn ($q) => $q->with('borrower')->latest()])
             ->latest()
             ->paginate(12);
 

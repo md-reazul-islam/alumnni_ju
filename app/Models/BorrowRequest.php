@@ -54,6 +54,12 @@ class BorrowRequest extends Model
         return $this->status === self::STATUS_HANDED_OVER && $this->due_date && $this->due_date->isPast();
     }
 
+    public function wasReturnedLate(): bool
+    {
+        return $this->status === self::STATUS_RETURNED && $this->due_date && $this->returned_at
+            && $this->returned_at->startOfDay()->gt($this->due_date);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', self::STATUS_PENDING);
@@ -72,5 +78,10 @@ class BorrowRequest extends Model
     public function scopeHandedOver($query)
     {
         return $query->where('status', self::STATUS_HANDED_OVER);
+    }
+
+    public function scopeReturned($query)
+    {
+        return $query->where('status', self::STATUS_RETURNED);
     }
 }

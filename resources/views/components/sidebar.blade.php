@@ -30,6 +30,7 @@
             ['label' => 'Accepted Requests', 'route' => 'admin.library.requests.accepted'],
             ['label' => 'Rejected Requests', 'route' => 'admin.library.requests.rejected'],
             ['label' => 'Borrowed Books', 'route' => 'admin.library.requests.borrowed'],
+            ['label' => 'Borrow History', 'route' => 'admin.library.requests.history'],
         ]],
         ['label' => 'Content', 'icon' => 'file-text', 'match' => 'admin.news.*,admin.stories.*,admin.announcements.*,admin.gallery.*', 'children' => [
             ['label' => 'News', 'route' => 'admin.news.index', 'permission' => 'manage-news'],

@@ -6,6 +6,7 @@
             <x-button :href="route('admin.library.requests.accepted')" variant="secondary" size="sm">Accepted Requests</x-button>
             <x-button :href="route('admin.library.requests.rejected')" variant="secondary" size="sm">Rejected Requests</x-button>
             <x-button :href="route('admin.library.requests.borrowed')" variant="secondary" size="sm">Borrowed Books</x-button>
+            <x-button :href="route('admin.library.requests.history')" variant="secondary" size="sm">Borrow History</x-button>
             <x-button :href="route('admin.library.create')" size="sm">+ Add Book</x-button>
         </div>
     </div>

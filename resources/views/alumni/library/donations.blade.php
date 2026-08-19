@@ -9,7 +9,10 @@
     @else
         <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             @foreach ($books as $book)
-                @php $activeBorrow = $book->borrowRequests->first(); @endphp
+                @php
+                    $activeBorrow = $book->borrowRequests->first(fn ($r) => in_array($r->status, ['approved', 'handed_over']));
+                    $history = $book->borrowRequests->where('status', 'returned');
+                @endphp
                 <div class="card overflow-hidden">
                     <div class="flex aspect-video items-center justify-center bg-gold-50 text-gold-500 dark:bg-navy-800">
                         @if ($book->cover_url)
@@ -33,6 +36,19 @@
                                 <p class="mt-0.5">
                                     {{ $activeBorrow->status === 'handed_over' ? 'Due back ' . $activeBorrow->due_date?->format('M j, Y') : 'Awaiting collection' }}
                                 </p>
+                            </div>
+                        @endif
+
+                        @if ($history->isNotEmpty())
+                            <div class="mt-3 border-t border-slate-100 pt-3 dark:border-navy-800">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-400">Borrow history</p>
+                                <ul class="mt-1.5 space-y-1">
+                                    @foreach ($history as $past)
+                                        <li class="text-xs text-slate-500 dark:text-slate-400">
+                                            {{ $past->borrower->full_name }} &middot; returned {{ $past->returned_at?->format('M j, Y') }}
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
                         @endif
 

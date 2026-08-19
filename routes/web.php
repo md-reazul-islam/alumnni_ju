@@ -314,6 +314,7 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/requests/rejected', [AdminLibraryController::class, 'rejectedRequests'])->name('requests.rejected');
             Route::get('/requests/accepted', [AdminLibraryController::class, 'acceptedRequests'])->name('requests.accepted');
             Route::get('/requests/borrowed', [AdminLibraryController::class, 'borrowedReport'])->name('requests.borrowed');
+            Route::get('/requests/history', [AdminLibraryController::class, 'history'])->name('requests.history');
             Route::post('/requests/{borrowRequest}/approve', [AdminLibraryController::class, 'approveRequest'])->name('requests.approve');
             Route::post('/requests/{borrowRequest}/reject', [AdminLibraryController::class, 'rejectRequest'])->name('requests.reject');
             Route::post('/requests/{borrowRequest}/handover', [AdminLibraryController::class, 'handover'])->name('requests.handover');
