@@ -25,12 +25,12 @@
             {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}
         </a>
 
-        <nav class="hidden items-center gap-1 rounded-full bg-slate-100 p-1 dark:bg-navy-900 xl:flex">
+        <nav class="hidden items-center gap-0.5 rounded-full bg-slate-100 p-1 dark:bg-navy-900 xl:flex">
             @foreach ($navItems as $item)
                 @if (Route::has($item['route']))
                     <a
                         href="{{ route($item['route']) }}"
-                        class="rounded-full px-4 py-2 text-sm font-medium {{ request()->routeIs($item['route']) ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
+                        class="whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-medium {{ request()->routeIs($item['route']) ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
                     >
                         {{ $item['label'] }}
                     </a>
