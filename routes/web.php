@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\AssistantController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
 use App\Http\Controllers\Admin\LibraryController as AdminLibraryController;
 use App\Http\Controllers\Admin\ModeratorController as AdminModeratorController;
@@ -51,6 +52,10 @@ use App\Http\Controllers\VerificationPendingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
+
+Route::post('/assistant/chat', [AssistantController::class, 'chat'])
+    ->middleware('throttle:15,1')
+    ->name('assistant.chat');
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');

@@ -19,6 +19,7 @@
     </div>
 
     <x-command-palette />
+    <x-site-assistant />
 
     @stack('scripts')
 </body>

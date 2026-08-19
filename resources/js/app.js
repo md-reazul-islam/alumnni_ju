@@ -407,4 +407,65 @@ window.reportContent = function (type, id) {
     });
 };
 
+Alpine.data('siteAssistant', () => ({
+    open: false,
+    sending: false,
+    input: '',
+    messages: [],
+
+    toggle() {
+        this.open = !this.open;
+        if (this.open) {
+            if (this.messages.length === 0) {
+                this.messages.push({
+                    role: 'assistant',
+                    content: "Hi! I'm here to help you use the alumni network — ask me anything about events, jobs, the library, mentorship, or how to find your way around.",
+                });
+            }
+            this.$nextTick(() => {
+                this.$refs.chatInput?.focus();
+                this.scrollToBottom();
+            });
+        }
+    },
+
+    send() {
+        const text = this.input.trim();
+        if (!text || this.sending) return;
+
+        const history = this.messages.slice(-10).map((m) => ({ role: m.role, content: m.content }));
+
+        this.messages.push({ role: 'user', content: text });
+        this.input = '';
+        this.sending = true;
+        this.$nextTick(() => this.scrollToBottom());
+
+        fetch('/assistant/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': AlumniNetwork.csrfToken(),
+                Accept: 'application/json',
+            },
+            body: JSON.stringify({ message: text, history }),
+        })
+            .then((r) => r.json())
+            .then((data) => {
+                this.messages.push({ role: 'assistant', content: data.reply || "Sorry, something went wrong." });
+            })
+            .catch(() => {
+                this.messages.push({ role: 'assistant', content: "Sorry, I couldn't reach the server. Please try again." });
+            })
+            .finally(() => {
+                this.sending = false;
+                this.$nextTick(() => this.scrollToBottom());
+            });
+    },
+
+    scrollToBottom() {
+        const box = this.$refs.scrollBox;
+        if (box) box.scrollTop = box.scrollHeight;
+    },
+}));
+
 Alpine.start();
