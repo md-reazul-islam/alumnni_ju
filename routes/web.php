@@ -2,7 +2,10 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
+use App\Http\Controllers\Admin\LibraryController as AdminLibraryController;
 use App\Http\Controllers\Admin\ModeratorController as AdminModeratorController;
+use App\Http\Controllers\Alumni\LibraryController as AlumniLibraryController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
@@ -104,6 +107,24 @@ Route::prefix('gallery')->name('gallery.')->group(function () {
         Route::put('/{galleryPhoto}', [AlumniGalleryController::class, 'update'])->name('update');
         Route::delete('/{galleryPhoto}', [AlumniGalleryController::class, 'destroy'])->name('destroy');
     });
+});
+
+Route::prefix('library')->name('library.')->group(function () {
+    Route::get('/', [LibraryController::class, 'index'])->name('index');
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/donate', [AlumniLibraryController::class, 'create'])->name('create');
+        Route::post('/donate', [AlumniLibraryController::class, 'store'])->name('store');
+        Route::get('/donations', [AlumniLibraryController::class, 'donations'])->name('donations');
+        Route::get('/mine', [AlumniLibraryController::class, 'mine'])->name('mine');
+        Route::delete('/requests/{borrowRequest}', [AlumniLibraryController::class, 'cancel'])->name('requests.cancel');
+        Route::get('/{book}/edit', [AlumniLibraryController::class, 'edit'])->name('edit');
+        Route::put('/{book}', [AlumniLibraryController::class, 'update'])->name('update');
+        Route::delete('/{book}', [AlumniLibraryController::class, 'destroy'])->name('destroy');
+        Route::post('/{book}/borrow', [AlumniLibraryController::class, 'borrow'])->name('borrow');
+    });
+
+    Route::get('/{book}', [LibraryController::class, 'show'])->name('show');
 });
 
 Route::prefix('news')->name('news.')->group(function () {
@@ -282,6 +303,27 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{galleryPhoto}/approve', [AdminGalleryController::class, 'approve'])->name('approve');
             Route::post('/{galleryPhoto}/reject', [AdminGalleryController::class, 'reject'])->name('reject');
             Route::delete('/{galleryPhoto}', [AdminGalleryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('library')->name('library.')->group(function () {
+            Route::get('/', [AdminLibraryController::class, 'index'])->name('index');
+            Route::get('/create', [AdminLibraryController::class, 'create'])->name('create');
+            Route::post('/', [AdminLibraryController::class, 'store'])->name('store');
+            Route::get('/available', [AdminLibraryController::class, 'availableBooks'])->name('available');
+            Route::get('/requests/pending', [AdminLibraryController::class, 'pendingRequests'])->name('requests.pending');
+            Route::get('/requests/rejected', [AdminLibraryController::class, 'rejectedRequests'])->name('requests.rejected');
+            Route::get('/requests/accepted', [AdminLibraryController::class, 'acceptedRequests'])->name('requests.accepted');
+            Route::get('/requests/borrowed', [AdminLibraryController::class, 'borrowedReport'])->name('requests.borrowed');
+            Route::post('/requests/{borrowRequest}/approve', [AdminLibraryController::class, 'approveRequest'])->name('requests.approve');
+            Route::post('/requests/{borrowRequest}/reject', [AdminLibraryController::class, 'rejectRequest'])->name('requests.reject');
+            Route::post('/requests/{borrowRequest}/handover', [AdminLibraryController::class, 'handover'])->name('requests.handover');
+            Route::post('/requests/{borrowRequest}/returned', [AdminLibraryController::class, 'markReturned'])->name('requests.returned');
+            Route::post('/requests/{borrowRequest}/remind', [AdminLibraryController::class, 'sendReminder'])->name('requests.remind');
+            Route::get('/{book}/edit', [AdminLibraryController::class, 'edit'])->name('edit');
+            Route::put('/{book}', [AdminLibraryController::class, 'update'])->name('update');
+            Route::post('/{book}/approve', [AdminLibraryController::class, 'approve'])->name('approve');
+            Route::post('/{book}/reject', [AdminLibraryController::class, 'reject'])->name('reject');
+            Route::delete('/{book}', [AdminLibraryController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('community')->name('community.')->group(function () {

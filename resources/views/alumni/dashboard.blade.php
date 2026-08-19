@@ -9,6 +9,8 @@
         ['label' => 'Find Mentor', 'icon' => 'handshake', 'route' => 'mentorship.index'],
         ['label' => 'My Gallery', 'icon' => 'image', 'route' => 'gallery.mine'],
         ['label' => 'Add Photo', 'icon' => 'camera', 'route' => 'gallery.create'],
+        ['label' => 'My Library', 'icon' => 'book-open', 'route' => 'library.mine'],
+        ['label' => 'Donate a Book', 'icon' => 'gift', 'route' => 'library.create'],
     ];
 @endphp
 

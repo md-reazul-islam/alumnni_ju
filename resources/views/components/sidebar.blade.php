@@ -22,6 +22,15 @@
             ['label' => 'Pending Jobs', 'route' => 'admin.jobs.pending'],
             ['label' => 'Companies', 'route' => 'admin.companies.index'],
         ]],
+        ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
+            ['label' => 'All Books', 'route' => 'admin.library.index'],
+            ['label' => 'Add Book', 'route' => 'admin.library.create'],
+            ['label' => 'Available Books', 'route' => 'admin.library.available'],
+            ['label' => 'Pending Requests', 'route' => 'admin.library.requests.pending'],
+            ['label' => 'Accepted Requests', 'route' => 'admin.library.requests.accepted'],
+            ['label' => 'Rejected Requests', 'route' => 'admin.library.requests.rejected'],
+            ['label' => 'Borrowed Books', 'route' => 'admin.library.requests.borrowed'],
+        ]],
         ['label' => 'Content', 'icon' => 'file-text', 'match' => 'admin.news.*,admin.stories.*,admin.announcements.*,admin.gallery.*', 'children' => [
             ['label' => 'News', 'route' => 'admin.news.index', 'permission' => 'manage-news'],
             ['label' => 'Stories', 'route' => 'admin.stories.index', 'permission' => 'manage-stories'],

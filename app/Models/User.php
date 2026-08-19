@@ -176,6 +176,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Announcement::class, 'created_by');
     }
 
+    public function donatedBooks(): HasMany
+    {
+        return $this->hasMany(Book::class, 'donor_id');
+    }
+
+    public function borrowRequests(): HasMany
+    {
+        return $this->hasMany(BorrowRequest::class);
+    }
+
     public function auditLogs(): HasMany
     {
         return $this->hasMany(AuditLog::class);

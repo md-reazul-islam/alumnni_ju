@@ -11,6 +11,7 @@
         ['label' => 'Stories', 'route' => 'stories.index'],
         ['label' => 'News', 'route' => 'news.index'],
         ['label' => 'Gallery', 'route' => 'gallery.index'],
+        ['label' => 'Library', 'route' => 'library.index'],
         ['label' => 'Donate', 'route' => 'donations.index'],
         ['label' => 'Contact', 'route' => 'contact'],
     ]);
