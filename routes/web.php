@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AlumniController as AdminAlumniController;
+use App\Http\Controllers\Admin\ModeratorController as AdminModeratorController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
@@ -210,6 +211,15 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{user}/suspend', [AdminAlumniController::class, 'suspend'])->name('suspend');
             Route::post('/{user}/restore', [AdminAlumniController::class, 'restore'])->name('restore');
             Route::delete('/{user}', [AdminAlumniController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('moderators')->name('moderators.')->group(function () {
+            Route::get('/', [AdminModeratorController::class, 'index'])->name('index');
+            Route::get('/create', [AdminModeratorController::class, 'create'])->name('create');
+            Route::post('/', [AdminModeratorController::class, 'store'])->name('store');
+            Route::get('/{moderator}/edit', [AdminModeratorController::class, 'edit'])->name('edit');
+            Route::put('/{moderator}', [AdminModeratorController::class, 'update'])->name('update');
+            Route::delete('/{moderator}', [AdminModeratorController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('events')->name('events.')->group(function () {

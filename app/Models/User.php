@@ -56,6 +56,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Role::class);
     }
 
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
     public function alumniProfile(): HasOne
     {
         return $this->hasOne(AlumniProfile::class);
@@ -234,15 +239,15 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasPermission(string $slug): bool
     {
-        if (! $this->role) {
-            return false;
-        }
-
-        if ($this->role->slug === Role::SUPER_ADMIN) {
+        if ($this->role?->slug === Role::SUPER_ADMIN) {
             return true;
         }
 
-        return $this->role->hasPermission($slug);
+        if ($this->role && $this->role->hasPermission($slug)) {
+            return true;
+        }
+
+        return $this->permissions()->where('slug', $slug)->exists();
     }
 
     // Status helpers

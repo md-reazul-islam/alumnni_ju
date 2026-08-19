@@ -7,6 +7,10 @@
             ['label' => 'Verified Alumni', 'route' => 'admin.alumni.verified'],
             ['label' => 'Suspended Alumni', 'route' => 'admin.alumni.suspended'],
         ]],
+        ['label' => 'Moderators', 'icon' => 'shield', 'match' => 'admin.moderators.*', 'children' => [
+            ['label' => 'All Moderators', 'route' => 'admin.moderators.index'],
+            ['label' => 'Create Moderator', 'route' => 'admin.moderators.create'],
+        ]],
         ['label' => 'Events', 'icon' => 'calendar', 'match' => 'admin.events.*', 'children' => [
             ['label' => 'All Events', 'route' => 'admin.events.index'],
             ['label' => 'Create Event', 'route' => 'admin.events.create'],
