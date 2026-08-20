@@ -44,6 +44,7 @@ class SettingsController extends Controller
         'show_featured_alumni' => 'Featured Alumni',
         'show_events' => 'Upcoming Events',
         'show_jobs' => 'Career Opportunities',
+        'show_marketplace' => 'Marketplace (House Rent & Property)',
         'show_stories' => 'Alumni Stories',
         'show_gallery' => 'Gallery',
         'show_library' => 'Your Library',

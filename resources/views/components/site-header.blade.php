@@ -8,6 +8,7 @@
         ['label' => 'Alumni', 'route' => 'alumni.directory'],
         ['label' => 'Events', 'route' => 'events.index'],
         ['label' => 'Careers', 'route' => 'jobs.index'],
+        ['label' => 'Marketplace', 'route' => 'marketplace.index'],
         ['label' => 'Stories', 'route' => 'stories.index'],
         ['label' => 'News', 'route' => 'news.index'],
         ['label' => 'Gallery', 'route' => 'gallery.index'],

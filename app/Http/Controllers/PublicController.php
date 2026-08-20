@@ -8,6 +8,8 @@ use App\Models\Book;
 use App\Models\Event;
 use App\Models\GalleryPhoto;
 use App\Models\JobPosting;
+use App\Models\MarketplaceCategory;
+use App\Models\MarketplaceListing;
 use App\Models\News;
 use App\Models\Slider;
 use App\Models\User;
@@ -35,6 +37,8 @@ class PublicController extends Controller
                     ->get(),
                 'upcomingEvents' => Event::published()->upcoming()->orderBy('event_date')->limit(3)->get(),
                 'jobs' => JobPosting::approved()->with('company')->latest('approved_at')->limit(4)->get(),
+                'marketplaceCategories' => MarketplaceCategory::active()->orderBy('name')->get(),
+                'marketplaceListings' => MarketplaceListing::approved()->with(['category', 'images'])->inRandomOrder()->limit(12)->get(),
                 'stories' => AlumniStory::published()->with('alumniProfile.user')->latest('published_at')->limit(3)->get(),
                 'news' => News::published()->latest('published_at')->limit(3)->get(),
                 'gallery' => GalleryPhoto::approved()->with('user')->latest('approved_at')->limit(8)->get(),
