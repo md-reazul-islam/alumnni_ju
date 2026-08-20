@@ -4,8 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\AlumniProfile;
 use App\Models\AlumniStory;
+use App\Models\Book;
 use App\Models\Event;
 use App\Models\JobPosting;
+use App\Models\MarketplaceListing;
 use App\Models\News;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -92,5 +94,31 @@ class SearchTest extends TestCase
         $response->assertOk();
         $response->assertJsonFragment(['title' => 'University Launches New Scholarship Fund']);
         $response->assertJsonFragment(['title' => 'From Campus to Career: My Scholarship Journey']);
+    }
+
+    public function test_search_finds_an_approved_marketplace_listing(): void
+    {
+        MarketplaceListing::factory()->approved()->create(['title' => 'Cozy Lakeside Cabin for Rent']);
+
+        $response = $this->getJson('/search?q=Lakeside');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Cozy Lakeside Cabin for Rent']);
+    }
+
+    public function test_search_finds_an_available_library_book(): void
+    {
+        $donor = User::factory()->create();
+        Book::create([
+            'donor_id' => $donor->id,
+            'title' => 'Deep Learning Foundations',
+            'author' => 'Some Author',
+            'status' => Book::STATUS_APPROVED,
+        ]);
+
+        $response = $this->getJson('/search?q=Foundations');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Deep Learning Foundations']);
     }
 }

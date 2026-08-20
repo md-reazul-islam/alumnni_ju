@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\AlumniProfile;
 use App\Models\AlumniStory;
+use App\Models\Book;
 use App\Models\Event;
 use App\Models\JobPosting;
+use App\Models\MarketplaceListing;
 use App\Models\News;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -75,12 +77,35 @@ class SearchController extends Controller
                 'url' => route('stories.show', $s),
             ]);
 
+        $marketplaceListings = MarketplaceListing::approved()
+            ->with('category')
+            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('address', 'like', "%{$term}%"))
+            ->limit(5)
+            ->get()
+            ->map(fn ($l) => [
+                'title' => $l->title,
+                'subtitle' => $l->category->name . ' · $' . number_format($l->price, 2),
+                'url' => route('marketplace.show', $l),
+            ]);
+
+        $books = Book::available()
+            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('author', 'like', "%{$term}%"))
+            ->limit(5)
+            ->get()
+            ->map(fn ($b) => [
+                'title' => $b->title,
+                'subtitle' => $b->author,
+                'url' => route('library.show', $b),
+            ]);
+
         $groups = collect([
             ['label' => 'Alumni', 'items' => $alumni],
             ['label' => 'Events', 'items' => $events],
             ['label' => 'Careers', 'items' => $jobs],
             ['label' => 'News', 'items' => $news],
             ['label' => 'Stories', 'items' => $stories],
+            ['label' => 'Marketplace', 'items' => $marketplaceListings],
+            ['label' => 'Library', 'items' => $books],
         ])->filter(fn ($group) => $group['items']->isNotEmpty())->values();
 
         return response()->json(['groups' => $groups]);
