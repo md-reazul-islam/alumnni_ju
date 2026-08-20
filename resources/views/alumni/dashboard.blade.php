@@ -11,6 +11,8 @@
         ['label' => 'Add Photo', 'icon' => 'camera', 'route' => 'gallery.create'],
         ['label' => 'My Library', 'icon' => 'book-open', 'route' => 'library.mine'],
         ['label' => 'Donate a Book', 'icon' => 'gift', 'route' => 'library.create'],
+        ['label' => 'Post a Listing', 'icon' => 'tag', 'route' => 'marketplace.create'],
+        ['label' => 'My Listings', 'icon' => 'shopping-bag', 'route' => 'marketplace.mine'],
     ];
 @endphp
 
