@@ -37,6 +37,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\LikeController;
+use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\Admin\MentorshipController as AdminMentorshipController;
 use App\Http\Controllers\MentorshipController;
 use App\Http\Controllers\MessageController;
@@ -131,6 +132,22 @@ Route::prefix('library')->name('library.')->group(function () {
     });
 
     Route::get('/{book}', [LibraryController::class, 'show'])->name('show');
+});
+
+Route::prefix('marketplace')->name('marketplace.')->group(function () {
+    Route::get('/', [MarketplaceController::class, 'index'])->name('index');
+
+    Route::middleware(['auth', 'verified'])->group(function () {
+        Route::get('/create', [MarketplaceController::class, 'create'])->name('create');
+        Route::post('/create', [MarketplaceController::class, 'store'])->name('store');
+        Route::get('/mine', [MarketplaceController::class, 'mine'])->name('mine');
+        Route::get('/{listing:slug}/edit', [MarketplaceController::class, 'edit'])->name('edit');
+        Route::put('/{listing:slug}', [MarketplaceController::class, 'update'])->name('update');
+        Route::delete('/{listing:slug}', [MarketplaceController::class, 'destroy'])->name('destroy');
+        Route::post('/{listing:slug}/inquire', [MarketplaceController::class, 'inquire'])->name('inquire');
+    });
+
+    Route::get('/{listing:slug}', [MarketplaceController::class, 'show'])->name('show');
 });
 
 Route::prefix('news')->name('news.')->group(function () {

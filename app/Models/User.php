@@ -106,6 +106,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(JobPosting::class, 'posted_by');
     }
 
+    public function marketplaceListings(): HasMany
+    {
+        return $this->hasMany(MarketplaceListing::class);
+    }
+
     public function jobApplications(): HasMany
     {
         return $this->hasMany(JobApplication::class);
