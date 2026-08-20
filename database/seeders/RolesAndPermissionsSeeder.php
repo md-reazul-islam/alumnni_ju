@@ -23,6 +23,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage-sliders' => 'content',
             'manage-gallery' => 'content',
             'manage-library' => 'content',
+            'manage-marketplace' => 'marketplace',
             'manage-donations' => 'finance',
             'manage-scholarships' => 'finance',
             'manage-mentorship' => 'mentorship',
@@ -55,6 +56,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'permissions' => [
                     'manage-alumni', 'manage-events', 'manage-jobs', 'manage-news',
                     'manage-stories', 'manage-announcements', 'manage-community', 'manage-gallery', 'manage-library',
+                    'manage-marketplace',
                 ],
             ],
             Role::MODERATOR => [

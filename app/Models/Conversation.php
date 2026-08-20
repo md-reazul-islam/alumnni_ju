@@ -6,12 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Conversation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['last_message_at'];
+    protected $fillable = ['last_message_at', 'context'];
 
     protected function casts(): array
     {
@@ -31,5 +32,10 @@ class Conversation extends Model
     public function latestMessage()
     {
         return $this->hasOne(Message::class)->latestOfMany();
+    }
+
+    public function subject(): MorphTo
+    {
+        return $this->morphTo();
     }
 }
