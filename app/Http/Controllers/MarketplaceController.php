@@ -18,20 +18,14 @@ use Illuminate\View\View;
 
 class MarketplaceController extends Controller
 {
-    public function index(Request $request): View
+    public function index(): View
     {
         $categories = MarketplaceCategory::active()->orderBy('name')->get();
 
         $listings = MarketplaceListing::approved()
             ->with(['category', 'images'])
-            ->when($request->filled('category'), fn ($q) => $q->where('marketplace_category_id', $request->integer('category')))
-            ->when($request->filled('search'), function ($q) use ($request) {
-                $term = $request->string('search');
-                $q->where(fn ($q2) => $q2->where('title', 'like', "%{$term}%")->orWhere('address', 'like', "%{$term}%"));
-            })
             ->latest('approved_at')
-            ->paginate(12)
-            ->withQueryString();
+            ->get();
 
         return view('public.marketplace.index', compact('listings', 'categories'));
     }

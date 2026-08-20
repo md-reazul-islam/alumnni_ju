@@ -1,5 +1,5 @@
 @php
-    $marketplaceItems = $marketplaceListings->map(fn ($listing) => [
+    $marketplaceItems = $listings->map(fn ($listing) => [
         'id' => $listing->id,
         'title' => $listing->title,
         'url' => route('marketplace.show', $listing),
@@ -28,7 +28,7 @@
 >
     <div class="flex flex-wrap items-center gap-2">
         <button type="button" @click="category = null" :class="category === null ? 'bg-gold-500 text-navy-950' : 'bg-navy-800 text-navy-200 hover:bg-navy-700'" class="rounded-full px-3.5 py-1.5 text-sm font-medium transition">All</button>
-        @foreach ($marketplaceCategories as $cat)
+        @foreach ($categories as $cat)
             <button type="button" @click="category = {{ $cat->id }}" :class="category === {{ $cat->id }} ? 'bg-gold-500 text-navy-950' : 'bg-navy-800 text-navy-200 hover:bg-navy-700'" class="rounded-full px-3.5 py-1.5 text-sm font-medium transition">{{ $cat->name }}</button>
         @endforeach
     </div>
