@@ -194,4 +194,62 @@ class AdminSettingsTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_admin_can_reorder_homepage_sections(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $order = ['show_marketplace', 'show_hero', 'show_stats', 'show_featured_alumni', 'show_events', 'show_jobs', 'show_stories', 'show_gallery', 'show_library', 'show_news', 'show_cta'];
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
+            'section_order' => json_encode($order),
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $this->assertSame($order, \App\Http\Controllers\Admin\SettingsController::resolveSectionOrder());
+    }
+
+    public function test_reordering_ignores_invalid_keys_and_appends_missing_ones(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
+            'section_order' => json_encode(['show_marketplace', 'not_a_real_section', 'show_news']),
+        ]);
+
+        $response->assertRedirect();
+        $resolved = \App\Http\Controllers\Admin\SettingsController::resolveSectionOrder();
+
+        $this->assertSame(['show_marketplace', 'show_news'], array_slice($resolved, 0, 2));
+        $this->assertNotContains('not_a_real_section', $resolved);
+        $this->assertSame(count(\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS), count($resolved));
+    }
+
+    public function test_homepage_renders_sections_in_the_configured_order(): void
+    {
+        \App\Models\Setting::set('homepage', 'section_order', json_encode(['show_marketplace', 'show_hero', 'show_stats', 'show_featured_alumni', 'show_events', 'show_jobs', 'show_stories', 'show_gallery', 'show_library', 'show_news', 'show_cta']));
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $content = $response->getContent();
+        $marketplacePos = strpos($content, 'Marketplace');
+        $heroPos = strpos($content, 'Connect. Engage. Inspire.');
+
+        $this->assertNotFalse($marketplacePos);
+        $this->assertNotFalse($heroPos);
+        $this->assertLessThan($heroPos, $marketplacePos);
+    }
+
+    public function test_non_admin_cannot_reorder_homepage_sections(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->put(route('admin.settings.homepage'), [
+            'section_order' => json_encode(['show_marketplace', 'show_hero']),
+        ]);
+
+        $response->assertForbidden();
+    }
 }

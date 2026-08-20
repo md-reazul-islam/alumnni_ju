@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Admin\SettingsController;
 use App\Models\AlumniProfile;
 use App\Models\AlumniStory;
 use App\Models\Book;
@@ -45,6 +46,8 @@ class PublicController extends Controller
                 'library' => Book::available()->with('donor')->latest('approved_at')->limit(8)->get(),
             ];
         });
+
+        $data['sectionOrder'] = SettingsController::resolveSectionOrder();
 
         return view('public.home', $data);
     }

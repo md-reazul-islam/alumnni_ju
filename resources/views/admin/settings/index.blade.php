@@ -152,14 +152,50 @@
         </div>
 
         <div x-show="tab === 'homepage'" x-cloak class="mt-6">
-            <form method="POST" action="{{ route('admin.settings.homepage') }}" class="card card-body">
+            <form
+                method="POST"
+                action="{{ route('admin.settings.homepage') }}"
+                class="card card-body"
+                x-data="{
+                    syncOrder(el) {
+                        const keys = Array.from(el.closest('form').querySelectorAll('[data-section-row]')).map(row => row.dataset.sectionKey);
+                        el.closest('form').querySelector('input[name=section_order]').value = JSON.stringify(keys);
+                    },
+                    moveUp(el) {
+                        const row = el.closest('[data-section-row]');
+                        const prev = row.previousElementSibling;
+                        if (prev) row.parentNode.insertBefore(row, prev);
+                        this.syncOrder(el);
+                    },
+                    moveDown(el) {
+                        const row = el.closest('[data-section-row]');
+                        const next = row.nextElementSibling;
+                        if (next) row.parentNode.insertBefore(next, row);
+                        this.syncOrder(el);
+                    },
+                }"
+                x-init="syncOrder($el)"
+            >
                 @csrf @method('PUT')
+                <input type="hidden" name="section_order" value="">
 
-                <p class="text-sm text-slate-500 dark:text-slate-400">Turn a section off to hide it from the homepage immediately. Turn it back on to show it again.</p>
+                <p class="text-sm text-slate-500 dark:text-slate-400">Turn a section off to hide it from the homepage immediately. Use the arrows to change the order sections appear in — changes apply immediately.</p>
 
                 <div class="mt-4 divide-y divide-slate-100 dark:divide-navy-800">
-                    @foreach (\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS as $key => $label)
-                        <x-toggle :name="$key" :label="$label" :checked="$homepage[$key]" />
+                    @foreach ($homepageOrder as $key)
+                        <div data-section-row data-section-key="{{ $key }}" class="flex items-center gap-3 py-1">
+                            <div class="flex flex-shrink-0 flex-col">
+                                <button type="button" @click="moveUp($event.target)" class="text-slate-400 hover:text-navy-700 disabled:opacity-30 dark:hover:text-white">
+                                    <x-icon name="chevron-up" class="h-4 w-4" />
+                                </button>
+                                <button type="button" @click="moveDown($event.target)" class="text-slate-400 hover:text-navy-700 disabled:opacity-30 dark:hover:text-white">
+                                    <x-icon name="chevron-down" class="h-4 w-4" />
+                                </button>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <x-toggle :name="$key" :label="\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS[$key]" :checked="$homepage[$key]" />
+                            </div>
+                        </div>
                     @endforeach
                 </div>
 

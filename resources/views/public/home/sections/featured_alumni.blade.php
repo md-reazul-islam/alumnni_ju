@@ -1,0 +1,28 @@
+<section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
+  <div class="section-container py-5 sm:py-7">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-white sm:text-3xl">Featured Alumni</h2>
+            <p class="mt-1.5 text-navy-200">Meet graduates making an impact around the world.</p>
+        </div>
+        <a href="{{ route('alumni.directory') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
+            View directory <x-icon name="arrow-right" class="h-4 w-4" />
+        </a>
+    </div>
+
+    @if ($featuredAlumni->isEmpty())
+        <x-empty-state icon="graduation-cap" title="No featured alumni yet" description="Verified alumni profiles will be showcased here." class="mt-8" />
+    @else
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            @foreach ($featuredAlumni as $profile)
+                <div class="card card-body text-center">
+                    <x-avatar :src="$profile->user->avatar_url" :name="$profile->user->full_name" size="lg" class="mx-auto" />
+                    <p class="mt-4 font-semibold text-slate-900 dark:text-white">{{ $profile->user->full_name }}</p>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ $profile->degree?->abbreviation }} {{ $profile->graduation_year }}</p>
+                    <p class="mt-1 text-xs text-slate-400">{{ $profile->job_title }} @if($profile->organization) at {{ $profile->organization }} @endif</p>
+                </div>
+            @endforeach
+        </div>
+    @endif
+  </div>
+</section>

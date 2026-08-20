@@ -57,6 +57,18 @@ class SettingsController extends Controller
         abort_unless($request->user()->hasPermission('manage-settings'), 403);
     }
 
+    public static function resolveSectionOrder(): array
+    {
+        $stored = json_decode(Setting::get('homepage', 'section_order', '[]'), true);
+        $stored = is_array($stored) ? $stored : [];
+        $validKeys = array_keys(self::HOMEPAGE_SECTIONS);
+
+        return array_values(array_unique(array_merge(
+            array_values(array_intersect($stored, $validKeys)),
+            $validKeys
+        )));
+    }
+
     public function index(Request $request): View
     {
         $this->ensurePermission($request);
@@ -110,7 +122,9 @@ class SettingsController extends Controller
             $homepage[$key] = Setting::get('homepage', $key, true) !== '0';
         }
 
-        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage'));
+        $homepageOrder = self::resolveSectionOrder();
+
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -252,14 +266,25 @@ class SettingsController extends Controller
     {
         $this->ensurePermission($request);
 
-        $rules = array_fill_keys(array_map(fn ($key) => $key, array_keys(self::HOMEPAGE_SECTIONS)), ['nullable', 'boolean']);
+        $rules = array_fill_keys(array_keys(self::HOMEPAGE_SECTIONS), ['nullable', 'boolean']);
+        $rules['section_order'] = ['nullable', 'string'];
         $data = $request->validateWithBag('homepage', $rules);
 
         foreach (array_keys(self::HOMEPAGE_SECTIONS) as $key) {
             Setting::set('homepage', $key, $request->boolean($key) ? '1' : '0');
         }
 
-        AuditLogger::log('updated_settings', null, 'Updated homepage section visibility.', [], $data);
+        $submittedOrder = json_decode($request->input('section_order', '[]'), true);
+        if (is_array($submittedOrder)) {
+            $validKeys = array_keys(self::HOMEPAGE_SECTIONS);
+            $cleanOrder = array_values(array_unique(array_merge(
+                array_values(array_intersect($submittedOrder, $validKeys)),
+                $validKeys
+            )));
+            Setting::set('homepage', 'section_order', json_encode($cleanOrder));
+        }
+
+        AuditLogger::log('updated_settings', null, 'Updated homepage section visibility and order.', [], $data);
 
         return back()->with('status', 'Homepage sections updated.')->with('active_tab', 'homepage');
     }
