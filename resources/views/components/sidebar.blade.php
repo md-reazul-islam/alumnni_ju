@@ -24,6 +24,9 @@
         ]],
         ['label' => 'Marketplace', 'icon' => 'shopping-bag', 'match' => 'admin.marketplace.*', 'permission' => 'manage-marketplace', 'children' => [
             ['label' => 'Categories', 'route' => 'admin.marketplace.categories.index'],
+            ['label' => 'Pending Listings', 'route' => 'admin.marketplace.listings.pending'],
+            ['label' => 'Approved Listings', 'route' => 'admin.marketplace.listings.approved'],
+            ['label' => 'Rejected Listings', 'route' => 'admin.marketplace.listings.rejected'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],

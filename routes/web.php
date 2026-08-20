@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\JobController as AdminJobController;
 use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
 use App\Http\Controllers\Admin\MarketplaceCategoryController as AdminMarketplaceCategoryController;
+use App\Http\Controllers\Admin\MarketplaceListingController as AdminMarketplaceListingController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\ScholarshipController as AdminScholarshipController;
@@ -302,6 +303,16 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/', [AdminMarketplaceCategoryController::class, 'store'])->name('store');
             Route::put('/{marketplaceCategory}', [AdminMarketplaceCategoryController::class, 'update'])->name('update');
             Route::delete('/{marketplaceCategory}', [AdminMarketplaceCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {
+            Route::get('/pending', [AdminMarketplaceListingController::class, 'pending'])->name('pending');
+            Route::get('/approved', [AdminMarketplaceListingController::class, 'approvedIndex'])->name('approved');
+            Route::get('/rejected', [AdminMarketplaceListingController::class, 'rejectedIndex'])->name('rejected');
+            Route::get('/{marketplaceListing}', [AdminMarketplaceListingController::class, 'show'])->name('show');
+            Route::post('/{marketplaceListing}/approve', [AdminMarketplaceListingController::class, 'approve'])->name('approve');
+            Route::post('/{marketplaceListing}/reject', [AdminMarketplaceListingController::class, 'reject'])->name('reject');
+            Route::delete('/{marketplaceListing}', [AdminMarketplaceListingController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('news')->name('news.')->group(function () {
