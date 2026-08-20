@@ -1,5 +1,5 @@
 <x-layouts::admin :title="'Settings'">
-    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : ($errors->login->any() ? 'login' : session('active_tab', 'institution')))) }}' }">
+    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : ($errors->login->any() ? 'login' : ($errors->homepage->any() ? 'homepage' : session('active_tab', 'institution'))))) }}' }">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
 
         @if (session('status'))
@@ -12,6 +12,7 @@
             <button @click="tab = 'association'" :class="tab === 'association' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Alumni Association</button>
             <button @click="tab = 'about'" :class="tab === 'about' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">About Page</button>
             <button @click="tab = 'login'" :class="tab === 'login' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Login Page</button>
+            <button @click="tab = 'homepage'" :class="tab === 'homepage' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Homepage Sections</button>
         </div>
 
         <div x-show="tab === 'general'" x-cloak class="mt-6">
@@ -147,6 +148,22 @@
                 <p class="form-hint">The "Verified Alumni", "Countries", and "Annual Events" numbers below it are calculated automatically from platform data and aren't editable here.</p>
 
                 <div class="flex justify-end"><x-button type="submit">Save Login Page Settings</x-button></div>
+            </form>
+        </div>
+
+        <div x-show="tab === 'homepage'" x-cloak class="mt-6">
+            <form method="POST" action="{{ route('admin.settings.homepage') }}" class="card card-body">
+                @csrf @method('PUT')
+
+                <p class="text-sm text-slate-500 dark:text-slate-400">Turn a section off to hide it from the homepage immediately. Turn it back on to show it again.</p>
+
+                <div class="mt-4 divide-y divide-slate-100 dark:divide-navy-800">
+                    @foreach (\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS as $key => $label)
+                        <x-toggle :name="$key" :label="$label" :checked="$homepage[$key]" />
+                    @endforeach
+                </div>
+
+                <div class="mt-5 flex justify-end"><x-button type="submit">Save Homepage Sections</x-button></div>
             </form>
         </div>
     </div>

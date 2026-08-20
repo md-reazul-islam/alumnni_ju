@@ -1,5 +1,6 @@
 <x-layouts::app>
     {{-- Hero --}}
+    @if (\App\Models\Setting::get('homepage', 'show_hero', true) !== '0')
     <x-hero-slider :slides="$sliders">
         <section class="relative overflow-hidden rounded-3xl bg-navy-950 text-white shadow-xl">
             <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 28px 28px;"></div>
@@ -27,8 +28,10 @@
             </div>
         </section>
     </x-hero-slider>
+    @endif
 
     {{-- Stats --}}
+    @if (\App\Models\Setting::get('homepage', 'show_stats', true) !== '0')
     <section
         x-data="{
             animate(el, target) {
@@ -84,8 +87,10 @@
             </div>
         </div>
     </section>
+    @endif
 
     {{-- Featured Alumni --}}
+    @if (\App\Models\Setting::get('homepage', 'show_featured_alumni', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
       <div class="section-container py-5 sm:py-7">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -114,8 +119,10 @@
         @endif
       </div>
     </section>
+    @endif
 
     {{-- Upcoming Events --}}
+    @if (\App\Models\Setting::get('homepage', 'show_events', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -157,8 +164,10 @@
             @endif
         </div>
     </section>
+    @endif
 
     {{-- Career Opportunities --}}
+    @if (\App\Models\Setting::get('homepage', 'show_jobs', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
       <div class="section-container py-5 sm:py-7">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -191,8 +200,10 @@
         @endif
       </div>
     </section>
+    @endif
 
     {{-- Alumni Stories --}}
+    @if (\App\Models\Setting::get('homepage', 'show_stories', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -239,8 +250,10 @@
             @endif
         </div>
     </section>
+    @endif
 
     {{-- Gallery --}}
+    @if (\App\Models\Setting::get('homepage', 'show_gallery', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -262,8 +275,10 @@
             @endif
         </div>
     </section>
+    @endif
 
     {{-- Your Library --}}
+    @if (\App\Models\Setting::get('homepage', 'show_library', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
         <div class="section-container py-5 sm:py-7">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -285,8 +300,10 @@
             @endif
         </div>
     </section>
+    @endif
 
     {{-- News --}}
+    @if (\App\Models\Setting::get('homepage', 'show_news', true) !== '0')
     <section class="!mt-1.5 sm:!mt-2 lg:!mt-2.5">
       <div class="section-container py-5 sm:py-7">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
@@ -322,8 +339,10 @@
         @endif
       </div>
     </section>
+    @endif
 
     {{-- CTA --}}
+    @if (\App\Models\Setting::get('homepage', 'show_cta', true) !== '0')
     <section class="overflow-hidden rounded-3xl bg-navy-900 shadow-xl">
         <div class="section-container flex flex-col items-center justify-between gap-6 py-8 text-center sm:flex-row sm:text-left">
             <div>
@@ -340,4 +359,5 @@
             </div>
         </div>
     </section>
+    @endif
 </x-layouts::app>

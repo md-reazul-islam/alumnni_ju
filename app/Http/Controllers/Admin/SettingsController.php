@@ -38,6 +38,19 @@ class SettingsController extends Controller
     public const DEFAULT_LOGIN_HERO_TITLE = 'Connect. Engage. Inspire. Give Back.';
     public const DEFAULT_LOGIN_HERO_SUBTITLE = 'Reconnect with your university community and build meaningful professional relationships with alumni around the world.';
 
+    public const HOMEPAGE_SECTIONS = [
+        'show_hero' => 'Hero Slider',
+        'show_stats' => 'Stats Bar',
+        'show_featured_alumni' => 'Featured Alumni',
+        'show_events' => 'Upcoming Events',
+        'show_jobs' => 'Career Opportunities',
+        'show_stories' => 'Alumni Stories',
+        'show_gallery' => 'Gallery',
+        'show_library' => 'Your Library',
+        'show_news' => 'News & Announcements',
+        'show_cta' => 'Bottom Call-to-Action',
+    ];
+
     protected function ensurePermission(Request $request): void
     {
         abort_unless($request->user()->hasPermission('manage-settings'), 403);
@@ -91,7 +104,12 @@ class SettingsController extends Controller
             'hero_subtitle' => Setting::get('login', 'hero_subtitle', self::DEFAULT_LOGIN_HERO_SUBTITLE),
         ];
 
-        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login'));
+        $homepage = [];
+        foreach (self::HOMEPAGE_SECTIONS as $key => $label) {
+            $homepage[$key] = Setting::get('homepage', $key, true) !== '0';
+        }
+
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -227,5 +245,21 @@ class SettingsController extends Controller
         AuditLogger::log('updated_settings', null, 'Updated login page settings.', [], $data);
 
         return back()->with('status', 'Login page settings updated.')->with('active_tab', 'login');
+    }
+
+    public function updateHomepage(Request $request): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        $rules = array_fill_keys(array_map(fn ($key) => $key, array_keys(self::HOMEPAGE_SECTIONS)), ['nullable', 'boolean']);
+        $data = $request->validateWithBag('homepage', $rules);
+
+        foreach (array_keys(self::HOMEPAGE_SECTIONS) as $key) {
+            Setting::set('homepage', $key, $request->boolean($key) ? '1' : '0');
+        }
+
+        AuditLogger::log('updated_settings', null, 'Updated homepage section visibility.', [], $data);
+
+        return back()->with('status', 'Homepage sections updated.')->with('active_tab', 'homepage');
     }
 }
