@@ -270,6 +270,15 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->permissions()->where('slug', $slug)->exists();
     }
 
+    public function scopeWithPermission($query, string $slug)
+    {
+        return $query->where(function ($q) use ($slug) {
+            $q->whereHas('role', fn ($r) => $r->where('slug', Role::SUPER_ADMIN))
+                ->orWhereHas('role.permissions', fn ($p) => $p->where('slug', $slug))
+                ->orWhereHas('permissions', fn ($p) => $p->where('slug', $slug));
+        });
+    }
+
     // Status helpers
 
     public function isVerified(): bool

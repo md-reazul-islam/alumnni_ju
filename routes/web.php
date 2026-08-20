@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\JobController as AdminJobController;
 use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
 use App\Http\Controllers\Admin\MarketplaceCategoryController as AdminMarketplaceCategoryController;
 use App\Http\Controllers\Admin\MarketplaceListingController as AdminMarketplaceListingController;
+use App\Http\Controllers\Admin\MarketplaceOrderController as AdminMarketplaceOrderController;
+use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\ScholarshipController as AdminScholarshipController;
@@ -313,6 +315,18 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{marketplaceListing}/approve', [AdminMarketplaceListingController::class, 'approve'])->name('approve');
             Route::post('/{marketplaceListing}/reject', [AdminMarketplaceListingController::class, 'reject'])->name('reject');
             Route::delete('/{marketplaceListing}', [AdminMarketplaceListingController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('marketplace/orders')->name('marketplace.orders.')->group(function () {
+            Route::get('/', [AdminMarketplaceOrderController::class, 'index'])->name('index');
+            Route::get('/{marketplaceOrder}', [AdminMarketplaceOrderController::class, 'show'])->name('show');
+            Route::post('/{marketplaceOrder}/status', [AdminMarketplaceOrderController::class, 'updateStatus'])->name('status');
+            Route::post('/{marketplaceOrder}/converse/{role}', [AdminMarketplaceOrderController::class, 'converse'])->name('converse')->whereIn('role', ['buyer', 'seller']);
+        });
+
+        Route::prefix('messages')->name('messages.')->group(function () {
+            Route::get('/{conversation?}', [AdminMessageController::class, 'index'])->name('index');
+            Route::post('/{conversation}/send', [AdminMessageController::class, 'store'])->name('store');
         });
 
         Route::prefix('news')->name('news.')->group(function () {

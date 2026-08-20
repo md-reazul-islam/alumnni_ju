@@ -6,6 +6,8 @@ use App\Http\Requests\StoreMarketplaceListingRequest;
 use App\Http\Requests\UpdateMarketplaceListingRequest;
 use App\Models\MarketplaceCategory;
 use App\Models\MarketplaceListing;
+use App\Models\MarketplaceOrder;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -15,6 +17,71 @@ use Illuminate\View\View;
 
 class MarketplaceController extends Controller
 {
+    public function index(Request $request): View
+    {
+        $categories = MarketplaceCategory::active()->orderBy('name')->get();
+
+        $listings = MarketplaceListing::approved()
+            ->with(['category', 'images'])
+            ->when($request->filled('category'), fn ($q) => $q->where('marketplace_category_id', $request->integer('category')))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $term = $request->string('search');
+                $q->where(fn ($q2) => $q2->where('title', 'like', "%{$term}%")->orWhere('address', 'like', "%{$term}%"));
+            })
+            ->latest('approved_at')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('public.marketplace.index', compact('listings', 'categories'));
+    }
+
+    public function show(Request $request, MarketplaceListing $listing): View
+    {
+        abort_unless($listing->status === MarketplaceListing::STATUS_APPROVED, 404);
+
+        $listing->load(['category', 'images']);
+        $listing->increment('views_count');
+
+        $hasActiveInquiry = $request->user()
+            ? $listing->orders()->where('buyer_id', $request->user()->id)->whereIn('status', ['pending', 'ongoing'])->exists()
+            : false;
+
+        return view('public.marketplace.show', compact('listing', 'hasActiveInquiry'));
+    }
+
+    public function inquire(Request $request, MarketplaceListing $listing): RedirectResponse
+    {
+        abort_unless($listing->status === MarketplaceListing::STATUS_APPROVED, 404);
+
+        $buyer = $request->user();
+        abort_if($buyer->id === $listing->user_id, 422, "You can't inquire about your own listing.");
+
+        $order = MarketplaceOrder::where('marketplace_listing_id', $listing->id)
+            ->where('buyer_id', $buyer->id)
+            ->whereIn('status', [MarketplaceOrder::STATUS_PENDING, MarketplaceOrder::STATUS_ONGOING])
+            ->first();
+
+        if (! $order) {
+            $order = MarketplaceOrder::create([
+                'marketplace_listing_id' => $listing->id,
+                'buyer_id' => $buyer->id,
+                'seller_id' => $listing->user_id,
+                'status' => MarketplaceOrder::STATUS_PENDING,
+            ]);
+        }
+
+        $conversation = $order->buyerConversation;
+
+        if (! $conversation) {
+            $conversation = $order->buyerConversation()->create(['context' => 'buyer']);
+            $adminIds = User::withPermission('manage-marketplace')->pluck('id');
+            $conversation->participants()->attach([...$adminIds->all(), $buyer->id]);
+        }
+
+        return redirect()->route('messages.index', $conversation)
+            ->with('status', 'Your inquiry has been sent to our team. We\'ll be in touch shortly.');
+    }
+
     public function create(): View
     {
         $this->authorize('create', MarketplaceListing::class);

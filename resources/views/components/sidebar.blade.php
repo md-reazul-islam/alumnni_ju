@@ -27,6 +27,7 @@
             ['label' => 'Pending Listings', 'route' => 'admin.marketplace.listings.pending'],
             ['label' => 'Approved Listings', 'route' => 'admin.marketplace.listings.approved'],
             ['label' => 'Rejected Listings', 'route' => 'admin.marketplace.listings.rejected'],
+            ['label' => 'Orders', 'route' => 'admin.marketplace.orders.index'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
