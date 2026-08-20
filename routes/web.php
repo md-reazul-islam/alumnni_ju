@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\GalleryController as AdminGalleryController;
 use App\Http\Controllers\Admin\JobController as AdminJobController;
 use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
+use App\Http\Controllers\Admin\MarketplaceCategoryController as AdminMarketplaceCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use App\Http\Controllers\Admin\ScholarshipController as AdminScholarshipController;
@@ -277,6 +278,13 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/', [AdminCompanyController::class, 'store'])->name('store');
             Route::put('/{company}', [AdminCompanyController::class, 'update'])->name('update');
             Route::delete('/{company}', [AdminCompanyController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {
+            Route::get('/', [AdminMarketplaceCategoryController::class, 'index'])->name('index');
+            Route::post('/', [AdminMarketplaceCategoryController::class, 'store'])->name('store');
+            Route::put('/{marketplaceCategory}', [AdminMarketplaceCategoryController::class, 'update'])->name('update');
+            Route::delete('/{marketplaceCategory}', [AdminMarketplaceCategoryController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('news')->name('news.')->group(function () {

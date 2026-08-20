@@ -22,6 +22,9 @@
             ['label' => 'Pending Jobs', 'route' => 'admin.jobs.pending'],
             ['label' => 'Companies', 'route' => 'admin.companies.index'],
         ]],
+        ['label' => 'Marketplace', 'icon' => 'shopping-bag', 'match' => 'admin.marketplace.*', 'permission' => 'manage-marketplace', 'children' => [
+            ['label' => 'Categories', 'route' => 'admin.marketplace.categories.index'],
+        ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
             ['label' => 'Add Book', 'route' => 'admin.library.create'],
