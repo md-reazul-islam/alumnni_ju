@@ -30,6 +30,7 @@ class StoreJobPostingRequest extends FormRequest
             'application_email' => ['nullable', 'email', 'max:255'],
             'deadline' => ['nullable', 'date', 'after:today'],
             'status' => ['required', Rule::in(['approved', 'pending'])],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

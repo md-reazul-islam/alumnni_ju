@@ -23,7 +23,7 @@ class AlumniProfile extends Model
         'date_of_birth', 'gender', 'country', 'city', 'address', 'cover_image',
         'job_title', 'organization', 'industry', 'employment_type', 'work_location',
         'linkedin_url', 'website_url', 'bio', 'profile_visibility', 'profile_completion',
-        'verified_by', 'verified_at',
+        'verified_by', 'verified_at', 'tags',
     ];
 
     protected function casts(): array

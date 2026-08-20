@@ -23,6 +23,8 @@
 <x-textarea label="Story" name="story" rows="10" required>{{ old('story', $story?->story) }}</x-textarea>
 <x-textarea label="Notable Achievements" name="achievements" rows="3">{{ old('achievements', $story?->achievements) }}</x-textarea>
 
+<x-input label="Tags" name="tags" :value="old('tags', $story?->tags)" placeholder="e.g. entrepreneurship, tech, nonprofit" hint="Optional keywords to help others find this story in search. Separate multiple tags with commas." />
+
 <x-select
     label="Status"
     name="status"

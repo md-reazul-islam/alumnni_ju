@@ -30,6 +30,7 @@ class UpdateJobPostingRequest extends FormRequest
             'application_email' => ['nullable', 'email', 'max:255'],
             'deadline' => ['nullable', 'date'],
             'status' => ['required', Rule::in(['approved', 'pending', 'rejected', 'expired', 'closed'])],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

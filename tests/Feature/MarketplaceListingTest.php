@@ -40,6 +40,31 @@ class MarketplaceListingTest extends TestCase
         ]);
     }
 
+    public function test_listing_can_include_optional_tags(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+        $category = MarketplaceCategory::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('marketplace.store'), [
+            'marketplace_category_id' => $category->id,
+            'title' => 'Furnished Studio',
+            'description' => 'A fully furnished studio near campus.',
+            'price' => 900,
+            'price_unit' => 'per_month',
+            'address' => '456 Oak St',
+            'images' => [UploadedFile::fake()->image('photo.jpg')],
+            'tags' => 'furnished, pet-friendly',
+        ]);
+
+        $response->assertRedirect(route('marketplace.mine'));
+        $this->assertDatabaseHas('marketplace_listings', [
+            'title' => 'Furnished Studio',
+            'tags' => 'furnished, pet-friendly',
+        ]);
+    }
+
     public function test_pending_listings_are_not_publicly_visible(): void
     {
         $listing = MarketplaceListing::factory()->create();

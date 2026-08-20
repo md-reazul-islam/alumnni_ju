@@ -31,6 +31,7 @@ class UpdateAlumniProfileRequest extends FormRequest
                 AlumniProfile::VISIBILITY_PUBLIC, AlumniProfile::VISIBILITY_ALUMNI, AlumniProfile::VISIBILITY_PRIVATE,
             ])],
             'skills' => ['nullable', 'string', 'max:1000'],
+            'tags' => ['nullable', 'string', 'max:500'],
             'interests' => ['nullable', 'array'],
             'interests.*' => ['exists:interests,id'],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],

@@ -56,6 +56,19 @@ class AlumniProfileTest extends TestCase
         $this->assertSame('A short bio about me.', $profile->fresh()->bio);
     }
 
+    public function test_alumni_can_set_optional_tags_on_their_profile(): void
+    {
+        $profile = AlumniProfile::factory()->verified()->create();
+
+        $response = $this->actingAs($profile->user)->patch(route('alumni.profile.update'), [
+            'profile_visibility' => AlumniProfile::VISIBILITY_PUBLIC,
+            'tags' => 'mentorship, data-science',
+        ]);
+
+        $response->assertSessionHasNoErrors();
+        $this->assertSame('mentorship, data-science', $profile->fresh()->tags);
+    }
+
     public function test_admin_can_verify_a_pending_alumnus(): void
     {
         $admin = User::factory()->admin()->create();

@@ -24,6 +24,8 @@
 
         <x-textarea label="Description" name="description" rows="4">{{ old('description', $book->description) }}</x-textarea>
 
+        <x-input label="Tags" name="tags" :value="old('tags', $book->tags)" placeholder="e.g. fiction, textbook, self-help" hint="Optional keywords to help others find this book in search. Separate multiple tags with commas." />
+
         <div class="flex justify-end gap-3">
             <x-button :href="route('library.donations')" variant="secondary">Cancel</x-button>
             <x-button type="submit">Save Changes</x-button>

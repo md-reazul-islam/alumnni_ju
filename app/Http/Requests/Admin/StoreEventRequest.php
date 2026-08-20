@@ -33,6 +33,7 @@ class StoreEventRequest extends FormRequest
             'contact_email' => ['nullable', 'email', 'max:255'],
             'contact_phone' => ['nullable', 'string', 'max:30'],
             'status' => ['required', Rule::in(['draft', 'published', 'scheduled', 'cancelled'])],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

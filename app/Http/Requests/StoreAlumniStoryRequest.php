@@ -19,6 +19,7 @@ class StoreAlumniStoryRequest extends FormRequest
             'story' => ['required', 'string', 'max:10000'],
             'achievements' => ['nullable', 'string', 'max:2000'],
             'career_highlight' => ['nullable', 'string', 'max:255'],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

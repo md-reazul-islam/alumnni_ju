@@ -30,6 +30,25 @@ class JobPostingTest extends TestCase
         ]);
     }
 
+    public function test_job_posting_can_include_optional_tags(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->post(route('jobs.store'), [
+            'title' => 'DevOps Engineer',
+            'company_name' => 'Acme Corp',
+            'employment_type' => 'full_time',
+            'description' => 'Manage cloud infrastructure.',
+            'tags' => 'aws, kubernetes, remote',
+        ]);
+
+        $response->assertRedirect(route('jobs.mine'));
+        $this->assertDatabaseHas('job_postings', [
+            'title' => 'DevOps Engineer',
+            'tags' => 'aws, kubernetes, remote',
+        ]);
+    }
+
     public function test_pending_jobs_are_not_publicly_visible(): void
     {
         $job = JobPosting::factory()->create();

@@ -19,6 +19,8 @@
 
         <x-textarea label="Description" name="description" rows="4" placeholder="Say a bit about this book...">{{ old('description') }}</x-textarea>
 
+        <x-input label="Tags" name="tags" :value="old('tags')" placeholder="e.g. fiction, textbook, self-help" hint="Optional keywords to help others find this book in search. Separate multiple tags with commas." />
+
         <div class="flex justify-end">
             <x-button type="submit">Submit for Review</x-button>
         </div>

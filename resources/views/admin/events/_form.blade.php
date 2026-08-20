@@ -9,6 +9,10 @@
         <x-textarea label="Description" name="description" rows="4">{{ old('description', $event?->description) }}</x-textarea>
     </div>
 
+    <div class="sm:col-span-2">
+        <x-input label="Tags" name="tags" :value="old('tags', $event?->tags)" placeholder="e.g. reunion, networking, 2026" hint="Optional keywords to help alumni find this event in search. Separate multiple tags with commas." />
+    </div>
+
     <div>
         <label class="form-label">Event Image</label>
         <input type="file" name="image" accept="image/*" class="form-input">

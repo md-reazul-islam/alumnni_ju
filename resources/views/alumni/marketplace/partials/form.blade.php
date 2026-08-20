@@ -24,6 +24,8 @@
     <x-input label="City" name="city" :value="old('city', $listing?->city)" />
 </div>
 
+<x-input label="Tags" name="tags" :value="old('tags', $listing?->tags)" placeholder="e.g. furnished, pet-friendly, near-campus" hint="Optional keywords to help buyers find this listing in search. Separate multiple tags with commas." />
+
 <div class="border-t border-slate-100 pt-5 dark:border-navy-800">
     <label class="form-label">Photos</label>
     <p class="form-hint mb-2">Up to 8 images (jpg, png, webp).</p>

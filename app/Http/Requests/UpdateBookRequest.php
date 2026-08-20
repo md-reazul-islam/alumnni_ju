@@ -18,6 +18,7 @@ class UpdateBookRequest extends FormRequest
             'author' => ['nullable', 'string', 'max:150'],
             'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'description' => ['nullable', 'string', 'max:2000'],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

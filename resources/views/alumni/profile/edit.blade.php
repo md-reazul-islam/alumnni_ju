@@ -52,6 +52,8 @@
 
                 <x-textarea label="Bio" name="bio" rows="4" placeholder="Tell fellow alumni about yourself...">{{ old('bio', $profile->bio) }}</x-textarea>
 
+                <x-input label="Tags" name="tags" :value="old('tags', $profile->tags)" placeholder="e.g. mentor, tech, entrepreneurship" hint="Optional keywords to help others find you in search. Separate multiple tags with commas." />
+
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
                     <x-input label="Country" name="country" :value="old('country', $profile->country)" />
                     <x-input label="City" name="city" :value="old('city', $profile->city)" />

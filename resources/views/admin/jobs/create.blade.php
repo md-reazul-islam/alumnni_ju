@@ -33,6 +33,8 @@
         <x-textarea label="Job Description" name="description" rows="6" required>{{ old('description') }}</x-textarea>
         <x-textarea label="Requirements" name="requirements" rows="4">{{ old('requirements') }}</x-textarea>
 
+        <x-input label="Tags" name="tags" :value="old('tags')" placeholder="e.g. remote, entry-level, marketing" hint="Optional keywords to help alumni find this job in search. Separate multiple tags with commas." />
+
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <x-input label="Application URL" name="application_url" type="url" :value="old('application_url')" />
             <x-input label="Application Email" name="application_email" type="email" :value="old('application_email')" />

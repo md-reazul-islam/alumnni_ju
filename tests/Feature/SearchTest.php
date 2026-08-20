@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Models\JobPosting;
 use App\Models\MarketplaceListing;
 use App\Models\News;
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -120,5 +121,101 @@ class SearchTest extends TestCase
 
         $response->assertOk();
         $response->assertJsonFragment(['title' => 'Deep Learning Foundations']);
+    }
+
+    public function test_search_finds_a_public_alumnus_by_tag(): void
+    {
+        $profile = AlumniProfile::factory()->verified()->public()->create(['tags' => 'mentorship, deep-sea-diving']);
+        $profile->user->update(['first_name' => 'Tagged', 'last_name' => 'Alumnus']);
+
+        $response = $this->getJson('/search?q=deep-sea-diving');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Tagged Alumnus']);
+    }
+
+    public function test_search_finds_a_published_event_by_tag(): void
+    {
+        Event::factory()->create(['title' => 'Annual Gala', 'status' => Event::STATUS_PUBLISHED, 'tags' => 'blacktie, fundraising']);
+
+        $response = $this->getJson('/search?q=blacktie');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Annual Gala']);
+    }
+
+    public function test_search_finds_an_approved_job_by_tag(): void
+    {
+        JobPosting::factory()->approved()->create(['title' => 'Product Manager', 'tags' => 'agile, fintech']);
+
+        $response = $this->getJson('/search?q=fintech');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Product Manager']);
+    }
+
+    public function test_search_finds_an_alumni_story_by_tag(): void
+    {
+        $profile = AlumniProfile::factory()->verified()->create();
+        AlumniStory::create([
+            'alumni_profile_id' => $profile->id,
+            'title' => 'Building a Startup From Scratch',
+            'slug' => 'building-a-startup-from-scratch',
+            'story' => 'A story about building a startup.',
+            'status' => AlumniStory::STATUS_PUBLISHED,
+            'published_at' => now(),
+            'tags' => 'entrepreneurship, saas',
+        ]);
+
+        $response = $this->getJson('/search?q=saas');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Building a Startup From Scratch']);
+    }
+
+    public function test_search_finds_a_marketplace_listing_by_tag(): void
+    {
+        MarketplaceListing::factory()->approved()->create(['title' => 'Downtown Studio Apartment', 'tags' => 'furnished, pet-friendly']);
+
+        $response = $this->getJson('/search?q=pet-friendly');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Downtown Studio Apartment']);
+    }
+
+    public function test_search_finds_a_library_book_by_tag(): void
+    {
+        $donor = User::factory()->create();
+        Book::create([
+            'donor_id' => $donor->id,
+            'title' => 'The Pragmatic Programmer',
+            'status' => Book::STATUS_APPROVED,
+            'tags' => 'software, self-help',
+        ]);
+
+        $response = $this->getJson('/search?q=self-help');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'The Pragmatic Programmer']);
+    }
+
+    public function test_search_finds_news_by_tag(): void
+    {
+        $author = User::factory()->create();
+        $news = News::create([
+            'author_id' => $author->id,
+            'title' => 'Campus Renovation Complete',
+            'slug' => 'campus-renovation-complete',
+            'body' => 'Details about the renovation.',
+            'status' => News::STATUS_PUBLISHED,
+            'published_at' => now(),
+        ]);
+        $tag = Tag::create(['name' => 'infrastructure', 'slug' => 'infrastructure']);
+        $news->tags()->attach($tag);
+
+        $response = $this->getJson('/search?q=infrastructure');
+
+        $response->assertOk();
+        $response->assertJsonFragment(['title' => 'Campus Renovation Complete']);
     }
 }

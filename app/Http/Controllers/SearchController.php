@@ -25,9 +25,11 @@ class SearchController extends Controller
         $alumni = AlumniProfile::with('user', 'department')
             ->whereNotNull('verified_at')
             ->publiclyVisible()
-            ->whereHas('user', fn ($q) => $q->where(fn ($w) => $w
-                ->where('first_name', 'like', "%{$term}%")
-                ->orWhere('last_name', 'like', "%{$term}%")))
+            ->where(fn ($q) => $q
+                ->whereHas('user', fn ($w) => $w
+                    ->where('first_name', 'like', "%{$term}%")
+                    ->orWhere('last_name', 'like', "%{$term}%"))
+                ->orWhere('tags', 'like', "%{$term}%"))
             ->limit(5)
             ->get()
             ->map(fn ($p) => [
@@ -37,7 +39,7 @@ class SearchController extends Controller
             ]);
 
         $events = Event::published()
-            ->where('title', 'like', "%{$term}%")
+            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('tags', 'like', "%{$term}%"))
             ->limit(5)
             ->get()
             ->map(fn ($e) => [
@@ -48,7 +50,7 @@ class SearchController extends Controller
 
         $jobs = JobPosting::approved()
             ->with('company')
-            ->where('title', 'like', "%{$term}%")
+            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('tags', 'like', "%{$term}%"))
             ->limit(5)
             ->get()
             ->map(fn ($j) => [
@@ -58,7 +60,9 @@ class SearchController extends Controller
             ]);
 
         $news = News::published()
-            ->where('title', 'like', "%{$term}%")
+            ->where(fn ($q) => $q
+                ->where('title', 'like', "%{$term}%")
+                ->orWhereHas('tags', fn ($t) => $t->where('name', 'like', "%{$term}%")))
             ->limit(5)
             ->get()
             ->map(fn ($n) => [
@@ -68,7 +72,7 @@ class SearchController extends Controller
             ]);
 
         $stories = AlumniStory::published()
-            ->where('title', 'like', "%{$term}%")
+            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('tags', 'like', "%{$term}%"))
             ->limit(5)
             ->get()
             ->map(fn ($s) => [
@@ -79,7 +83,10 @@ class SearchController extends Controller
 
         $marketplaceListings = MarketplaceListing::approved()
             ->with('category')
-            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('address', 'like', "%{$term}%"))
+            ->where(fn ($q) => $q
+                ->where('title', 'like', "%{$term}%")
+                ->orWhere('address', 'like', "%{$term}%")
+                ->orWhere('tags', 'like', "%{$term}%"))
             ->limit(5)
             ->get()
             ->map(fn ($l) => [
@@ -89,7 +96,10 @@ class SearchController extends Controller
             ]);
 
         $books = Book::available()
-            ->where(fn ($q) => $q->where('title', 'like', "%{$term}%")->orWhere('author', 'like', "%{$term}%"))
+            ->where(fn ($q) => $q
+                ->where('title', 'like', "%{$term}%")
+                ->orWhere('author', 'like', "%{$term}%")
+                ->orWhere('tags', 'like', "%{$term}%"))
             ->limit(5)
             ->get()
             ->map(fn ($b) => [

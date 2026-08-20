@@ -21,7 +21,7 @@ class MarketplaceListing extends Model
         'user_id', 'marketplace_category_id', 'title', 'slug', 'description',
         'price', 'price_unit', 'address', 'city', 'video_url', 'details',
         'status', 'approved_by', 'approved_at', 'rejection_reason', 'expires_at',
-        'is_featured', 'views_count', 'inquiries_count',
+        'is_featured', 'views_count', 'inquiries_count', 'tags',
     ];
 
     protected function casts(): array

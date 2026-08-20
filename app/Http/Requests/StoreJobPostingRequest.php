@@ -28,6 +28,7 @@ class StoreJobPostingRequest extends FormRequest
             'application_url' => ['nullable', 'url', 'max:255'],
             'application_email' => ['nullable', 'email', 'max:255'],
             'deadline' => ['nullable', 'date', 'after:today'],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

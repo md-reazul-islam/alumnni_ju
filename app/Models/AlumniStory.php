@@ -18,7 +18,7 @@ class AlumniStory extends Model
 
     protected $fillable = [
         'alumni_profile_id', 'title', 'slug', 'cover_image', 'story', 'achievements',
-        'career_highlight', 'status', 'reviewed_by', 'rejection_reason', 'published_at', 'views',
+        'career_highlight', 'status', 'reviewed_by', 'rejection_reason', 'published_at', 'views', 'tags',
     ];
 
     protected function casts(): array

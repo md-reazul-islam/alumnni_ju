@@ -16,7 +16,7 @@ class Book extends Model
     public const STATUS_APPROVED = 'approved';
     public const STATUS_REJECTED = 'rejected';
 
-    protected $fillable = ['donor_id', 'title', 'author', 'cover', 'description', 'status', 'approved_by', 'approved_at'];
+    protected $fillable = ['donor_id', 'title', 'author', 'cover', 'description', 'status', 'approved_by', 'approved_at', 'tags'];
 
     protected function casts(): array
     {

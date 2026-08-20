@@ -17,6 +17,8 @@
         <x-textarea label="Your Story" name="story" rows="10" required>{{ old('story') }}</x-textarea>
         <x-textarea label="Notable Achievements" name="achievements" rows="3">{{ old('achievements') }}</x-textarea>
 
+        <x-input label="Tags" name="tags" :value="old('tags')" placeholder="e.g. entrepreneurship, tech, nonprofit" hint="Optional keywords to help others find your story in search. Separate multiple tags with commas." />
+
         <div class="flex justify-end">
             <x-button type="submit">Submit for Review</x-button>
         </div>

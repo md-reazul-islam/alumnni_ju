@@ -21,7 +21,7 @@ class Event extends Model
         'organizer_id', 'title', 'slug', 'description', 'image', 'category', 'mode',
         'venue', 'city', 'country', 'meeting_url', 'event_date', 'start_time', 'end_time',
         'registration_deadline', 'max_participants', 'organizer_name', 'contact_email',
-        'contact_phone', 'status', 'published_at',
+        'contact_phone', 'status', 'published_at', 'tags',
     ];
 
     protected function casts(): array

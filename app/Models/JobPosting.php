@@ -22,7 +22,7 @@ class JobPosting extends Model
         'posted_by', 'company_id', 'company_name', 'title', 'slug', 'location',
         'employment_type', 'industry', 'salary_min', 'salary_max', 'salary_currency',
         'description', 'requirements', 'application_url', 'application_email', 'deadline',
-        'status', 'approved_by', 'approved_at',
+        'status', 'approved_by', 'approved_at', 'tags',
     ];
 
     protected function casts(): array

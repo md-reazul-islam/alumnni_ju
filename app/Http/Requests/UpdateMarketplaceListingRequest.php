@@ -28,6 +28,7 @@ class UpdateMarketplaceListingRequest extends FormRequest
             'details' => ['nullable', 'array'],
             'details.*.label' => ['nullable', 'string', 'max:100'],
             'details.*.value' => ['nullable', 'string', 'max:255'],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }

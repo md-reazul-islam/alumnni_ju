@@ -22,6 +22,7 @@ class StoreStoryRequest extends FormRequest
             'achievements' => ['nullable', 'string', 'max:2000'],
             'career_highlight' => ['nullable', 'string', 'max:255'],
             'status' => ['required', Rule::in(['draft', 'pending_review', 'published'])],
+            'tags' => ['nullable', 'string', 'max:500'],
         ];
     }
 }
