@@ -18,10 +18,80 @@
             </div>
 
             @if ($listing->images->isNotEmpty())
-                <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                    @foreach ($listing->images as $image)
-                        <img src="{{ asset('storage/' . $image->path) }}" class="h-28 w-full rounded-lg object-cover">
-                    @endforeach
+                @php
+                    $imageUrls = $listing->images->map(fn ($image) => asset('storage/' . $image->path))->values();
+                @endphp
+                <div
+                    x-data="{
+                        images: {{ \Illuminate\Support\Js::from($imageUrls) }},
+                        index: 0,
+                        lightbox: false,
+                        zoomed: false,
+                        next() { this.index = (this.index + 1) % this.images.length; this.zoomed = false; },
+                        prev() { this.index = (this.index - 1 + this.images.length) % this.images.length; this.zoomed = false; },
+                        open(i) { this.index = i; this.lightbox = true; this.zoomed = false; },
+                    }"
+                    class="mt-6"
+                    @keydown.window.escape="lightbox = false"
+                >
+                    <div class="relative overflow-hidden rounded-lg bg-navy-100 dark:bg-navy-800">
+                        <img :src="images[index]" @click="open(index)" class="h-64 w-full cursor-zoom-in object-cover sm:h-96">
+
+                        <template x-if="images.length > 1">
+                            <div>
+                                <button type="button" @click="prev()" class="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow hover:bg-white dark:bg-navy-900/80 dark:text-white">
+                                    <x-icon name="chevron-left" class="h-5 w-5" />
+                                </button>
+                                <button type="button" @click="next()" class="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-slate-700 shadow hover:bg-white dark:bg-navy-900/80 dark:text-white">
+                                    <x-icon name="chevron-right" class="h-5 w-5" />
+                                </button>
+                                <div class="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1.5">
+                                    <template x-for="(img, i) in images" :key="i">
+                                        <button type="button" @click="index = i" :class="i === index ? 'bg-white' : 'bg-white/50'" class="h-1.5 w-1.5 rounded-full"></button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <template x-if="images.length > 1">
+                        <div class="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6">
+                            <template x-for="(img, i) in images" :key="i">
+                                <button type="button" @click="index = i" class="overflow-hidden rounded-lg border-2" :class="i === index ? 'border-navy-700 dark:border-gold-400' : 'border-transparent'">
+                                    <img :src="img" class="h-16 w-full object-cover">
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template x-if="lightbox">
+                        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4" @click.self="lightbox = false">
+                            <button type="button" @click="lightbox = false" class="absolute right-4 top-4 text-white hover:text-gold-400">
+                                <x-icon name="x" class="h-7 w-7" />
+                            </button>
+
+                            <button type="button" @click.stop="zoomed = !zoomed" class="absolute left-4 top-4 flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 text-sm text-white hover:bg-white/20">
+                                <x-icon name="maximize-2" class="h-4 w-4" x-show="!zoomed" />
+                                <x-icon name="minimize-2" class="h-4 w-4" x-show="zoomed" x-cloak />
+                                <span x-text="zoomed ? 'Zoom Out' : 'Zoom In'"></span>
+                            </button>
+
+                            <template x-if="images.length > 1">
+                                <button type="button" @click.stop="prev()" class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gold-400">
+                                    <x-icon name="chevron-left" class="h-9 w-9" />
+                                </button>
+                            </template>
+                            <template x-if="images.length > 1">
+                                <button type="button" @click.stop="next()" class="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gold-400">
+                                    <x-icon name="chevron-right" class="h-9 w-9" />
+                                </button>
+                            </template>
+
+                            <div class="max-h-full max-w-full overflow-auto">
+                                <img :src="images[index]" @click.stop="zoomed = !zoomed" :class="zoomed ? 'scale-150 cursor-zoom-out' : 'scale-100 cursor-zoom-in'" class="max-h-[85vh] max-w-full object-contain transition-transform duration-300">
+                            </div>
+                        </div>
+                    </template>
                 </div>
             @endif
 

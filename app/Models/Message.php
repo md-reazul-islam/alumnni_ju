@@ -22,4 +22,13 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function getBodyHtmlAttribute(): string
+    {
+        return preg_replace_callback(
+            '/(https?:\/\/[^\s<]+)/',
+            fn ($matches) => '<a href="' . $matches[1] . '" target="_blank" rel="noopener noreferrer" class="underline">' . $matches[1] . '</a>',
+            e($this->body)
+        );
+    }
 }

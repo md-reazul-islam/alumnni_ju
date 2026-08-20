@@ -8,6 +8,7 @@ use App\Models\MarketplaceCategory;
 use App\Models\MarketplaceListing;
 use App\Models\MarketplaceOrder;
 use App\Models\User;
+use App\Notifications\NewMessageReceived;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -76,6 +77,15 @@ class MarketplaceController extends Controller
             $conversation = $order->buyerConversation()->create(['context' => 'buyer']);
             $adminIds = User::withPermission('manage-marketplace')->pluck('id');
             $conversation->participants()->attach([...$adminIds->all(), $buyer->id]);
+
+            $message = $conversation->messages()->create([
+                'user_id' => $buyer->id,
+                'body' => "I'm interested in this product: " . route('marketplace.show', $listing),
+            ]);
+            $conversation->update(['last_message_at' => now()]);
+
+            $conversation->participants()->where('users.id', '!=', $buyer->id)->get()
+                ->each(fn ($recipient) => $recipient->notify(new NewMessageReceived($message->load('sender'))));
         }
 
         return redirect()->route('messages.index', $conversation)
