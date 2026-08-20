@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\CommunityController as AdminCommunityController;
 use App\Http\Controllers\Admin\MarketplaceCategoryController as AdminMarketplaceCategoryController;
 use App\Http\Controllers\Admin\MarketplaceListingController as AdminMarketplaceListingController;
 use App\Http\Controllers\Admin\MarketplaceOrderController as AdminMarketplaceOrderController;
+use App\Http\Controllers\Admin\MarketplaceReportController as AdminMarketplaceReportController;
 use App\Http\Controllers\Admin\MessageController as AdminMessageController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\ReportController as AdminReportController;
@@ -327,6 +328,14 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
         Route::prefix('messages')->name('messages.')->group(function () {
             Route::get('/{conversation?}', [AdminMessageController::class, 'index'])->name('index');
             Route::post('/{conversation}/send', [AdminMessageController::class, 'store'])->name('store');
+        });
+
+        Route::prefix('marketplace/reports')->name('marketplace.reports.')->group(function () {
+            Route::get('/', [AdminMarketplaceReportController::class, 'index'])->name('index');
+            Route::get('/orders', [AdminMarketplaceReportController::class, 'orders'])->name('orders');
+            Route::get('/sellers', [AdminMarketplaceReportController::class, 'sellers'])->name('sellers');
+            Route::get('/categories', [AdminMarketplaceReportController::class, 'categories'])->name('categories');
+            Route::get('/export/{type}', [AdminMarketplaceReportController::class, 'export'])->name('export');
         });
 
         Route::prefix('news')->name('news.')->group(function () {
