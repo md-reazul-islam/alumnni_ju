@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\CarpoolSchedule;
+use App\Models\User;
 use App\Notifications\CarpoolScheduleApproved;
 use App\Notifications\CarpoolScheduleRejected;
+use App\Notifications\CarpoolTripPosted;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
 
 class CarpoolScheduleController extends Controller
@@ -68,10 +71,13 @@ class CarpoolScheduleController extends Controller
 
         $carpoolSchedule->driverProfile->user->notify(new CarpoolScheduleApproved($carpoolSchedule));
 
+        $recipients = User::verified()->where('id', '!=', $carpoolSchedule->driverProfile->user_id)->get();
+        Notification::send($recipients, new CarpoolTripPosted($carpoolSchedule));
+
         AuditLogger::log('approved_carpool_schedule', $carpoolSchedule, "Approved carpool trip \"{$carpoolSchedule->origin} to {$carpoolSchedule->destination}\".");
         Cache::forget('homepage.content');
 
-        return back()->with('status', 'Trip approved.');
+        return back()->with('status', 'Trip approved and all members notified.');
     }
 
     public function reject(Request $request, CarpoolSchedule $carpoolSchedule): RedirectResponse
