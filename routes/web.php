@@ -242,6 +242,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [CarpoolBookingController::class, 'index'])->name('index');
             Route::post('/{schedule}', [CarpoolBookingController::class, 'store'])->name('store');
             Route::delete('/{booking}', [CarpoolBookingController::class, 'cancel'])->name('cancel');
+            Route::get('/{booking}/pay', [CarpoolBookingController::class, 'pay'])->name('pay');
+            Route::get('/{booking}/payment-success', [CarpoolBookingController::class, 'paymentSuccess'])->name('payment-success');
+            Route::get('/{booking}/payment-cancelled', [CarpoolBookingController::class, 'paymentCancelled'])->name('payment-cancelled');
         });
 
         Route::prefix('driver/bookings')->name('driver.bookings.')->group(function () {

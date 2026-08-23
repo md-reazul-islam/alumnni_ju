@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CarpoolBooking;
 use App\Models\CarpoolSchedule;
 use App\Notifications\CarpoolBookingRequested;
+use App\Services\Carpool\StripeCheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -85,5 +86,30 @@ class CarpoolBookingController extends Controller
         $booking->update(['status' => CarpoolBooking::STATUS_CANCELLED]);
 
         return back()->with('status', 'Request withdrawn.');
+    }
+
+    public function pay(Request $request, CarpoolBooking $booking): RedirectResponse
+    {
+        abort_unless($booking->passenger_id === $request->user()->id, 403);
+        abort_unless($booking->status === CarpoolBooking::STATUS_ACCEPTED, 422, 'This booking is not awaiting payment.');
+        abort_if($booking->payment_deadline_at && $booking->payment_deadline_at->isPast(), 422, 'The payment window for this booking has expired.');
+
+        $session = app(StripeCheckoutService::class)->createSession($booking);
+
+        return redirect($session->url);
+    }
+
+    public function paymentSuccess(Request $request, CarpoolBooking $booking): View
+    {
+        abort_unless($booking->passenger_id === $request->user()->id, 403);
+
+        return view('carpooling.passenger.bookings.payment-success', compact('booking'));
+    }
+
+    public function paymentCancelled(Request $request, CarpoolBooking $booking): View
+    {
+        abort_unless($booking->passenger_id === $request->user()->id, 403);
+
+        return view('carpooling.passenger.bookings.payment-cancelled', compact('booking'));
     }
 }
