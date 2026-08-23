@@ -23,6 +23,9 @@ class CarpoolBooking extends Model
     public const PAYMENT_PAID = 'paid';
     public const PAYMENT_REFUNDED = 'refunded';
 
+    public const PAYOUT_PENDING = 'pending';
+    public const PAYOUT_PAID = 'paid';
+
     protected $fillable = [
         'carpool_schedule_id', 'passenger_id', 'seats', 'seat_price_snapshot', 'total_fare',
         'status', 'driver_responded_at', 'payment_deadline_at', 'payment_status',
@@ -81,6 +84,6 @@ class CarpoolBooking extends Model
 
     public function scopePayoutPending($query)
     {
-        return $query->where('payment_status', self::PAYMENT_PAID)->where('payout_status', 'pending');
+        return $query->where('payment_status', self::PAYMENT_PAID)->where('payout_status', self::PAYOUT_PENDING);
     }
 }

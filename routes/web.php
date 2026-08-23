@@ -10,7 +10,9 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
+use App\Http\Controllers\Admin\CarpoolPayoutController as AdminCarpoolPayoutController;
 use App\Http\Controllers\Admin\CarpoolScheduleController as AdminCarpoolScheduleController;
+use App\Http\Controllers\Admin\CarpoolSettingsController as AdminCarpoolSettingsController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
@@ -373,6 +375,16 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/{carpoolSchedule}', [AdminCarpoolScheduleController::class, 'show'])->name('show');
             Route::post('/{carpoolSchedule}/approve', [AdminCarpoolScheduleController::class, 'approve'])->name('approve');
             Route::post('/{carpoolSchedule}/reject', [AdminCarpoolScheduleController::class, 'reject'])->name('reject');
+        });
+
+        Route::prefix('carpooling/payouts')->name('carpooling.payouts.')->group(function () {
+            Route::get('/', [AdminCarpoolPayoutController::class, 'index'])->name('index');
+            Route::post('/{carpoolBooking}/mark-paid', [AdminCarpoolPayoutController::class, 'markPaid'])->name('mark-paid');
+        });
+
+        Route::prefix('carpooling/settings')->name('carpooling.settings.')->group(function () {
+            Route::get('/', [AdminCarpoolSettingsController::class, 'edit'])->name('edit');
+            Route::put('/', [AdminCarpoolSettingsController::class, 'update'])->name('update');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {
