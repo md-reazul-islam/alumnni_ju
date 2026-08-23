@@ -13,6 +13,7 @@
         ['label' => 'Donate a Book', 'icon' => 'gift', 'route' => 'library.create'],
         ['label' => 'Post a Listing', 'icon' => 'tag', 'route' => 'marketplace.create'],
         ['label' => 'My Listings', 'icon' => 'shopping-bag', 'route' => 'marketplace.mine'],
+        ['label' => 'Carpooling panel', 'icon' => 'car', 'route' => 'carpooling.driver.become'],
         ['label' => 'Find a Ride', 'icon' => 'map', 'route' => 'carpooling.search'],
         ['label' => 'My Ride Requests', 'icon' => 'car', 'route' => 'carpooling.bookings.index'],
         ['label' => 'Become a Driver', 'icon' => 'car', 'route' => 'carpooling.driver.become'],
