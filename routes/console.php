@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('library:send-overdue-notices')->daily();
+Schedule::command('carpool:expire-bookings')->everyFiveMinutes();
