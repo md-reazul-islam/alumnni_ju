@@ -34,10 +34,12 @@ use App\Http\Controllers\Alumni\GalleryController as AlumniGalleryController;
 use App\Http\Controllers\Alumni\ProfileController as AlumniProfileController;
 use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
+use App\Http\Controllers\CarpoolBookingController;
 use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CarpoolSearchController;
+use App\Http\Controllers\DriverBookingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ConnectionController;
@@ -234,6 +236,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{schedule}/edit', [CarpoolScheduleController::class, 'edit'])->name('edit');
             Route::put('/{schedule}', [CarpoolScheduleController::class, 'update'])->name('update');
             Route::delete('/{schedule}', [CarpoolScheduleController::class, 'cancel'])->name('cancel');
+        });
+
+        Route::prefix('bookings')->name('bookings.')->group(function () {
+            Route::get('/', [CarpoolBookingController::class, 'index'])->name('index');
+            Route::post('/{schedule}', [CarpoolBookingController::class, 'store'])->name('store');
+            Route::delete('/{booking}', [CarpoolBookingController::class, 'cancel'])->name('cancel');
+        });
+
+        Route::prefix('driver/bookings')->name('driver.bookings.')->group(function () {
+            Route::get('/', [DriverBookingController::class, 'index'])->name('index');
+            Route::post('/{booking}/accept', [DriverBookingController::class, 'accept'])->name('accept');
+            Route::post('/{booking}/decline', [DriverBookingController::class, 'decline'])->name('decline');
         });
     });
 

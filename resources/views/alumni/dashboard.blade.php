@@ -14,6 +14,7 @@
         ['label' => 'Post a Listing', 'icon' => 'tag', 'route' => 'marketplace.create'],
         ['label' => 'My Listings', 'icon' => 'shopping-bag', 'route' => 'marketplace.mine'],
         ['label' => 'Find a Ride', 'icon' => 'map', 'route' => 'carpooling.search'],
+        ['label' => 'My Ride Requests', 'icon' => 'car', 'route' => 'carpooling.bookings.index'],
         ['label' => 'Become a Driver', 'icon' => 'car', 'route' => 'carpooling.driver.become'],
     ];
 @endphp

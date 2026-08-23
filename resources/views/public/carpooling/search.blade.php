@@ -46,9 +46,16 @@
                         <div class="flex items-center gap-4">
                             <p class="text-lg font-bold text-slate-900 dark:text-white">${{ number_format($schedule->price_per_seat, 2) }}<span class="text-sm font-normal text-slate-400">/seat</span></p>
                             @auth
-                                @if (Route::has('carpooling.bookings.store'))
-                                    <form method="POST" action="{{ route('carpooling.bookings.store', $schedule) }}">
+                                @if ($schedule->driverProfile->user_id === auth()->id())
+                                    <x-badge variant="info">Your trip</x-badge>
+                                @elseif (Route::has('carpooling.bookings.store'))
+                                    <form method="POST" action="{{ route('carpooling.bookings.store', $schedule) }}" class="flex items-center gap-2">
                                         @csrf
+                                        <select name="seats" class="form-select w-auto py-1.5 text-sm">
+                                            @for ($i = 1; $i <= min(4, $schedule->seatsRemaining()); $i++)
+                                                <option value="{{ $i }}">{{ $i }} seat{{ $i > 1 ? 's' : '' }}</option>
+                                            @endfor
+                                        </select>
                                         <x-button type="submit" size="sm">Request Seat</x-button>
                                     </form>
                                 @else
