@@ -39,6 +39,7 @@ use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CarpoolSearchController;
+use App\Http\Controllers\CarpoolStripeWebhookController;
 use App\Http\Controllers\DriverBookingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommunityController;
@@ -165,6 +166,8 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
 Route::prefix('carpooling')->name('carpooling.')->group(function () {
     Route::get('/', [CarpoolSearchController::class, 'index'])->name('search');
 });
+
+Route::post('/stripe/carpool/webhook', [CarpoolStripeWebhookController::class, 'handle'])->name('carpooling.stripe.webhook');
 
 Route::prefix('news')->name('news.')->group(function () {
     Route::get('/', [NewsController::class, 'index'])->name('index');
