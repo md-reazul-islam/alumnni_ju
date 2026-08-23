@@ -32,6 +32,8 @@ use App\Http\Controllers\Alumni\GalleryController as AlumniGalleryController;
 use App\Http\Controllers\Alumni\ProfileController as AlumniProfileController;
 use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
+use App\Http\Controllers\CarpoolCarController;
+use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ConnectionController;
@@ -201,6 +203,22 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{conversation?}', [MessageController::class, 'index'])->name('index');
         Route::get('/start/{user}', [MessageController::class, 'create'])->name('create');
         Route::post('/{conversation}/send', [MessageController::class, 'store'])->name('store');
+    });
+
+    Route::prefix('carpooling')->name('carpooling.')->group(function () {
+        Route::get('/become-driver', [CarpoolDriverController::class, 'become'])->name('driver.become');
+        Route::post('/become-driver', [CarpoolDriverController::class, 'store'])->name('driver.store');
+        Route::get('/dashboard', [CarpoolDriverController::class, 'dashboard'])->name('driver.dashboard');
+        Route::post('/toggle-active', [CarpoolDriverController::class, 'toggleActive'])->name('driver.toggle-active');
+
+        Route::prefix('cars')->name('cars.')->group(function () {
+            Route::get('/', [CarpoolCarController::class, 'index'])->name('index');
+            Route::get('/create', [CarpoolCarController::class, 'create'])->name('create');
+            Route::post('/create', [CarpoolCarController::class, 'store'])->name('store');
+            Route::get('/{car}/edit', [CarpoolCarController::class, 'edit'])->name('edit');
+            Route::put('/{car}', [CarpoolCarController::class, 'update'])->name('update');
+            Route::delete('/{car}', [CarpoolCarController::class, 'destroy'])->name('destroy');
+        });
     });
 
     Route::prefix('network')->name('connections.')->group(function () {
