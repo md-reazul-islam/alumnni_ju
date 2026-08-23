@@ -34,6 +34,9 @@
             ['label' => 'Pending Drivers', 'route' => 'admin.carpooling.drivers.pending'],
             ['label' => 'Approved Drivers', 'route' => 'admin.carpooling.drivers.approved'],
             ['label' => 'Rejected Drivers', 'route' => 'admin.carpooling.drivers.rejected'],
+            ['label' => 'Pending Trips', 'route' => 'admin.carpooling.schedules.pending'],
+            ['label' => 'Approved Trips', 'route' => 'admin.carpooling.schedules.approved'],
+            ['label' => 'Rejected Trips', 'route' => 'admin.carpooling.schedules.rejected'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],

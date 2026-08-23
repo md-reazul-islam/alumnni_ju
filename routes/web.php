@@ -10,6 +10,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
+use App\Http\Controllers\Admin\CarpoolScheduleController as AdminCarpoolScheduleController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
@@ -35,6 +36,7 @@ use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
 use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
+use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ConnectionController;
@@ -220,6 +222,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::put('/{car}', [CarpoolCarController::class, 'update'])->name('update');
             Route::delete('/{car}', [CarpoolCarController::class, 'destroy'])->name('destroy');
         });
+
+        Route::prefix('schedules')->name('schedules.')->group(function () {
+            Route::get('/create', [CarpoolScheduleController::class, 'create'])->name('create');
+            Route::post('/create', [CarpoolScheduleController::class, 'store'])->name('store');
+            Route::get('/{schedule}/edit', [CarpoolScheduleController::class, 'edit'])->name('edit');
+            Route::put('/{schedule}', [CarpoolScheduleController::class, 'update'])->name('update');
+            Route::delete('/{schedule}', [CarpoolScheduleController::class, 'cancel'])->name('cancel');
+        });
     });
 
     Route::prefix('network')->name('connections.')->group(function () {
@@ -328,6 +338,15 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{carpoolDriverProfile}/approve', [AdminCarpoolDriverController::class, 'approve'])->name('approve');
             Route::post('/{carpoolDriverProfile}/reject', [AdminCarpoolDriverController::class, 'reject'])->name('reject');
             Route::post('/{carpoolDriverProfile}/suspend', [AdminCarpoolDriverController::class, 'suspend'])->name('suspend');
+        });
+
+        Route::prefix('carpooling/schedules')->name('carpooling.schedules.')->group(function () {
+            Route::get('/pending', [AdminCarpoolScheduleController::class, 'pending'])->name('pending');
+            Route::get('/approved', [AdminCarpoolScheduleController::class, 'approvedIndex'])->name('approved');
+            Route::get('/rejected', [AdminCarpoolScheduleController::class, 'rejectedIndex'])->name('rejected');
+            Route::get('/{carpoolSchedule}', [AdminCarpoolScheduleController::class, 'show'])->name('show');
+            Route::post('/{carpoolSchedule}/approve', [AdminCarpoolScheduleController::class, 'approve'])->name('approve');
+            Route::post('/{carpoolSchedule}/reject', [AdminCarpoolScheduleController::class, 'reject'])->name('reject');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {
