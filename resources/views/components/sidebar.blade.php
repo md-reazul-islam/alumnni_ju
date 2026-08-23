@@ -30,6 +30,11 @@
             ['label' => 'Orders', 'route' => 'admin.marketplace.orders.index'],
             ['label' => 'Reports', 'route' => 'admin.marketplace.reports.index'],
         ]],
+        ['label' => 'Carpooling', 'icon' => 'car', 'match' => 'admin.carpooling.*', 'permission' => 'manage-carpooling', 'children' => [
+            ['label' => 'Pending Drivers', 'route' => 'admin.carpooling.drivers.pending'],
+            ['label' => 'Approved Drivers', 'route' => 'admin.carpooling.drivers.approved'],
+            ['label' => 'Rejected Drivers', 'route' => 'admin.carpooling.drivers.rejected'],
+        ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
             ['label' => 'Add Book', 'route' => 'admin.library.create'],

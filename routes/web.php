@@ -9,6 +9,7 @@ use App\Http\Controllers\Alumni\LibraryController as AlumniLibraryController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
+use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
@@ -317,6 +318,16 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/', [AdminCompanyController::class, 'store'])->name('store');
             Route::put('/{company}', [AdminCompanyController::class, 'update'])->name('update');
             Route::delete('/{company}', [AdminCompanyController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('carpooling/drivers')->name('carpooling.drivers.')->group(function () {
+            Route::get('/pending', [AdminCarpoolDriverController::class, 'pending'])->name('pending');
+            Route::get('/approved', [AdminCarpoolDriverController::class, 'approvedIndex'])->name('approved');
+            Route::get('/rejected', [AdminCarpoolDriverController::class, 'rejectedIndex'])->name('rejected');
+            Route::get('/{carpoolDriverProfile}', [AdminCarpoolDriverController::class, 'show'])->name('show');
+            Route::post('/{carpoolDriverProfile}/approve', [AdminCarpoolDriverController::class, 'approve'])->name('approve');
+            Route::post('/{carpoolDriverProfile}/reject', [AdminCarpoolDriverController::class, 'reject'])->name('reject');
+            Route::post('/{carpoolDriverProfile}/suspend', [AdminCarpoolDriverController::class, 'suspend'])->name('suspend');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {
