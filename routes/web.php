@@ -37,6 +37,7 @@ use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
 use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
+use App\Http\Controllers\CarpoolSearchController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CommunityController;
 use App\Http\Controllers\ConnectionController;
@@ -157,6 +158,10 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     });
 
     Route::get('/{listing:slug}', [MarketplaceController::class, 'show'])->name('show');
+});
+
+Route::prefix('carpooling')->name('carpooling.')->group(function () {
+    Route::get('/', [CarpoolSearchController::class, 'index'])->name('search');
 });
 
 Route::prefix('news')->name('news.')->group(function () {
