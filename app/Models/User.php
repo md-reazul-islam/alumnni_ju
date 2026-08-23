@@ -151,6 +151,16 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(MentorProfile::class);
     }
 
+    public function carpoolDriverProfile(): HasOne
+    {
+        return $this->hasOne(CarpoolDriverProfile::class);
+    }
+
+    public function carpoolBookings(): HasMany
+    {
+        return $this->hasMany(CarpoolBooking::class, 'passenger_id');
+    }
+
     public function mentorshipRequestsSent(): HasMany
     {
         return $this->hasMany(MentorshipRequest::class, 'mentee_id');
@@ -255,6 +265,12 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isMentor(): bool
     {
         return (bool) $this->mentorProfile?->is_active;
+    }
+
+    public function isApprovedCarpoolDriver(): bool
+    {
+        return $this->carpoolDriverProfile?->status === CarpoolDriverProfile::STATUS_APPROVED
+            && $this->carpoolDriverProfile?->is_active;
     }
 
     public function isAdminStaff(): bool
