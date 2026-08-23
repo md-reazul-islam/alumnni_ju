@@ -254,6 +254,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [DriverBookingController::class, 'index'])->name('index');
             Route::post('/{booking}/accept', [DriverBookingController::class, 'accept'])->name('accept');
             Route::post('/{booking}/decline', [DriverBookingController::class, 'decline'])->name('decline');
+            Route::delete('/{booking}', [DriverBookingController::class, 'cancel'])->name('cancel');
         });
     });
 

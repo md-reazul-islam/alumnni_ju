@@ -6,7 +6,10 @@ use App\Models\CarpoolBooking;
 use App\Models\CarpoolSchedule;
 use App\Models\Setting;
 use App\Notifications\CarpoolBookingAccepted;
+use App\Notifications\CarpoolBookingCancelled;
 use App\Notifications\CarpoolBookingDeclined;
+use App\Services\AuditLogger;
+use App\Services\Carpool\CarpoolRefundService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -64,6 +67,41 @@ class DriverBookingController extends Controller
         $booking->passenger->notify(new CarpoolBookingDeclined($booking));
 
         return back()->with('status', 'Request declined.');
+    }
+
+    public function cancel(Request $request, CarpoolBooking $booking): RedirectResponse
+    {
+        $this->ensureOwnsBooking($request, $booking);
+        abort_unless($booking->status === CarpoolBooking::STATUS_CONFIRMED, 422, 'Only a confirmed, paid booking can be cancelled here.');
+
+        $data = $request->validate(['cancellation_reason' => ['required', 'string', 'max:1000']]);
+
+        // A driver cancelling a paid trip always force-refunds the passenger — the driver never
+        // keeps payment for a ride that didn't happen. Refund with Stripe before touching our
+        // own records, same as the passenger-initiated cancellation path.
+        app(CarpoolRefundService::class)->refund($booking);
+
+        DB::transaction(function () use ($booking, $request, $data) {
+            $schedule = CarpoolSchedule::lockForUpdate()->find($booking->carpool_schedule_id);
+            $schedule->decrement('seats_booked', $booking->seats);
+            $schedule->driverProfile->decrement('total_earned', $booking->driver_payout_amount ?? 0);
+
+            $booking->update([
+                'status' => CarpoolBooking::STATUS_CANCELLED,
+                'cancelled_by' => $request->user()->id,
+                'cancellation_reason' => $data['cancellation_reason'],
+            ]);
+        });
+
+        $booking->passenger->notify(new CarpoolBookingCancelled($booking, cancelledByRole: 'driver'));
+
+        AuditLogger::log(
+            'driver_cancelled_paid_carpool_booking',
+            $booking,
+            "Driver cancelled a paid carpool booking (#{$booking->id}) and force-refunded the passenger. Reason: {$data['cancellation_reason']}"
+        );
+
+        return back()->with('status', 'Booking cancelled and the passenger has been refunded.');
     }
 
     protected function ensureOwnsBooking(Request $request, CarpoolBooking $booking): void

@@ -29,11 +29,19 @@
                             {{ ucfirst($booking->status) }}
                         </x-badge>
 
-                        @if ($booking->status === 'requested')
+                        @if (in_array($booking->status, ['requested', 'accepted']))
                             <form method="POST" action="{{ route('carpooling.bookings.cancel', $booking) }}" onsubmit="return confirm('Withdraw this request?')">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="text-sm font-medium text-red-600 hover:underline">Withdraw</button>
+                            </form>
+                        @endif
+
+                        @if ($booking->status === 'confirmed')
+                            <form method="POST" action="{{ route('carpooling.bookings.cancel', $booking) }}" onsubmit="return confirm('Cancel this confirmed booking? A refund will be requested if you are still within the cancellation window.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-sm font-medium text-red-600 hover:underline">Cancel &amp; Refund</button>
                             </form>
                         @endif
 

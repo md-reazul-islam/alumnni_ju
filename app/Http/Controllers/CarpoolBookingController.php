@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\CarpoolBooking;
 use App\Models\CarpoolSchedule;
+use App\Models\Setting;
+use App\Notifications\CarpoolBookingCancelled;
 use App\Notifications\CarpoolBookingRequested;
+use App\Services\Carpool\CarpoolRefundService;
 use App\Services\Carpool\StripeCheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -81,11 +84,46 @@ class CarpoolBookingController extends Controller
     public function cancel(Request $request, CarpoolBooking $booking): RedirectResponse
     {
         abort_unless($booking->passenger_id === $request->user()->id, 403);
-        abort_unless($booking->status === CarpoolBooking::STATUS_REQUESTED, 422, 'This request can no longer be withdrawn — it has already been responded to.');
 
-        $booking->update(['status' => CarpoolBooking::STATUS_CANCELLED]);
+        if (in_array($booking->status, [CarpoolBooking::STATUS_REQUESTED, CarpoolBooking::STATUS_ACCEPTED], true)) {
+            $booking->update([
+                'status' => CarpoolBooking::STATUS_CANCELLED,
+                'cancelled_by' => $request->user()->id,
+            ]);
 
-        return back()->with('status', 'Request withdrawn.');
+            return back()->with('status', 'Request withdrawn.');
+        }
+
+        abort_unless($booking->status === CarpoolBooking::STATUS_CONFIRMED, 422, 'This booking cannot be cancelled.');
+
+        $hours = (int) Setting::get('carpooling', 'cancellation_window_hours', 24);
+        $departure = $booking->schedule->departure_date->copy()->setTimeFromTimeString($booking->schedule->departure_time);
+
+        abort_unless(
+            now()->addHours($hours)->lte($departure),
+            422,
+            "Cancellations within {$hours} hours of departure are no longer eligible for a refund through the app. Please contact the driver directly."
+        );
+
+        // Refund must be initiated with Stripe BEFORE we release the seat or mark the booking
+        // cancelled — if Stripe rejects/fails, nothing about the booking should change.
+        app(CarpoolRefundService::class)->refund($booking);
+
+        DB::transaction(function () use ($booking, $request) {
+            $schedule = CarpoolSchedule::lockForUpdate()->find($booking->carpool_schedule_id);
+            $schedule->decrement('seats_booked', $booking->seats);
+            $schedule->driverProfile->decrement('total_earned', $booking->driver_payout_amount ?? 0);
+
+            $booking->update([
+                'status' => CarpoolBooking::STATUS_CANCELLED,
+                'cancelled_by' => $request->user()->id,
+                'cancellation_reason' => 'Cancelled by passenger within the refund window.',
+            ]);
+        });
+
+        $booking->schedule->driverProfile->user->notify(new CarpoolBookingCancelled($booking, cancelledByRole: 'passenger'));
+
+        return back()->with('status', 'Booking cancelled. Your refund has been initiated.');
     }
 
     public function pay(Request $request, CarpoolBooking $booking): RedirectResponse

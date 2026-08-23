@@ -36,6 +36,15 @@
                                 <button type="submit" class="btn-secondary btn-sm">Decline</button>
                             </form>
                         @endif
+
+                        @if ($booking->status === 'confirmed')
+                            <form method="POST" action="{{ route('carpooling.driver.bookings.cancel', $booking) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Cancel this confirmed booking?',text:'The passenger will be fully refunded.',input:'text',inputLabel:'Reason',inputPlaceholder:'Why are you cancelling?',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Cancel & Refund'}).then(r=>{ if(r.isConfirmed && r.value){ this.querySelector('[name=cancellation_reason]').value = r.value; this.submit(); } })">
+                                @csrf
+                                @method('DELETE')
+                                <input type="hidden" name="cancellation_reason" value="">
+                                <button type="submit" class="text-sm font-medium text-red-600 hover:underline">Cancel &amp; Refund</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             @endforeach

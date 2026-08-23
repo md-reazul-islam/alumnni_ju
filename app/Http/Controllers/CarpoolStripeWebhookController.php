@@ -127,7 +127,9 @@ class CarpoolStripeWebhookController extends Controller
 
             $payment->update(['status' => CarpoolPayment::STATUS_REFUNDED, 'refunded_at' => now()]);
 
-            if ($booking->payment_status === CarpoolBooking::PAYMENT_PAID) {
+            if ($booking->status !== CarpoolBooking::STATUS_CANCELLED) {
+                // This refund wasn't initiated through our own cancellation flow (e.g. issued directly
+                // from the Stripe dashboard) — release the seat now since nothing else will.
                 $schedule = CarpoolSchedule::lockForUpdate()->find($booking->carpool_schedule_id);
                 $schedule->decrement('seats_booked', $booking->seats);
                 $schedule->driverProfile->decrement('total_earned', $booking->driver_payout_amount ?? 0);
