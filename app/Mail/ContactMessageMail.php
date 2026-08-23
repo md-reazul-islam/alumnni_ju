@@ -22,6 +22,6 @@ class ContactMessageMail extends Mailable
     {
         return $this->replyTo($this->senderEmail, $this->senderName)
             ->subject('Contact Form: ' . $this->subjectLine)
-            ->view('emails.contact-message');
+            ->markdown('emails.contact-message');
     }
 }
