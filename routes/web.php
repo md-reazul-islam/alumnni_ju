@@ -238,26 +238,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::prefix('schedules')->name('schedules.')->group(function () {
             Route::get('/create', [CarpoolScheduleController::class, 'create'])->name('create');
-            Route::post('/create', [CarpoolScheduleController::class, 'store'])->name('store');
+            Route::post('/create', [CarpoolScheduleController::class, 'store'])->middleware('throttle:10,1')->name('store');
             Route::get('/{schedule}/edit', [CarpoolScheduleController::class, 'edit'])->name('edit');
-            Route::put('/{schedule}', [CarpoolScheduleController::class, 'update'])->name('update');
-            Route::delete('/{schedule}', [CarpoolScheduleController::class, 'cancel'])->name('cancel');
+            Route::put('/{schedule}', [CarpoolScheduleController::class, 'update'])->middleware('throttle:10,1')->name('update');
+            Route::delete('/{schedule}', [CarpoolScheduleController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
         });
 
         Route::prefix('bookings')->name('bookings.')->group(function () {
             Route::get('/', [CarpoolBookingController::class, 'index'])->name('index');
-            Route::post('/{schedule}', [CarpoolBookingController::class, 'store'])->name('store');
-            Route::delete('/{booking}', [CarpoolBookingController::class, 'cancel'])->name('cancel');
-            Route::get('/{booking}/pay', [CarpoolBookingController::class, 'pay'])->name('pay');
+            Route::post('/{schedule}', [CarpoolBookingController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::delete('/{booking}', [CarpoolBookingController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
+            Route::get('/{booking}/pay', [CarpoolBookingController::class, 'pay'])->middleware('throttle:10,1')->name('pay');
             Route::get('/{booking}/payment-success', [CarpoolBookingController::class, 'paymentSuccess'])->name('payment-success');
             Route::get('/{booking}/payment-cancelled', [CarpoolBookingController::class, 'paymentCancelled'])->name('payment-cancelled');
         });
 
         Route::prefix('driver/bookings')->name('driver.bookings.')->group(function () {
             Route::get('/', [DriverBookingController::class, 'index'])->name('index');
-            Route::post('/{booking}/accept', [DriverBookingController::class, 'accept'])->name('accept');
-            Route::post('/{booking}/decline', [DriverBookingController::class, 'decline'])->name('decline');
-            Route::delete('/{booking}', [DriverBookingController::class, 'cancel'])->name('cancel');
+            Route::post('/{booking}/accept', [DriverBookingController::class, 'accept'])->middleware('throttle:20,1')->name('accept');
+            Route::post('/{booking}/decline', [DriverBookingController::class, 'decline'])->middleware('throttle:20,1')->name('decline');
+            Route::delete('/{booking}', [DriverBookingController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
         });
     });
 

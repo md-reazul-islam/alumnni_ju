@@ -10,3 +10,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('library:send-overdue-notices')->daily();
 Schedule::command('carpool:expire-bookings')->everyFiveMinutes();
+Schedule::command('carpool:reconcile-earnings')->daily();
