@@ -38,6 +38,7 @@
             ['label' => 'Approved Trips', 'route' => 'admin.carpooling.schedules.approved'],
             ['label' => 'Rejected Trips', 'route' => 'admin.carpooling.schedules.rejected'],
             ['label' => 'Payouts', 'route' => 'admin.carpooling.payouts.index'],
+            ['label' => 'Reports', 'route' => 'admin.carpooling.reports.index'],
             ['label' => 'Carpooling Settings', 'route' => 'admin.carpooling.settings.edit'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [

@@ -45,6 +45,14 @@
                                 <button type="submit" class="text-sm font-medium text-red-600 hover:underline">Cancel &amp; Refund</button>
                             </form>
                         @endif
+
+                        @if (in_array($booking->status, ['confirmed', 'completed']))
+                            <form method="POST" action="{{ route('reports.store', ['carpool_user', $booking->passenger_id]) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Report this passenger',input:'text',inputLabel:'What happened?',inputPlaceholder:'Briefly describe the issue',showCancelButton:true,confirmButtonText:'Submit'}).then(r=>{ if(r.isConfirmed && r.value){ this.querySelector('[name=reason]').value = r.value; this.submit(); } })">
+                                @csrf
+                                <input type="hidden" name="reason" value="">
+                                <button type="submit" class="text-sm font-medium text-slate-400 hover:text-red-600">Report</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             @endforeach

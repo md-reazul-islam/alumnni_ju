@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CarpoolBooking;
 use App\Models\Comment;
 use App\Models\CommunityPost;
 use App\Models\Report;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -13,6 +15,8 @@ class ReportController extends Controller
     protected const ALLOWED_TYPES = [
         'post' => CommunityPost::class,
         'comment' => Comment::class,
+        'carpool_trip' => CarpoolBooking::class,
+        'carpool_user' => User::class,
     ];
 
     public function store(Request $request, string $type, int $id): RedirectResponse

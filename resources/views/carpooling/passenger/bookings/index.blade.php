@@ -48,6 +48,14 @@
                         @if ($booking->status === 'accepted' && Route::has('carpooling.bookings.pay'))
                             <x-button :href="route('carpooling.bookings.pay', $booking)" size="sm">Pay Now</x-button>
                         @endif
+
+                        @if (in_array($booking->status, ['confirmed', 'completed']))
+                            <form method="POST" action="{{ route('reports.store', ['carpool_trip', $booking->id]) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Report a problem with this trip',input:'text',inputLabel:'What happened?',inputPlaceholder:'Briefly describe the issue',showCancelButton:true,confirmButtonText:'Submit'}).then(r=>{ if(r.isConfirmed && r.value){ this.querySelector('[name=reason]').value = r.value; this.submit(); } })">
+                                @csrf
+                                <input type="hidden" name="reason" value="">
+                                <button type="submit" class="text-sm font-medium text-slate-400 hover:text-red-600">Report</button>
+                            </form>
+                        @endif
                     </div>
                 </div>
             @endforeach

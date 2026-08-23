@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementContro
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CarpoolPayoutController as AdminCarpoolPayoutController;
+use App\Http\Controllers\Admin\CarpoolReportController as AdminCarpoolReportController;
 use App\Http\Controllers\Admin\CarpoolScheduleController as AdminCarpoolScheduleController;
 use App\Http\Controllers\Admin\CarpoolSettingsController as AdminCarpoolSettingsController;
 use App\Http\Controllers\Admin\CompanyController as AdminCompanyController;
@@ -385,6 +386,17 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
         Route::prefix('carpooling/settings')->name('carpooling.settings.')->group(function () {
             Route::get('/', [AdminCarpoolSettingsController::class, 'edit'])->name('edit');
             Route::put('/', [AdminCarpoolSettingsController::class, 'update'])->name('update');
+        });
+
+        Route::prefix('carpooling/reports')->name('carpooling.reports.')->group(function () {
+            Route::get('/', [AdminCarpoolReportController::class, 'index'])->name('index');
+            Route::get('/days', [AdminCarpoolReportController::class, 'days'])->name('days');
+            Route::get('/drivers', [AdminCarpoolReportController::class, 'drivers'])->name('drivers');
+            Route::get('/passengers', [AdminCarpoolReportController::class, 'passengers'])->name('passengers');
+            Route::get('/payments', [AdminCarpoolReportController::class, 'payments'])->name('payments');
+            Route::get('/complaints', [AdminCarpoolReportController::class, 'complaints'])->name('complaints');
+            Route::post('/complaints/{report}/resolve', [AdminCarpoolReportController::class, 'resolveComplaint'])->name('complaints.resolve');
+            Route::get('/export/{type}', [AdminCarpoolReportController::class, 'export'])->name('export');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {
