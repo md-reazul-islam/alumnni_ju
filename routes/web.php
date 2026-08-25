@@ -10,6 +10,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
+use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
 use App\Http\Controllers\Admin\CarpoolPayoutController as AdminCarpoolPayoutController;
 use App\Http\Controllers\Admin\CarpoolReportController as AdminCarpoolReportController;
@@ -447,6 +448,11 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{profile}/reject', [AdminMatrimonyProfileController::class, 'reject'])->name('reject');
             Route::post('/{profile}/suspend', [AdminMatrimonyProfileController::class, 'suspend'])->name('suspend');
             Route::post('/{profile}/verify', [AdminMatrimonyProfileController::class, 'verify'])->name('verify');
+        });
+
+        Route::prefix('matrimony/conversations')->name('matrimony.conversations.')->group(function () {
+            Route::get('/', [AdminMatrimonyConversationController::class, 'index'])->name('index');
+            Route::get('/{conversation}', [AdminMatrimonyConversationController::class, 'show'])->name('show');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {

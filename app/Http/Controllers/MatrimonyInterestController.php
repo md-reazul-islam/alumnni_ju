@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Conversation;
 use App\Models\MatrimonyInterest;
 use App\Models\MatrimonyProfile;
 use App\Notifications\MatrimonyInterestAccepted;
@@ -9,6 +10,7 @@ use App\Notifications\MatrimonyInterestDeclined;
 use App\Notifications\MatrimonyInterestReceived;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class MatrimonyInterestController extends Controller
@@ -75,15 +77,25 @@ class MatrimonyInterestController extends Controller
         $this->ensureOwnsTarget($request, $interest);
         abort_unless($interest->status === MatrimonyInterest::STATUS_PENDING, 422, 'This request has already been responded to.');
 
-        $interest->update([
-            'status' => MatrimonyInterest::STATUS_ACCEPTED,
-            'responded_at' => now(),
-            'responded_by' => $request->user()->id,
-        ]);
+        $conversation = DB::transaction(function () use ($interest, $request) {
+            $conversation = new Conversation(['context' => 'matrimony']);
+            $conversation->subject()->associate($interest);
+            $conversation->save();
+            $conversation->participants()->attach([$interest->requested_by, $request->user()->id]);
+
+            $interest->update([
+                'status' => MatrimonyInterest::STATUS_ACCEPTED,
+                'responded_at' => now(),
+                'responded_by' => $request->user()->id,
+                'conversation_id' => $conversation->id,
+            ]);
+
+            return $conversation;
+        });
 
         $interest->requester->notify(new MatrimonyInterestAccepted($interest));
 
-        return back()->with('status', 'Interest accepted. You can now message each other.');
+        return redirect()->route('messages.index', $conversation)->with('status', 'Interest accepted. You can now message each other.');
     }
 
     public function decline(Request $request, MatrimonyInterest $interest): RedirectResponse

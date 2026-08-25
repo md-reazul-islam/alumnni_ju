@@ -42,6 +42,8 @@
                                 @csrf
                                 <button type="submit" class="btn-secondary btn-sm">Decline</button>
                             </form>
+                        @elseif ($interest->status === 'accepted' && $interest->conversation_id)
+                            <x-button :href="route('messages.index', $interest->conversation_id)" size="sm">Message</x-button>
                         @endif
                     </div>
                 </div>
@@ -67,6 +69,8 @@
                                 @method('DELETE')
                                 <button type="submit" class="text-sm font-medium text-red-600 hover:underline">Withdraw</button>
                             </form>
+                        @elseif ($interest->status === 'accepted' && $interest->conversation_id)
+                            <x-button :href="route('messages.index', $interest->conversation_id)" size="sm">Message</x-button>
                         @endif
                     </div>
                 </div>
