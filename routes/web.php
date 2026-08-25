@@ -42,6 +42,7 @@ use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CarpoolSearchController;
+use App\Http\Controllers\MatrimonyProfileController;
 use App\Http\Controllers\CarpoolStripeWebhookController;
 use App\Http\Controllers\DriverBookingController;
 use App\Http\Controllers\CommentController;
@@ -258,6 +259,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{booking}/accept', [DriverBookingController::class, 'accept'])->middleware('throttle:20,1')->name('accept');
             Route::post('/{booking}/decline', [DriverBookingController::class, 'decline'])->middleware('throttle:20,1')->name('decline');
             Route::delete('/{booking}', [DriverBookingController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
+        });
+    });
+
+    Route::prefix('matrimony')->name('matrimony.')->group(function () {
+        Route::prefix('profiles')->name('profiles.')->group(function () {
+            Route::get('/mine', [MatrimonyProfileController::class, 'mine'])->name('mine');
+            Route::get('/create', [MatrimonyProfileController::class, 'create'])->name('create');
+            Route::post('/create', [MatrimonyProfileController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::get('/{profile}/edit', [MatrimonyProfileController::class, 'edit'])->name('edit');
+            Route::put('/{profile}', [MatrimonyProfileController::class, 'update'])->middleware('throttle:10,1')->name('update');
+            Route::delete('/{profile}', [MatrimonyProfileController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
+            Route::post('/{profile}/submit', [MatrimonyProfileController::class, 'submitForReview'])->middleware('throttle:10,1')->name('submit');
+            Route::post('/{profile}/toggle-active', [MatrimonyProfileController::class, 'toggleActive'])->middleware('throttle:10,1')->name('toggle-active');
         });
     });
 
