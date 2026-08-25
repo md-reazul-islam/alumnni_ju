@@ -284,6 +284,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/{profile}', [MatrimonyProfileController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
             Route::post('/{profile}/submit', [MatrimonyProfileController::class, 'submitForReview'])->middleware('throttle:10,1')->name('submit');
             Route::post('/{profile}/toggle-active', [MatrimonyProfileController::class, 'toggleActive'])->middleware('throttle:10,1')->name('toggle-active');
+            Route::get('/{profile}/viewers', [MatrimonyProfileController::class, 'viewers'])->name('viewers');
         });
 
         Route::prefix('photos')->name('photos.')->group(function () {

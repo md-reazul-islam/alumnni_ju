@@ -23,6 +23,14 @@
         <x-alert variant="success" class="mt-4">{{ session('status') }}</x-alert>
     @endif
 
+    @if (Route::has('matrimony.profiles.viewers'))
+        <div class="mt-4">
+            <a href="{{ route('matrimony.profiles.viewers', $profile) }}" class="text-sm font-medium text-navy-700 hover:underline dark:text-navy-300">
+                {{ $profile->views_count }} profile view(s) &middot; See who viewed you &rarr;
+            </a>
+        </div>
+    @endif
+
     @if ($profile->status === 'rejected' && $profile->rejection_reason)
         <x-alert variant="danger" class="mt-4">{{ $profile->rejection_reason }}</x-alert>
     @endif

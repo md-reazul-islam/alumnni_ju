@@ -40,6 +40,15 @@ class MatrimonyProfileController extends Controller
         return view('matrimony.profiles.mine', compact('profiles'));
     }
 
+    public function viewers(MatrimonyProfile $profile): View
+    {
+        $this->authorize('update', $profile);
+
+        $viewers = $profile->views()->with('viewer')->latest()->paginate(30);
+
+        return view('matrimony.profiles.viewers', compact('profile', 'viewers'));
+    }
+
     public function create(): View
     {
         return view('matrimony.profiles.create');
