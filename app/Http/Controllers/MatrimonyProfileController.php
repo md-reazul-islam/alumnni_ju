@@ -7,6 +7,7 @@ use App\Models\MatrimonyProfileView;
 use App\Services\MatrimonyProfileCompletionCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -121,6 +122,7 @@ class MatrimonyProfileController extends Controller
         $this->authorize('update', $profile);
 
         $profile->update(['is_active' => ! $profile->is_active]);
+        Cache::forget('homepage.content');
 
         return back()->with('status', $profile->is_active ? 'Profile reactivated.' : 'Profile paused — it will not appear in search until reactivated.');
     }
@@ -134,6 +136,7 @@ class MatrimonyProfileController extends Controller
         }
 
         $profile->delete();
+        Cache::forget('homepage.content');
 
         return redirect()->route('matrimony.profiles.mine')->with('status', 'Profile deleted.');
     }

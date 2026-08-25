@@ -9,6 +9,7 @@ use App\Notifications\MatrimonyProfileRejected;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 
 class MatrimonyProfileController extends Controller
@@ -77,6 +78,7 @@ class MatrimonyProfileController extends Controller
         $profile->creator->notify(new MatrimonyProfileApproved($profile));
 
         AuditLogger::log('approved_matrimony_profile', $profile, "Approved matrimony profile \"{$profile->display_name}\".");
+        Cache::forget('homepage.content');
 
         return back()->with('status', 'Profile approved.');
     }
@@ -115,6 +117,7 @@ class MatrimonyProfileController extends Controller
         ]);
 
         AuditLogger::log('suspended_matrimony_profile', $profile, "Suspended matrimony profile \"{$profile->display_name}\".");
+        Cache::forget('homepage.content');
 
         return back()->with('status', 'Profile suspended.');
     }

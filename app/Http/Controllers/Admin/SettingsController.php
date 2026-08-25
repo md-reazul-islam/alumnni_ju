@@ -46,6 +46,7 @@ class SettingsController extends Controller
         'show_jobs' => 'Career Opportunities',
         'show_marketplace' => 'Marketplace (House Rent & Property)',
         'show_carpooling' => 'Carpooling',
+        'show_matrimony' => 'Matrimony',
         'show_stories' => 'Alumni Stories',
         'show_gallery' => 'Gallery',
         'show_library' => 'Your Library',

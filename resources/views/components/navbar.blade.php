@@ -7,6 +7,7 @@
         ['label' => 'Community', 'route' => 'community.index', 'icon' => 'message-square'],
         ['label' => 'Mentorship', 'route' => 'mentorship.index', 'icon' => 'handshake'],
         ['label' => 'Carpooling panel', 'route' => 'carpooling.driver.become', 'icon' => 'car'],
+        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'icon' => 'heart'],
     ];
 @endphp
 

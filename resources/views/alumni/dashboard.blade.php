@@ -17,6 +17,9 @@
         ['label' => 'Find a Ride', 'icon' => 'map', 'route' => 'carpooling.search'],
         ['label' => 'My Ride Requests', 'icon' => 'car', 'route' => 'carpooling.bookings.index'],
         ['label' => 'Become a Driver', 'icon' => 'car', 'route' => 'carpooling.driver.become'],
+        ['label' => 'Browse Matches', 'icon' => 'heart', 'route' => 'matrimony.search'],
+        ['label' => 'Create Matrimony Profile', 'icon' => 'user-plus', 'route' => 'matrimony.profiles.create'],
+        ['label' => 'My Matrimony Profiles', 'icon' => 'heart', 'route' => 'matrimony.profiles.mine'],
     ];
 @endphp
 
