@@ -21,6 +21,7 @@
         ['label' => 'Create Matrimony Profile', 'icon' => 'user-plus', 'route' => 'matrimony.profiles.create'],
         ['label' => 'My Matrimony Profiles', 'icon' => 'heart', 'route' => 'matrimony.profiles.mine'],
         ['label' => 'My Interests', 'icon' => 'heart', 'route' => 'matrimony.interests.mine'],
+        ['label' => 'My Favorites', 'icon' => 'heart', 'route' => 'matrimony.favorites.index'],
     ];
 @endphp
 

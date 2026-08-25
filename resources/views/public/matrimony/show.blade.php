@@ -110,6 +110,18 @@
                     @else
                         <x-button :href="route('login')" variant="secondary" class="mt-4 w-full">Login to Connect</x-button>
                     @endauth
+
+                    @auth
+                        @if ($viewer->id !== $profile->created_by && Route::has('matrimony.favorites.store'))
+                            <form method="POST" action="{{ route($isFavorited ? 'matrimony.favorites.destroy' : 'matrimony.favorites.store', $profile) }}" class="mt-2">
+                                @csrf
+                                @if ($isFavorited) @method('DELETE') @endif
+                                <button type="submit" class="w-full text-sm font-medium text-navy-700 hover:underline dark:text-navy-300">
+                                    {{ $isFavorited ? 'Remove from Favorites' : 'Save to Favorites' }}
+                                </button>
+                            </form>
+                        @endif
+                    @endauth
                 </div>
 
                 <div class="card card-body">

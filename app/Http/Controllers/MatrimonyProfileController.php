@@ -27,7 +27,9 @@ class MatrimonyProfileController extends Controller
 
         $profile->load('photos');
 
-        return view('public.matrimony.show', compact('profile'));
+        $isFavorited = $viewer && $viewer->matrimonyFavorites()->where('matrimony_profile_id', $profile->id)->exists();
+
+        return view('public.matrimony.show', compact('profile', 'isFavorited'));
     }
 
     public function mine(Request $request): View
