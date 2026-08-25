@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
+use App\Http\Controllers\Admin\MatrimonyReportController as AdminMatrimonyReportController;
 use App\Http\Controllers\Admin\CarpoolPayoutController as AdminCarpoolPayoutController;
 use App\Http\Controllers\Admin\CarpoolReportController as AdminCarpoolReportController;
 use App\Http\Controllers\Admin\CarpoolScheduleController as AdminCarpoolScheduleController;
@@ -468,6 +469,15 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
         Route::prefix('matrimony/conversations')->name('matrimony.conversations.')->group(function () {
             Route::get('/', [AdminMatrimonyConversationController::class, 'index'])->name('index');
             Route::get('/{conversation}', [AdminMatrimonyConversationController::class, 'show'])->name('show');
+        });
+
+        Route::prefix('matrimony/reports')->name('matrimony.reports.')->group(function () {
+            Route::get('/', [AdminMatrimonyReportController::class, 'index'])->name('index');
+            Route::get('/profiles', [AdminMatrimonyReportController::class, 'profiles'])->name('profiles');
+            Route::get('/interests', [AdminMatrimonyReportController::class, 'interests'])->name('interests');
+            Route::get('/complaints', [AdminMatrimonyReportController::class, 'complaints'])->name('complaints');
+            Route::post('/complaints/{report}/resolve', [AdminMatrimonyReportController::class, 'resolveComplaint'])->name('complaints.resolve');
+            Route::get('/export/{type}', [AdminMatrimonyReportController::class, 'export'])->name('export');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {

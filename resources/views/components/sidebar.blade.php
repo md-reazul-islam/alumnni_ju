@@ -47,6 +47,7 @@
             ['label' => 'Rejected Profiles', 'route' => 'admin.matrimony.profiles.rejected'],
             ['label' => 'Suspended Profiles', 'route' => 'admin.matrimony.profiles.suspended'],
             ['label' => 'Conversations', 'route' => 'admin.matrimony.conversations.index'],
+            ['label' => 'Reports', 'route' => 'admin.matrimony.reports.index'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CarpoolBooking;
 use App\Models\Comment;
 use App\Models\CommunityPost;
+use App\Models\MatrimonyProfile;
 use App\Models\Report;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -17,6 +18,8 @@ class ReportController extends Controller
         'comment' => Comment::class,
         'carpool_trip' => CarpoolBooking::class,
         'carpool_user' => User::class,
+        'matrimony_profile' => MatrimonyProfile::class,
+        'matrimony_user' => User::class,
     ];
 
     public function store(Request $request, string $type, int $id): RedirectResponse

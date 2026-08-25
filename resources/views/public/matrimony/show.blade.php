@@ -127,6 +127,13 @@
                                 <button type="submit" class="w-full text-sm font-medium text-red-600 hover:underline">Block This Member</button>
                             </form>
                         @endif
+                        @if ($viewer->id !== $profile->created_by)
+                            <form method="POST" action="{{ route('reports.store', ['matrimony_profile', $profile->id]) }}" class="mt-2" onsubmit="event.preventDefault(); Swal.fire({title:'Report this profile',input:'text',inputLabel:'Reason',inputPlaceholder:'Why are you reporting this profile?',showCancelButton:true,confirmButtonText:'Submit'}).then(r=>{ if(r.isConfirmed && r.value){ this.querySelector('[name=reason]').value = r.value; this.submit(); } })">
+                                @csrf
+                                <input type="hidden" name="reason" value="">
+                                <button type="submit" class="w-full text-sm font-medium text-slate-400 hover:text-red-600">Report This Profile</button>
+                            </form>
+                        @endif
                     @endauth
                 </div>
 
