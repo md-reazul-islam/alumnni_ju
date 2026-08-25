@@ -121,6 +121,12 @@
                                 </button>
                             </form>
                         @endif
+                        @if ($viewer->id !== $profile->created_by && Route::has('matrimony.blocks.store'))
+                            <form method="POST" action="{{ route('matrimony.blocks.store', $profile->creator) }}" class="mt-2" onsubmit="return confirm('Block this member? You will no longer see each other on Matrimony.')">
+                                @csrf
+                                <button type="submit" class="w-full text-sm font-medium text-red-600 hover:underline">Block This Member</button>
+                            </form>
+                        @endif
                     @endauth
                 </div>
 

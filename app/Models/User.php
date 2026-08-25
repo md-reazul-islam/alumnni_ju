@@ -176,6 +176,20 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(MatrimonyFavorite::class);
     }
 
+    public function matrimonyBlocksMade(): HasMany
+    {
+        return $this->hasMany(MatrimonyBlock::class, 'blocker_id');
+    }
+
+    public function hasMatrimonyBlockWith(User $other): bool
+    {
+        return MatrimonyBlock::where(function ($q) use ($other) {
+            $q->where('blocker_id', $this->id)->where('blocked_id', $other->id);
+        })->orWhere(function ($q) use ($other) {
+            $q->where('blocker_id', $other->id)->where('blocked_id', $this->id);
+        })->exists();
+    }
+
     public function mentorshipRequestsSent(): HasMany
     {
         return $this->hasMany(MentorshipRequest::class, 'mentee_id');

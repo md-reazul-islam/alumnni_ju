@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MatrimonyBlock;
 use App\Models\MatrimonyProfile;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -22,7 +23,13 @@ class MatrimonySearchController extends Controller
         ]);
 
         $query = MatrimonyProfile::searchable()
-            ->when($request->user(), fn ($q) => $q->where('created_by', '!=', $request->user()->id));
+            ->when($request->user(), function ($q) use ($request) {
+                $userId = $request->user()->id;
+                $blockedIds = MatrimonyBlock::where('blocker_id', $userId)->pluck('blocked_id')
+                    ->merge(MatrimonyBlock::where('blocked_id', $userId)->pluck('blocker_id'));
+
+                $q->where('created_by', '!=', $userId)->whereNotIn('created_by', $blockedIds);
+            });
 
         if (! empty($filters['gender'])) {
             $query->where('gender', $filters['gender']);

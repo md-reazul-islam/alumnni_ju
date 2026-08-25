@@ -44,6 +44,7 @@ use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CarpoolSearchController;
+use App\Http\Controllers\MatrimonyBlockController;
 use App\Http\Controllers\MatrimonyFavoriteController;
 use App\Http\Controllers\MatrimonyInterestController;
 use App\Http\Controllers\MatrimonyPhotoController;
@@ -304,6 +305,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [MatrimonyFavoriteController::class, 'index'])->name('index');
             Route::post('/{profile}', [MatrimonyFavoriteController::class, 'store'])->middleware('throttle:20,1')->name('store');
             Route::delete('/{profile}', [MatrimonyFavoriteController::class, 'destroy'])->middleware('throttle:20,1')->name('destroy');
+        });
+
+        Route::prefix('blocks')->name('blocks.')->group(function () {
+            Route::get('/', [MatrimonyBlockController::class, 'index'])->name('index');
+            Route::post('/{user}', [MatrimonyBlockController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::delete('/{user}', [MatrimonyBlockController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
         });
     });
 

@@ -34,6 +34,7 @@ class MatrimonyInterestController extends Controller
     {
         abort_if($profile->created_by === $request->user()->id, 422, 'You cannot send an interest request to your own profile.');
         abort_unless($profile->status === MatrimonyProfile::STATUS_APPROVED && $profile->is_active, 422, 'This profile is not open to introductions right now.');
+        abort_if($request->user()->hasMatrimonyBlockWith($profile->creator), 422, 'You cannot send an interest request to this profile.');
 
         $data = $request->validate(['message' => ['nullable', 'string', 'max:1000']]);
 

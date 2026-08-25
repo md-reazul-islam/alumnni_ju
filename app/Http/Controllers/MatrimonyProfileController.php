@@ -19,6 +19,7 @@ class MatrimonyProfileController extends Controller
         $canPreview = $viewer && ($viewer->id === $profile->created_by || $viewer->hasPermission('manage-matrimony'));
 
         abort_unless(($profile->status === MatrimonyProfile::STATUS_APPROVED && $profile->is_active) || $canPreview, 404);
+        abort_if($viewer && ! $canPreview && $viewer->hasMatrimonyBlockWith($profile->creator), 404);
 
         if (! $canPreview) {
             $profile->increment('views_count');
