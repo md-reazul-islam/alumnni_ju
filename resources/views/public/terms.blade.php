@@ -25,6 +25,31 @@
                 reserves the right to remove content or suspend accounts that violate these terms.
             </p>
 
+            <h2>Matrimony Section</h2>
+            <p>
+                The Matrimony section is provided to help members, and family members acting on their behalf, connect
+                for the purpose of marriage. By creating or managing a matrimony profile you confirm that: the person
+                described is at least 18 years old; the information provided is accurate to the best of your
+                knowledge; and, if you are creating a profile on behalf of someone else (a child, relative, or ward),
+                you have their permission to do so.
+            </p>
+            <p>
+                Every profile is reviewed by our team before it becomes visible in search, and a "Verified" badge
+                reflects an admin's review of the submitted information — it is not a background check or a
+                guarantee of the profile's accuracy. Full contact details, photos marked private, and family
+                background are only shared with another member after you accept their interest request; you may
+                withdraw a pending request, decline any request, or block another member at any time.
+            </p>
+            <p>
+                Conversations between matched members happen through this platform and may be reviewed by our
+                administrators for safety and to investigate reported misconduct. <strong>Never send money, gifts,
+                or financial or banking information to someone you have only met through this platform</strong> —
+                report any request for money, pressure to move the conversation off-platform quickly, or other
+                suspicious behavior using the Report tools provided. We do not mediate or guarantee the outcome of
+                any introduction, and the Alumni Association is not a party to, and bears no responsibility for, any
+                relationship, engagement, or marriage that results from using this section.
+            </p>
+
             <h2>Donations</h2>
             <p>
                 Donations made through this platform support the causes selected by the donor. Payment information

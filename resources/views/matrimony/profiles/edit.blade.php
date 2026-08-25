@@ -57,7 +57,7 @@
             @endif
             <label class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
                 <input type="checkbox" name="terms_accepted" value="1" class="mt-1 form-checkbox" required>
-                <span>I confirm the information provided is accurate, I have the right to create this profile, and I agree to the matrimony section's terms of use.</span>
+                <span>I confirm the information provided is accurate, I have the right to create this profile, and I agree to the <a href="{{ route('terms') }}" target="_blank" class="text-navy-700 underline dark:text-navy-300">Matrimony Section terms</a>.</span>
             </label>
             <div class="flex justify-end">
                 <x-button type="submit" :disabled="$profile->profile_completion < 80">Submit for Review</x-button>
