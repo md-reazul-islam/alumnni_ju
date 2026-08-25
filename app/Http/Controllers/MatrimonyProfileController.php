@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\MatrimonyProfile;
+use App\Models\MatrimonyProfileView;
 use App\Services\MatrimonyProfileCompletionCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,23 @@ use Illuminate\View\View;
 
 class MatrimonyProfileController extends Controller
 {
+    public function show(Request $request, MatrimonyProfile $profile): View
+    {
+        $viewer = $request->user();
+        $canPreview = $viewer && ($viewer->id === $profile->created_by || $viewer->hasPermission('manage-matrimony'));
+
+        abort_unless(($profile->status === MatrimonyProfile::STATUS_APPROVED && $profile->is_active) || $canPreview, 404);
+
+        if (! $canPreview) {
+            $profile->increment('views_count');
+            MatrimonyProfileView::create(['matrimony_profile_id' => $profile->id, 'viewer_id' => $viewer?->id]);
+        }
+
+        $profile->load('photos');
+
+        return view('public.matrimony.show', compact('profile'));
+    }
+
     public function mine(Request $request): View
     {
         $profiles = $request->user()->matrimonyProfiles()->with('photos')->latest()->get();
