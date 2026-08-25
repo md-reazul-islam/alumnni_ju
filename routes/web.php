@@ -42,6 +42,7 @@ use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CarpoolSearchController;
+use App\Http\Controllers\MatrimonyPhotoController;
 use App\Http\Controllers\MatrimonyProfileController;
 use App\Http\Controllers\CarpoolStripeWebhookController;
 use App\Http\Controllers\DriverBookingController;
@@ -272,6 +273,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/{profile}', [MatrimonyProfileController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
             Route::post('/{profile}/submit', [MatrimonyProfileController::class, 'submitForReview'])->middleware('throttle:10,1')->name('submit');
             Route::post('/{profile}/toggle-active', [MatrimonyProfileController::class, 'toggleActive'])->middleware('throttle:10,1')->name('toggle-active');
+        });
+
+        Route::prefix('photos')->name('photos.')->group(function () {
+            Route::get('/{profile}', [MatrimonyPhotoController::class, 'index'])->name('index');
+            Route::post('/{profile}', [MatrimonyPhotoController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::post('/photo/{photo}/set-primary', [MatrimonyPhotoController::class, 'setPrimary'])->middleware('throttle:20,1')->name('set-primary');
+            Route::delete('/photo/{photo}', [MatrimonyPhotoController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
         });
     });
 
