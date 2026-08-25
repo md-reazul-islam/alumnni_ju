@@ -43,6 +43,7 @@ use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
 use App\Http\Controllers\CarpoolSearchController;
+use App\Http\Controllers\MatrimonyInterestController;
 use App\Http\Controllers\MatrimonyPhotoController;
 use App\Http\Controllers\MatrimonyProfileController;
 use App\Http\Controllers\MatrimonySearchController;
@@ -176,7 +177,7 @@ Route::prefix('carpooling')->name('carpooling.')->group(function () {
 
 Route::prefix('matrimony')->name('matrimony.')->group(function () {
     Route::get('/', [MatrimonySearchController::class, 'index'])->name('search');
-    Route::get('/{profile}', [MatrimonyProfileController::class, 'show'])->name('show');
+    Route::get('/{profile}', [MatrimonyProfileController::class, 'show'])->name('show')->where('profile', '[0-9]+');
 });
 
 Route::post('/stripe/carpool/webhook', [CarpoolStripeWebhookController::class, 'handle'])->name('carpooling.stripe.webhook');
@@ -287,6 +288,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{profile}', [MatrimonyPhotoController::class, 'store'])->middleware('throttle:10,1')->name('store');
             Route::post('/photo/{photo}/set-primary', [MatrimonyPhotoController::class, 'setPrimary'])->middleware('throttle:20,1')->name('set-primary');
             Route::delete('/photo/{photo}', [MatrimonyPhotoController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
+        });
+
+        Route::prefix('interests')->name('interests.')->group(function () {
+            Route::get('/', [MatrimonyInterestController::class, 'mine'])->name('mine');
+            Route::post('/{profile}', [MatrimonyInterestController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::post('/{interest}/accept', [MatrimonyInterestController::class, 'accept'])->middleware('throttle:20,1')->name('accept');
+            Route::post('/{interest}/decline', [MatrimonyInterestController::class, 'decline'])->middleware('throttle:20,1')->name('decline');
+            Route::delete('/{interest}', [MatrimonyInterestController::class, 'withdraw'])->middleware('throttle:10,1')->name('withdraw');
         });
     });
 
