@@ -161,6 +161,21 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(CarpoolBooking::class, 'passenger_id');
     }
 
+    public function matrimonyProfiles(): HasMany
+    {
+        return $this->hasMany(MatrimonyProfile::class, 'created_by');
+    }
+
+    public function matrimonyInterestsSent(): HasMany
+    {
+        return $this->hasMany(MatrimonyInterest::class, 'requested_by');
+    }
+
+    public function matrimonyFavorites(): HasMany
+    {
+        return $this->hasMany(MatrimonyFavorite::class);
+    }
+
     public function mentorshipRequestsSent(): HasMany
     {
         return $this->hasMany(MentorshipRequest::class, 'mentee_id');
