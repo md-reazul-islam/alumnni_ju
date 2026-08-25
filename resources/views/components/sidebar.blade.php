@@ -41,6 +41,12 @@
             ['label' => 'Reports', 'route' => 'admin.carpooling.reports.index'],
             ['label' => 'Carpooling Settings', 'route' => 'admin.carpooling.settings.edit'],
         ]],
+        ['label' => 'Matrimony', 'icon' => 'heart', 'match' => 'admin.matrimony.*', 'permission' => 'manage-matrimony', 'children' => [
+            ['label' => 'Pending Profiles', 'route' => 'admin.matrimony.profiles.pending'],
+            ['label' => 'Approved Profiles', 'route' => 'admin.matrimony.profiles.approved'],
+            ['label' => 'Rejected Profiles', 'route' => 'admin.matrimony.profiles.rejected'],
+            ['label' => 'Suspended Profiles', 'route' => 'admin.matrimony.profiles.suspended'],
+        ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
             ['label' => 'Add Book', 'route' => 'admin.library.create'],

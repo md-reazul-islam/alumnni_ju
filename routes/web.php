@@ -10,6 +10,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
+use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
 use App\Http\Controllers\Admin\CarpoolPayoutController as AdminCarpoolPayoutController;
 use App\Http\Controllers\Admin\CarpoolReportController as AdminCarpoolReportController;
 use App\Http\Controllers\Admin\CarpoolScheduleController as AdminCarpoolScheduleController;
@@ -419,6 +420,18 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/complaints', [AdminCarpoolReportController::class, 'complaints'])->name('complaints');
             Route::post('/complaints/{report}/resolve', [AdminCarpoolReportController::class, 'resolveComplaint'])->name('complaints.resolve');
             Route::get('/export/{type}', [AdminCarpoolReportController::class, 'export'])->name('export');
+        });
+
+        Route::prefix('matrimony/profiles')->name('matrimony.profiles.')->group(function () {
+            Route::get('/pending', [AdminMatrimonyProfileController::class, 'pending'])->name('pending');
+            Route::get('/approved', [AdminMatrimonyProfileController::class, 'approvedIndex'])->name('approved');
+            Route::get('/rejected', [AdminMatrimonyProfileController::class, 'rejectedIndex'])->name('rejected');
+            Route::get('/suspended', [AdminMatrimonyProfileController::class, 'suspendedIndex'])->name('suspended');
+            Route::get('/{profile}', [AdminMatrimonyProfileController::class, 'show'])->name('show');
+            Route::post('/{profile}/approve', [AdminMatrimonyProfileController::class, 'approve'])->name('approve');
+            Route::post('/{profile}/reject', [AdminMatrimonyProfileController::class, 'reject'])->name('reject');
+            Route::post('/{profile}/suspend', [AdminMatrimonyProfileController::class, 'suspend'])->name('suspend');
+            Route::post('/{profile}/verify', [AdminMatrimonyProfileController::class, 'verify'])->name('verify');
         });
 
         Route::prefix('marketplace/categories')->name('marketplace.categories.')->group(function () {
