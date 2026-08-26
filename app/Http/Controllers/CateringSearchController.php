@@ -20,4 +20,20 @@ class CateringSearchController extends Controller
 
         return view('public.catering.search', compact('categories', 'foodItems'));
     }
+
+    public function show(CateringFoodItem $foodItem): View
+    {
+        abort_unless($foodItem->is_active, 404);
+
+        $foodItem->load('categories');
+
+        $relatedItems = CateringFoodItem::active()
+            ->whereHas('categories', fn ($q) => $q->whereIn('catering_program_categories.id', $foodItem->categories->pluck('id')))
+            ->where('id', '!=', $foodItem->id)
+            ->with('categories')
+            ->limit(4)
+            ->get();
+
+        return view('public.catering.item', compact('foodItem', 'relatedItems'));
+    }
 }

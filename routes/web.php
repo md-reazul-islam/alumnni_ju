@@ -193,6 +193,7 @@ Route::prefix('carpooling')->name('carpooling.')->group(function () {
 
 Route::prefix('catering')->name('catering.')->group(function () {
     Route::get('/', [CateringSearchController::class, 'index'])->name('search');
+    Route::get('/items/{foodItem}', [CateringSearchController::class, 'show'])->name('items.show');
 });
 
 Route::prefix('catering/homemade')->name('catering.homemade.')->group(function () {

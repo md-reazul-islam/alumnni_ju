@@ -468,4 +468,56 @@ Alpine.data('siteAssistant', () => ({
     },
 }));
 
+Alpine.store('cateringCart', {
+    items: (() => {
+        try {
+            return JSON.parse(localStorage.getItem('cateringCart') || '[]');
+        } catch (e) {
+            return [];
+        }
+    })(),
+
+    persist() {
+        try {
+            localStorage.setItem('cateringCart', JSON.stringify(this.items));
+        } catch (e) {
+            // Storage unavailable (private browsing, quota, etc.) — cart stays in-memory only.
+        }
+    },
+
+    add(item, qty = 1) {
+        const existing = item.food_item_id
+            ? this.items.find((i) => i.food_item_id === item.food_item_id)
+            : null;
+
+        if (existing) {
+            existing.quantity += qty;
+        } else {
+            this.items.push({ ...item, quantity: qty });
+        }
+
+        this.persist();
+    },
+
+    removeAt(index) {
+        this.items.splice(index, 1);
+        this.persist();
+    },
+
+    updateQuantity(index, qty) {
+        qty = Math.max(1, parseInt(qty) || 1);
+        this.items[index].quantity = qty;
+        this.persist();
+    },
+
+    clear() {
+        this.items = [];
+        this.persist();
+    },
+
+    get count() {
+        return this.items.reduce((sum, i) => sum + i.quantity, 0);
+    },
+});
+
 Alpine.start();

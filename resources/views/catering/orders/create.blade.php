@@ -8,6 +8,7 @@
             'name' => $item->name,
             'base_price' => (float) $item->base_price,
             'unit_label' => $item->unit_label,
+            'image' => $item->image_url,
         ])->values(),
     ])->values();
 @endphp
@@ -19,24 +20,24 @@
         x-data="{
             categories: {{ \Illuminate\Support\Js::from($categoriesForJs) }},
             selectedCategoryId: {{ $selectedCategoryId }},
-            cart: [],
             customName: '',
             customQty: 1,
+            get cart() {
+                return Alpine.store('cateringCart').items;
+            },
             get selectedCategory() {
                 return this.categories.find(c => c.id === this.selectedCategoryId) ?? null;
             },
             addItem(item) {
-                const existing = this.cart.find(c => c.food_item_id === item.id);
-                if (existing) { existing.quantity++; }
-                else { this.cart.push({ food_item_id: item.id, name: item.name, unit_price: item.base_price, unit_label: item.unit_label, quantity: 1 }); }
+                Alpine.store('cateringCart').add({ food_item_id: item.id, name: item.name, unit_price: item.base_price, unit_label: item.unit_label, image: item.image ?? null });
             },
             addCustom() {
                 if (!this.customName.trim()) return;
-                this.cart.push({ custom_name: this.customName.trim(), name: this.customName.trim(), quantity: Math.max(1, parseInt(this.customQty) || 1) });
+                Alpine.store('cateringCart').add({ custom_name: this.customName.trim(), name: this.customName.trim() }, Math.max(1, parseInt(this.customQty) || 1));
                 this.customName = '';
                 this.customQty = 1;
             },
-            removeAt(index) { this.cart.splice(index, 1); },
+            removeAt(index) { Alpine.store('cateringCart').removeAt(index); },
             get cartPayload() {
                 return this.cart.map(c => ({ food_item_id: c.food_item_id ?? null, custom_name: c.custom_name ?? null, quantity: c.quantity }));
             },
@@ -55,7 +56,7 @@
             </x-alert>
         @endif
 
-        <form method="POST" action="{{ route('catering.orders.store') }}" @submit="document.getElementById('items_json').value = JSON.stringify(cartPayload)" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <form method="POST" action="{{ route('catering.orders.store') }}" @submit="document.getElementById('items_json').value = JSON.stringify(cartPayload); Alpine.store('cateringCart').clear()" class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
             @csrf
             <input type="hidden" id="items_json" name="items_json" value="[]">
             <input type="hidden" name="catering_program_category_id" :value="selectedCategoryId">
