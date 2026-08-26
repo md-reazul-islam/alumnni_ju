@@ -53,53 +53,52 @@
                 nextMonth() { this.viewDate = new Date(this.viewDate.getFullYear(), this.viewDate.getMonth() + 1, 1); },
                 goToDate(dateStr) { window.location.href = '{{ route('carpooling.search') }}?date=' + dateStr; },
             }"
-            class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3"
+            class="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-5"
         >
-            <div class="card p-4 lg:col-span-2">
+            <div class="card p-3 lg:col-span-3">
                 <div class="flex items-center justify-between">
-                    <button type="button" @click="prevMonth()" class="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-navy-800">
-                        <x-icon name="chevron-left" class="h-5 w-5" />
+                    <button type="button" @click="prevMonth()" class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-navy-800 dark:hover:text-white">
+                        <x-icon name="chevron-left" class="h-4 w-4" />
                     </button>
-                    <p class="font-semibold text-slate-900 dark:text-white" x-text="monthLabel"></p>
-                    <button type="button" @click="nextMonth()" class="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-navy-800">
-                        <x-icon name="chevron-right" class="h-5 w-5" />
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white" x-text="monthLabel"></p>
+                    <button type="button" @click="nextMonth()" class="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-navy-800 dark:hover:text-white">
+                        <x-icon name="chevron-right" class="h-4 w-4" />
                     </button>
                 </div>
 
-                <div class="mt-4 grid grid-cols-7 gap-1 text-center text-xs font-medium text-slate-400">
-                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+                <div class="mt-3 grid grid-cols-7 gap-1 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                    <div>Su</div><div>Mo</div><div>Tu</div><div>We</div><div>Th</div><div>Fr</div><div>Sa</div>
                 </div>
 
                 <template x-for="(week, wi) in weeks" :key="wi">
-                    <div class="grid grid-cols-7 gap-1">
+                    <div class="mt-1 grid grid-cols-7 gap-1">
                         <template x-for="(cell, ci) in week" :key="ci">
                             <button
                                 type="button"
                                 :disabled="!cell"
                                 @click="cell && cell.trips.length && goToDate(cell.dateStr)"
-                                class="flex aspect-square flex-col items-center justify-center rounded-lg text-sm"
-                                :class="cell ? (cell.trips.length ? 'bg-navy-50 text-navy-900 hover:bg-navy-100 dark:bg-navy-800 dark:text-white cursor-pointer' : 'text-slate-500 dark:text-slate-400') : ''"
+                                class="mx-auto flex aspect-square w-full max-w-9 flex-col items-center justify-center rounded-lg text-xs transition-colors"
+                                :class="cell ? (cell.trips.length ? 'cursor-pointer bg-navy-50 font-semibold text-navy-900 hover:bg-navy-100 dark:bg-navy-800 dark:text-white' : 'text-slate-400 dark:text-slate-500') : ''"
                             >
                                 <span x-show="cell" x-text="cell?.day"></span>
-                                <span x-show="cell && cell.trips.length" class="mt-0.5 flex items-center gap-0.5 text-[10px] font-semibold text-navy-700 dark:text-navy-200">
-                                    <x-icon name="car" class="h-3 w-3" />
-                                    <span x-text="cell?.trips.length"></span>
-                                </span>
+                                <span x-show="cell && cell.trips.length" class="mt-0.5 flex h-3 min-w-3 items-center justify-center rounded-full bg-navy-600 px-1 text-[8px] font-bold leading-none text-white dark:bg-navy-400 dark:text-navy-950" x-text="cell?.trips.length"></span>
                             </button>
                         </template>
                     </div>
                 </template>
             </div>
 
-            <div class="card card-body">
-                <h3 class="font-semibold text-slate-900 dark:text-white">Next Trips</h3>
-                <div class="mt-3 space-y-3">
+            <div class="card card-body lg:col-span-2">
+                <h3 class="text-sm font-semibold text-slate-900 dark:text-white">Next Trips</h3>
+                <div class="mt-3 divide-y divide-slate-100 dark:divide-navy-800">
                     @foreach ($carpoolSchedules->take(5) as $schedule)
-                        <div class="flex items-start gap-2 text-sm">
-                            <x-icon name="car" class="mt-0.5 h-4 w-4 flex-shrink-0 text-navy-600 dark:text-navy-300" />
-                            <div>
-                                <p class="font-medium text-slate-900 dark:text-white">{{ $schedule->origin }} &rarr; {{ $schedule->destination }}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ $schedule->departure_date->format('M j') }} at {{ \Illuminate\Support\Carbon::parse($schedule->departure_time)->format('g:i A') }} &middot; ${{ number_format($schedule->price_per_seat, 2) }}/seat</p>
+                        <div class="flex items-start gap-2 py-2 first:pt-0 last:pb-0">
+                            <span class="mt-0.5 flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
+                                <x-icon name="car" class="h-3.5 w-3.5" />
+                            </span>
+                            <div class="min-w-0">
+                                <p class="truncate text-xs font-medium text-slate-900 dark:text-white">{{ $schedule->origin }} &rarr; {{ $schedule->destination }}</p>
+                                <p class="truncate text-[10px] text-slate-500 dark:text-slate-400">{{ $schedule->departure_date->format('M j') }} at {{ \Illuminate\Support\Carbon::parse($schedule->departure_time)->format('g:i A') }} &middot; ${{ number_format($schedule->price_per_seat, 2) }}/seat</p>
                             </div>
                         </div>
                     @endforeach
