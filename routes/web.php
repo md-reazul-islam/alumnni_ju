@@ -45,6 +45,7 @@ use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
 use App\Http\Controllers\CarpoolBookingController;
 use App\Http\Controllers\CateringOrderController;
+use App\Http\Controllers\CateringStripeWebhookController;
 use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
@@ -189,6 +190,7 @@ Route::prefix('matrimony')->name('matrimony.')->group(function () {
 });
 
 Route::post('/stripe/carpool/webhook', [CarpoolStripeWebhookController::class, 'handle'])->name('carpooling.stripe.webhook');
+Route::post('/stripe/catering/webhook', [CateringStripeWebhookController::class, 'handle'])->name('catering.stripe.webhook');
 
 Route::prefix('news')->name('news.')->group(function () {
     Route::get('/', [NewsController::class, 'index'])->name('index');
