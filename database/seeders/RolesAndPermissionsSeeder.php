@@ -26,6 +26,7 @@ class RolesAndPermissionsSeeder extends Seeder
             'manage-marketplace' => 'marketplace',
             'manage-carpooling' => 'carpooling',
             'manage-matrimony' => 'matrimony',
+            'manage-catering' => 'catering',
             'manage-donations' => 'finance',
             'manage-scholarships' => 'finance',
             'manage-mentorship' => 'mentorship',
@@ -58,7 +59,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'permissions' => [
                     'manage-alumni', 'manage-events', 'manage-jobs', 'manage-news',
                     'manage-stories', 'manage-announcements', 'manage-community', 'manage-gallery', 'manage-library',
-                    'manage-marketplace', 'manage-carpooling', 'manage-matrimony',
+                    'manage-marketplace', 'manage-carpooling', 'manage-matrimony', 'manage-catering',
                 ],
             ],
             Role::MODERATOR => [
