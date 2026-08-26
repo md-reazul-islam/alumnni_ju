@@ -43,6 +43,7 @@ use App\Http\Controllers\Alumni\ProfileController as AlumniProfileController;
 use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
 use App\Http\Controllers\CarpoolBookingController;
+use App\Http\Controllers\CateringOrderController;
 use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
 use App\Http\Controllers\CarpoolScheduleController;
@@ -315,6 +316,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [MatrimonyBlockController::class, 'index'])->name('index');
             Route::post('/{user}', [MatrimonyBlockController::class, 'store'])->middleware('throttle:10,1')->name('store');
             Route::delete('/{user}', [MatrimonyBlockController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
+        });
+    });
+
+    Route::prefix('catering')->name('catering.')->group(function () {
+        Route::prefix('orders')->name('orders.')->group(function () {
+            Route::get('/create', [CateringOrderController::class, 'create'])->name('create');
+            Route::post('/create', [CateringOrderController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::get('/mine', [CateringOrderController::class, 'mine'])->name('mine');
+            Route::get('/{order}', [CateringOrderController::class, 'show'])->name('show');
         });
     });
 

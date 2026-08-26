@@ -22,6 +22,8 @@
         ['label' => 'My Matrimony Profiles', 'icon' => 'heart', 'route' => 'matrimony.profiles.mine'],
         ['label' => 'My Interests', 'icon' => 'heart', 'route' => 'matrimony.interests.mine'],
         ['label' => 'My Favorites', 'icon' => 'heart', 'route' => 'matrimony.favorites.index'],
+        ['label' => 'Order Catering', 'icon' => 'utensils', 'route' => 'catering.orders.create'],
+        ['label' => 'My Catering Orders', 'icon' => 'utensils', 'route' => 'catering.orders.mine'],
     ];
 @endphp
 
