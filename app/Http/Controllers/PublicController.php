@@ -40,7 +40,7 @@ class PublicController extends Controller
                     ->latest('verified_at')
                     ->limit(4)
                     ->get(),
-                'upcomingEvents' => Event::published()->upcoming()->orderBy('event_date')->limit(3)->get(),
+                'upcomingEvents' => Event::published()->upcoming()->orderBy('event_date')->limit(6)->get(),
                 'jobs' => JobPosting::approved()->with('company')->latest('approved_at')->limit(4)->get(),
                 'marketplaceCategories' => MarketplaceCategory::active()->orderBy('name')->get(),
                 'marketplaceListings' => MarketplaceListing::approved()->with(['category', 'images'])->inRandomOrder()->limit(12)->get(),
@@ -52,8 +52,8 @@ class PublicController extends Controller
                     ->limit(300)
                     ->get(),
                 'matrimonyProfiles' => MatrimonyProfile::searchable()->with('photos')->inRandomOrder()->limit(8)->get(),
-                'stories' => AlumniStory::published()->with('alumniProfile.user')->latest('published_at')->limit(3)->get(),
-                'news' => News::published()->latest('published_at')->limit(3)->get(),
+                'stories' => AlumniStory::published()->with('alumniProfile.user')->latest('published_at')->limit(6)->get(),
+                'news' => News::published()->latest('published_at')->limit(6)->get(),
                 'gallery' => GalleryPhoto::approved()->with('user')->latest('approved_at')->limit(8)->get(),
                 'library' => Book::available()->with('donor')->latest('approved_at')->limit(8)->get(),
             ];

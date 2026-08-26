@@ -13,32 +13,21 @@
         @if ($stories->isEmpty())
             <x-empty-state icon="book-open" title="No alumni stories published yet" class="mt-8" />
         @else
-            <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-3">
+            <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
                 @foreach ($stories as $story)
-                    <div class="card overflow-hidden transition hover:shadow-popover">
-                        <a href="{{ route('stories.show', $story) }}" class="block">
-                            <div class="flex h-40 items-center justify-center bg-gold-50 text-gold-500 dark:bg-navy-800">
-                                @if ($story->cover_image_url)
-                                    <img src="{{ $story->cover_image_url }}" class="h-full w-full object-cover" alt="{{ $story->title }}">
-                                @else
-                                    <x-icon name="book-open" class="h-10 w-10" />
-                                @endif
-                            </div>
-                            <div class="card-body pb-0">
-                                <p class="font-semibold text-slate-900 dark:text-white">{{ $story->title }}</p>
-                                <p class="mt-1 line-clamp-2 text-sm text-slate-500 dark:text-slate-400">{{ Str::limit(strip_tags($story->story), 100) }}</p>
-                            </div>
-                        </a>
-                        <div class="card-body pt-3">
-                            @can('view', $story->alumniProfile)
-                                <a href="{{ route('alumni.profile.show', $story->alumniProfile->user) }}" class="text-xs font-medium text-navy-600 hover:underline dark:text-navy-300">
-                                    {{ $story->alumniProfile->user->full_name }}
-                                </a>
+                    <a href="{{ route('stories.show', $story) }}" class="card overflow-hidden transition hover:shadow-popover">
+                        <div class="flex h-20 items-center justify-center bg-gold-50 text-gold-500 dark:bg-navy-800 sm:h-24">
+                            @if ($story->cover_image_url)
+                                <img src="{{ $story->cover_image_url }}" class="h-full w-full object-cover" alt="{{ $story->title }}">
                             @else
-                                <p class="text-xs font-medium text-navy-600 dark:text-navy-300">{{ $story->alumniProfile->user->full_name }}</p>
-                            @endcan
+                                <x-icon name="book-open" class="h-6 w-6" />
+                            @endif
                         </div>
-                    </div>
+                        <div class="p-2.5">
+                            <p class="w-full truncate text-xs font-semibold text-slate-900 dark:text-white sm:text-sm">{{ $story->title }}</p>
+                            <p class="mt-1 w-full truncate text-[10px] font-medium text-navy-600 dark:text-navy-300 sm:text-xs">{{ $story->alumniProfile->user->full_name }}</p>
+                        </div>
+                    </a>
                 @endforeach
             </div>
         @endif

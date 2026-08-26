@@ -1,4 +1,5 @@
 @php
+    $compact = $compact ?? false;
     $marketplaceItems = $listings->map(fn ($listing) => [
         'id' => $listing->id,
         'title' => $listing->title,
@@ -42,24 +43,43 @@
         <p class="mt-8 text-sm text-navy-300">No listings match your search.</p>
     </template>
 
-    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <template x-for="item in filtered" :key="item.id">
-            <a :href="item.url" class="card overflow-hidden transition hover:shadow-popover">
-                <div class="flex h-36 items-center justify-center bg-navy-100 text-navy-400 dark:bg-navy-800">
-                    <img x-show="item.image" :src="item.image" class="h-full w-full object-cover">
-                    <template x-if="!item.image"><x-icon name="image" class="h-8 w-8" /></template>
-                </div>
-                <div class="card-body">
-                    <x-badge variant="info" x-text="item.category"></x-badge>
-                    <p class="mt-2 font-semibold text-slate-900 dark:text-white" x-text="item.title"></p>
-                    <p class="mt-1 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
-                        <x-icon name="map-pin" class="h-4 w-4" /> <span x-text="item.location"></span>
-                    </p>
-                    <p class="mt-2 font-semibold text-navy-700 dark:text-gold-400">
-                        $<span x-text="item.price"></span><template x-if="item.price_unit !== 'total'"><span x-text="' / ' + item.price_unit.replace('per_', '')"></span></template>
-                    </p>
-                </div>
-            </a>
-        </template>
-    </div>
+    @if ($compact)
+        <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
+            <template x-for="item in filtered" :key="item.id">
+                <a :href="item.url" class="card overflow-hidden transition hover:shadow-popover">
+                    <div class="flex h-20 items-center justify-center bg-navy-100 text-navy-400 dark:bg-navy-800 sm:h-24">
+                        <img x-show="item.image" :src="item.image" class="h-full w-full object-cover">
+                        <template x-if="!item.image"><x-icon name="image" class="h-6 w-6" /></template>
+                    </div>
+                    <div class="p-2.5">
+                        <p class="w-full truncate text-xs font-semibold text-slate-900 dark:text-white sm:text-sm" x-text="item.title"></p>
+                        <p class="mt-1 w-full truncate text-[10px] font-semibold text-navy-700 dark:text-gold-400 sm:text-xs">
+                            $<span x-text="item.price"></span>
+                        </p>
+                    </div>
+                </a>
+            </template>
+        </div>
+    @else
+        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <template x-for="item in filtered" :key="item.id">
+                <a :href="item.url" class="card overflow-hidden transition hover:shadow-popover">
+                    <div class="flex h-36 items-center justify-center bg-navy-100 text-navy-400 dark:bg-navy-800">
+                        <img x-show="item.image" :src="item.image" class="h-full w-full object-cover">
+                        <template x-if="!item.image"><x-icon name="image" class="h-8 w-8" /></template>
+                    </div>
+                    <div class="card-body">
+                        <x-badge variant="info" x-text="item.category"></x-badge>
+                        <p class="mt-2 font-semibold text-slate-900 dark:text-white" x-text="item.title"></p>
+                        <p class="mt-1 flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400">
+                            <x-icon name="map-pin" class="h-4 w-4" /> <span x-text="item.location"></span>
+                        </p>
+                        <p class="mt-2 font-semibold text-navy-700 dark:text-gold-400">
+                            $<span x-text="item.price"></span><template x-if="item.price_unit !== 'total'"><span x-text="' / ' + item.price_unit.replace('per_', '')"></span></template>
+                        </p>
+                    </div>
+                </a>
+            </template>
+        </div>
+    @endif
 </div>

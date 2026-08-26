@@ -14,7 +14,7 @@
         <x-empty-state icon="shopping-bag" title="No listings available" description="Approved listings from alumni will appear here." class="mt-8" />
     @else
         <div class="mt-8">
-            @include('public.marketplace.partials.browser', ['listings' => $marketplaceListings, 'categories' => $marketplaceCategories])
+            @include('public.marketplace.partials.browser', ['listings' => $marketplaceListings, 'categories' => $marketplaceCategories, 'compact' => true])
         </div>
     @endif
   </div>

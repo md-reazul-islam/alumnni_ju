@@ -14,7 +14,7 @@
             <x-empty-state icon="book-open" title="No books available yet" class="mt-8" />
         @else
             <div class="mt-8">
-                <x-book-grid :books="$library" />
+                <x-book-grid :books="$library" :compact="true" />
             </div>
         @endif
     </div>
