@@ -6,18 +6,20 @@
     $navItems = array_merge($navItems, [
         ['label' => 'About', 'route' => 'about'],
         ['label' => 'Alumni', 'route' => 'alumni.directory'],
-        ['label' => 'Events', 'route' => 'events.index'],
-        ['label' => 'Careers', 'route' => 'jobs.index'],
-        ['label' => 'Marketplace', 'route' => 'marketplace.index'],
-        ['label' => 'Carpooling', 'route' => 'carpooling.search'],
-        ['label' => 'Matrimony', 'route' => 'matrimony.search'],
-        ['label' => 'Stories', 'route' => 'stories.index'],
-        ['label' => 'News', 'route' => 'news.index'],
-        ['label' => 'Gallery', 'route' => 'gallery.index'],
-        ['label' => 'Library', 'route' => 'library.index'],
+        ['label' => 'Events', 'route' => 'events.index', 'section' => 'show_events'],
+        ['label' => 'Careers', 'route' => 'jobs.index', 'section' => 'show_jobs'],
+        ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
+        ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
+        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
+        ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories'],
+        ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news'],
+        ['label' => 'Gallery', 'route' => 'gallery.index', 'section' => 'show_gallery'],
+        ['label' => 'Library', 'route' => 'library.index', 'section' => 'show_library'],
         ['label' => 'Donate', 'route' => 'donations.index'],
         ['label' => 'Contact', 'route' => 'contact'],
     ]);
+
+    $navItems = array_values(array_filter($navItems, fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0'));
 @endphp
 
 <div x-data="{ mobileOpen: false }">

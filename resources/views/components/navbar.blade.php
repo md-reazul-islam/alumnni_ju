@@ -2,13 +2,15 @@
     $navItems = [
         ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'layout-dashboard'],
         ['label' => 'Directory', 'route' => 'alumni.directory', 'icon' => 'users'],
-        ['label' => 'Events', 'route' => 'events.index', 'icon' => 'calendar'],
-        ['label' => 'Careers', 'route' => 'jobs.index', 'icon' => 'briefcase'],
+        ['label' => 'Events', 'route' => 'events.index', 'icon' => 'calendar', 'section' => 'show_events'],
+        ['label' => 'Careers', 'route' => 'jobs.index', 'icon' => 'briefcase', 'section' => 'show_jobs'],
         ['label' => 'Community', 'route' => 'community.index', 'icon' => 'message-square'],
         ['label' => 'Mentorship', 'route' => 'mentorship.index', 'icon' => 'handshake'],
-        ['label' => 'Carpooling panel', 'route' => 'carpooling.driver.become', 'icon' => 'car'],
-        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'icon' => 'heart'],
+        ['label' => 'Carpooling panel', 'route' => 'carpooling.driver.become', 'icon' => 'car', 'section' => 'show_carpooling'],
+        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'icon' => 'heart', 'section' => 'show_matrimony'],
     ];
+
+    $navItems = array_values(array_filter($navItems, fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0'));
 @endphp
 
 <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90">
