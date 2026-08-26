@@ -53,6 +53,7 @@
             ['label' => 'Program Categories', 'route' => 'admin.catering.categories.index'],
             ['label' => 'Food Items', 'route' => 'admin.catering.items.index'],
             ['label' => 'Orders', 'route' => 'admin.catering.orders.index'],
+            ['label' => 'Home Made Categories', 'route' => 'admin.catering.homemade-categories.index'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],

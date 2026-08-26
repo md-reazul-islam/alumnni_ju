@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
+use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateringHomemadeCategoryController;
 use App\Http\Controllers\Admin\CateringOrderController as AdminCateringOrderController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
@@ -44,6 +45,7 @@ use App\Http\Controllers\Alumni\ProfileController as AlumniProfileController;
 use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
 use App\Http\Controllers\CarpoolBookingController;
+use App\Http\Controllers\CateringHomemadeController;
 use App\Http\Controllers\CateringOrderController;
 use App\Http\Controllers\CateringSearchController;
 use App\Http\Controllers\CateringStripeWebhookController;
@@ -340,6 +342,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{order}/cancel', [CateringOrderController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
             Route::post('/{order}/feedback', [CateringOrderController::class, 'feedback'])->middleware('throttle:10,1')->name('feedback');
         });
+
+        Route::prefix('homemade')->name('homemade.')->group(function () {
+            Route::get('/create', [CateringHomemadeController::class, 'create'])->name('create');
+            Route::post('/create', [CateringHomemadeController::class, 'store'])->middleware('throttle:10,1')->name('store');
+            Route::get('/mine', [CateringHomemadeController::class, 'mine'])->name('mine');
+            Route::get('/{homemadeListing}/edit', [CateringHomemadeController::class, 'edit'])->name('edit');
+            Route::put('/{homemadeListing}', [CateringHomemadeController::class, 'update'])->middleware('throttle:10,1')->name('update');
+            Route::delete('/{homemadeListing}', [CateringHomemadeController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
+        });
     });
 
     Route::prefix('network')->name('connections.')->group(function () {
@@ -536,6 +547,13 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{cateringOrder}/reject', [AdminCateringOrderController::class, 'reject'])->name('reject');
             Route::post('/{cateringOrder}/deliver', [AdminCateringOrderController::class, 'markDelivered'])->name('deliver');
             Route::post('/{cateringOrder}/cancel', [AdminCateringOrderController::class, 'cancel'])->name('cancel');
+        });
+
+        Route::prefix('catering/homemade-categories')->name('catering.homemade-categories.')->group(function () {
+            Route::get('/', [AdminCateringHomemadeCategoryController::class, 'index'])->name('index');
+            Route::post('/', [AdminCateringHomemadeCategoryController::class, 'store'])->name('store');
+            Route::put('/{cateringHomemadeCategory}', [AdminCateringHomemadeCategoryController::class, 'update'])->name('update');
+            Route::delete('/{cateringHomemadeCategory}', [AdminCateringHomemadeCategoryController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {
