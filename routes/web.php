@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateri
 use App\Http\Controllers\Admin\CateringHomemadeListingController as AdminCateringHomemadeListingController;
 use App\Http\Controllers\Admin\CateringHomemadeOrderController as AdminCateringHomemadeOrderController;
 use App\Http\Controllers\Admin\CateringOrderController as AdminCateringOrderController;
+use App\Http\Controllers\Admin\CateringReportController as AdminCateringReportController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
 use App\Http\Controllers\Admin\MatrimonyReportController as AdminMatrimonyReportController;
@@ -582,6 +583,22 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/{homemadeOrder}', [AdminCateringHomemadeOrderController::class, 'show'])->name('show');
             Route::post('/{homemadeOrder}/status', [AdminCateringHomemadeOrderController::class, 'updateStatus'])->name('status');
             Route::post('/{homemadeOrder}/converse/{role}', [AdminCateringHomemadeOrderController::class, 'converse'])->name('converse')->whereIn('role', ['buyer', 'seller']);
+        });
+
+        Route::prefix('catering/reports')->name('catering.reports.')->group(function () {
+            Route::get('/', [AdminCateringReportController::class, 'index'])->name('index');
+            Route::get('/daily', [AdminCateringReportController::class, 'daily'])->name('daily');
+            Route::get('/monthly', [AdminCateringReportController::class, 'monthly'])->name('monthly');
+            Route::get('/delivered', [AdminCateringReportController::class, 'delivered'])->name('delivered');
+            Route::get('/cancelled', [AdminCateringReportController::class, 'cancelled'])->name('cancelled');
+            Route::get('/top-customers', [AdminCateringReportController::class, 'topCustomers'])->name('top-customers');
+            Route::get('/feedback', [AdminCateringReportController::class, 'feedback'])->name('feedback');
+            Route::get('/homemade-orders', [AdminCateringReportController::class, 'homemadeOrders'])->name('homemade-orders');
+            Route::get('/homemade-vendors', [AdminCateringReportController::class, 'homemadeVendors'])->name('homemade-vendors');
+            Route::get('/homemade-categories', [AdminCateringReportController::class, 'homemadeCategories'])->name('homemade-categories');
+            Route::get('/complaints', [AdminCateringReportController::class, 'complaints'])->name('complaints');
+            Route::post('/complaints/{report}/resolve', [AdminCateringReportController::class, 'resolveComplaint'])->name('complaints.resolve');
+            Route::get('/export/{type}', [AdminCateringReportController::class, 'export'])->name('export');
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {

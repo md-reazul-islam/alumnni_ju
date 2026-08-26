@@ -58,6 +58,7 @@
             ['label' => 'Home Made: Approved', 'route' => 'admin.catering.homemade-listings.approved'],
             ['label' => 'Home Made: Rejected', 'route' => 'admin.catering.homemade-listings.rejected'],
             ['label' => 'Home Made Orders', 'route' => 'admin.catering.homemade-orders.index'],
+            ['label' => 'Reports', 'route' => 'admin.catering.reports.index'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CarpoolBooking;
+use App\Models\CateringHomemadeOrder;
+use App\Models\CateringOrder;
 use App\Models\Comment;
 use App\Models\CommunityPost;
 use App\Models\MatrimonyProfile;
@@ -20,6 +22,9 @@ class ReportController extends Controller
         'carpool_user' => User::class,
         'matrimony_profile' => MatrimonyProfile::class,
         'matrimony_user' => User::class,
+        'catering_order' => CateringOrder::class,
+        'catering_homemade_order' => CateringHomemadeOrder::class,
+        'catering_vendor' => User::class,
     ];
 
     public function store(Request $request, string $type, int $id): RedirectResponse
