@@ -6,6 +6,7 @@ use App\Models\CateringFoodItem;
 use App\Models\CateringOrder;
 use App\Models\CateringProgramCategory;
 use App\Models\User;
+use App\Notifications\CateringOrderDeclined;
 use App\Notifications\CateringOrderSubmitted;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -112,5 +113,24 @@ class CateringOrderController extends Controller
         $order->load(['category', 'items.foodItem', 'feedback']);
 
         return view('catering.orders.show', compact('order'));
+    }
+
+    public function decline(Request $request, CateringOrder $order): RedirectResponse
+    {
+        abort_unless($order->customer_id === $request->user()->id, 403);
+        abort_unless($order->status === CateringOrder::STATUS_PRICED, 422, 'This order is not awaiting your decision.');
+
+        $data = $request->validate(['rejection_reason' => ['nullable', 'string', 'max:1000']]);
+
+        $order->update([
+            'status' => CateringOrder::STATUS_DECLINED,
+            'rejection_reason' => $data['rejection_reason'] ?? null,
+            'customer_responded_at' => now(),
+        ]);
+
+        $admins = User::withPermission('manage-catering')->get();
+        Notification::send($admins, new CateringOrderDeclined($order));
+
+        return redirect()->route('catering.orders.show', $order)->with('status', 'You declined this invoice.');
     }
 }

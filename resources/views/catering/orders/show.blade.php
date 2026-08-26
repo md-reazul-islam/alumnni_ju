@@ -60,6 +60,31 @@
                         <div class="flex justify-between"><dt class="text-slate-400">Service Fee ({{ rtrim(rtrim(number_format($order->service_fee_percentage_snapshot, 2), '0'), '.') }}%)</dt><dd>${{ number_format($order->service_fee_amount, 2) }}</dd></div>
                         <div class="mt-1 flex justify-between border-t border-slate-100 pt-1.5 font-semibold text-slate-900 dark:border-navy-800 dark:text-white"><dt>Total</dt><dd>${{ number_format($order->total_amount, 2) }}</dd></div>
                     </dl>
+
+                    @if ($order->status === 'priced')
+                        <div class="mt-4 space-y-2" x-data="{ declining: false }">
+                            @if (Route::has('catering.orders.accept'))
+                                <x-button :href="route('catering.orders.accept', $order)" class="w-full">Accept &amp; Pay</x-button>
+                            @else
+                                <x-badge variant="info">Payment opens soon</x-badge>
+                            @endif
+
+                            <button type="button" @click="declining = !declining" class="w-full text-sm font-medium text-red-600 hover:underline">Decline this invoice</button>
+
+                            <form method="POST" action="{{ route('catering.orders.decline', $order) }}" x-show="declining" x-cloak class="space-y-2">
+                                @csrf
+                                <x-textarea label="Reason (optional)" name="rejection_reason" rows="2" />
+                                <x-button type="submit" variant="secondary" size="sm" class="w-full">Confirm Decline</x-button>
+                            </form>
+                        </div>
+                    @endif
+                </div>
+            @endif
+
+            @if ($order->status === 'declined' && $order->rejection_reason)
+                <div class="card card-body">
+                    <p class="text-sm text-slate-400">Your decline reason</p>
+                    <p class="text-sm text-slate-700 dark:text-slate-200">{{ $order->rejection_reason }}</p>
                 </div>
             @endif
 
