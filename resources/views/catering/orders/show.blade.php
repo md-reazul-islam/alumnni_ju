@@ -130,6 +130,8 @@
                 <p class="mt-3 text-sm text-slate-400">Contact Phone</p>
                 <p class="font-medium text-slate-900 dark:text-white">{{ $order->contact_phone ?: '—' }}</p>
             </div>
+
+            <x-catering-order-timeline :order="$order" />
         </div>
     </div>
 </x-layouts::alumni>

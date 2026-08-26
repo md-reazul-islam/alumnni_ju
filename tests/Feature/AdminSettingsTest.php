@@ -199,7 +199,7 @@ class AdminSettingsTest extends TestCase
     {
         $admin = User::factory()->admin()->create();
 
-        $order = ['show_marketplace', 'show_hero', 'show_stats', 'show_featured_alumni', 'show_events', 'show_jobs', 'show_stories', 'show_gallery', 'show_library', 'show_news', 'show_cta'];
+        $order = ['show_marketplace', 'show_hero', 'show_stats', 'show_featured_alumni', 'show_events', 'show_jobs', 'show_stories', 'show_gallery', 'show_library', 'show_news', 'show_cta', 'show_carpooling', 'show_matrimony', 'show_catering'];
 
         $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
             'section_order' => json_encode($order),
