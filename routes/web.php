@@ -332,6 +332,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{order}/accept', [CateringOrderController::class, 'accept'])->middleware('throttle:10,1')->name('accept');
             Route::get('/{order}/payment-success', [CateringOrderController::class, 'paymentSuccess'])->name('payment-success');
             Route::get('/{order}/payment-cancelled', [CateringOrderController::class, 'paymentCancelled'])->name('payment-cancelled');
+            Route::post('/{order}/cancel', [CateringOrderController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
         });
     });
 
@@ -527,6 +528,8 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/{cateringOrder}', [AdminCateringOrderController::class, 'show'])->name('show');
             Route::post('/{cateringOrder}/price', [AdminCateringOrderController::class, 'price'])->name('price');
             Route::post('/{cateringOrder}/reject', [AdminCateringOrderController::class, 'reject'])->name('reject');
+            Route::post('/{cateringOrder}/deliver', [AdminCateringOrderController::class, 'markDelivered'])->name('deliver');
+            Route::post('/{cateringOrder}/cancel', [AdminCateringOrderController::class, 'cancel'])->name('cancel');
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {

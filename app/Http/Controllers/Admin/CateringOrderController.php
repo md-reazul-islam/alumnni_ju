@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CateringOrder;
 use App\Models\Setting;
+use App\Notifications\CateringOrderCancelled;
+use App\Notifications\CateringOrderDelivered;
 use App\Notifications\CateringOrderPriced;
 use App\Notifications\CateringOrderRejected;
 use App\Services\AuditLogger;
+use App\Services\Catering\CateringRefundService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -128,5 +131,53 @@ class CateringOrderController extends Controller
         AuditLogger::log('rejected_catering_order', $cateringOrder, "Rejected catering order #{$cateringOrder->id} before pricing. Reason: {$data['cancellation_reason']}");
 
         return redirect()->route('admin.catering.orders.index')->with('status', 'Order rejected.');
+    }
+
+    public function markDelivered(Request $request, CateringOrder $cateringOrder): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        abort_unless($cateringOrder->status === CateringOrder::STATUS_ACCEPTED, 422, 'Only an accepted order can be marked delivered.');
+
+        $cateringOrder->update([
+            'status' => CateringOrder::STATUS_DELIVERED,
+            'delivered_by' => $request->user()->id,
+            'delivered_at' => now(),
+        ]);
+
+        $cateringOrder->customer->notify(new CateringOrderDelivered($cateringOrder));
+
+        AuditLogger::log('delivered_catering_order', $cateringOrder, "Marked catering order #{$cateringOrder->id} delivered.");
+
+        return back()->with('status', 'Order marked delivered.');
+    }
+
+    public function cancel(Request $request, CateringOrder $cateringOrder): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        abort_unless($cateringOrder->status === CateringOrder::STATUS_ACCEPTED, 422, 'Only an accepted order can be cancelled here.');
+
+        $data = $request->validate(['cancellation_reason' => ['required', 'string', 'max:1000']]);
+
+        // A driver-side (here: admin-side) cancellation of a paid order always force-refunds the
+        // customer. Refund with Stripe BEFORE touching our own records, same ordering as the
+        // customer-initiated cancellation path.
+        if ($cateringOrder->payment_status === CateringOrder::PAYMENT_PAID) {
+            app(CateringRefundService::class)->refund($cateringOrder);
+        }
+
+        $cateringOrder->update([
+            'status' => CateringOrder::STATUS_CANCELLED,
+            'cancelled_by' => $request->user()->id,
+            'cancellation_reason' => $data['cancellation_reason'],
+            'cancelled_at' => now(),
+        ]);
+
+        $cateringOrder->customer->notify(new CateringOrderCancelled($cateringOrder, cancelledByRole: 'admin'));
+
+        AuditLogger::log('admin_cancelled_paid_catering_order', $cateringOrder, "Admin cancelled catering order #{$cateringOrder->id} and refunded the customer. Reason: {$data['cancellation_reason']}");
+
+        return redirect()->route('admin.catering.orders.index')->with('status', 'Order cancelled and customer refunded.');
     }
 }

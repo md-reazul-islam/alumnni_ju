@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\CateringFoodItem;
 use App\Models\CateringOrder;
 use App\Models\CateringProgramCategory;
+use App\Models\Setting;
 use App\Models\User;
+use App\Notifications\CateringOrderCancelled;
 use App\Notifications\CateringOrderDeclined;
 use App\Notifications\CateringOrderSubmitted;
 use App\Services\Catering\CateringCheckoutService;
+use App\Services\Catering\CateringRefundService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -157,5 +160,36 @@ class CateringOrderController extends Controller
         abort_unless($order->customer_id === $request->user()->id, 403);
 
         return view('catering.orders.payment-cancelled', compact('order'));
+    }
+
+    public function cancel(Request $request, CateringOrder $order): RedirectResponse
+    {
+        abort_unless($order->customer_id === $request->user()->id, 403);
+        abort_unless($order->status === CateringOrder::STATUS_ACCEPTED, 422, 'This order cannot be cancelled.');
+
+        $hours = (int) Setting::get('catering', 'cancellation_window_hours', 48);
+        $eventDateTime = $order->event_date->copy()->startOfDay();
+
+        abort_unless(
+            now()->addHours($hours)->lte($eventDateTime),
+            422,
+            "Cancellations within {$hours} hours of the event are no longer eligible for a refund through the app. Please contact us directly."
+        );
+
+        // Refund must be initiated with Stripe BEFORE we touch the order's status — if Stripe
+        // rejects/fails, nothing about the order should change.
+        app(CateringRefundService::class)->refund($order);
+
+        $order->update([
+            'status' => CateringOrder::STATUS_CANCELLED,
+            'cancelled_by' => $request->user()->id,
+            'cancellation_reason' => 'Cancelled by customer within the refund window.',
+            'cancelled_at' => now(),
+        ]);
+
+        $admins = User::withPermission('manage-catering')->get();
+        Notification::send($admins, new CateringOrderCancelled($order, cancelledByRole: 'customer'));
+
+        return redirect()->route('catering.orders.show', $order)->with('status', 'Order cancelled. Your refund has been initiated.');
     }
 }

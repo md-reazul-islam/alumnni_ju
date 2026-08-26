@@ -78,6 +78,13 @@
                             </form>
                         </div>
                     @endif
+
+                    @if ($order->status === 'accepted')
+                        <form method="POST" action="{{ route('catering.orders.cancel', $order) }}" class="mt-4" onsubmit="return confirm('Cancel this order? A refund will be requested if you are still within the cancellation window.')">
+                            @csrf
+                            <button type="submit" class="w-full text-sm font-medium text-red-600 hover:underline">Cancel &amp; Refund</button>
+                        </form>
+                    @endif
                 </div>
             @endif
 

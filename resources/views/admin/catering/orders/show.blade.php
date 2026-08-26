@@ -25,6 +25,20 @@
             @if ($order->status === 'submitted')
                 <button type="button" @click="rejecting = !rejecting" class="btn-secondary btn-sm">Reject Order</button>
             @endif
+
+            @if ($order->status === 'accepted')
+                <div class="flex flex-shrink-0 gap-2">
+                    <form method="POST" action="{{ route('admin.catering.orders.deliver', $order) }}">
+                        @csrf
+                        <button type="submit" class="btn-primary btn-sm">Mark Delivered</button>
+                    </form>
+                    <form method="POST" action="{{ route('admin.catering.orders.cancel', $order) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Cancel this order?',text:'The customer will be fully refunded.',input:'text',inputLabel:'Reason',inputPlaceholder:'Why are you cancelling?',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Cancel & Refund'}).then(r=>{ if(r.isConfirmed && r.value){ this.querySelector('[name=cancellation_reason]').value = r.value; this.submit(); } })">
+                        @csrf
+                        <input type="hidden" name="cancellation_reason" value="">
+                        <button type="submit" class="btn-secondary btn-sm">Cancel &amp; Refund</button>
+                    </form>
+                </div>
+            @endif
         </div>
 
         <form method="POST" action="{{ route('admin.catering.orders.reject', $order) }}" x-show="rejecting" x-cloak class="card card-body mt-4 space-y-3">
