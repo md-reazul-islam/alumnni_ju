@@ -49,7 +49,7 @@
                                 :class="activeCategory === {{ $cat->id }} ? 'ring-2 ring-gold-400' : ''"
                             >
                                 <span class="flex h-9 w-9 items-center justify-center rounded-full bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
-                                    <x-icon :name="$cat->icon ?: 'utensils'" class="h-4.5 w-4.5" />
+                                    <x-icon :name="$cat->icon ?: 'utensils'" class="h-4 w-4" />
                                 </span>
                                 <span class="w-full truncate text-[11px] font-semibold text-slate-900 dark:text-white sm:text-xs">{{ $cat->name }}</span>
                             </button>
