@@ -13,13 +13,13 @@
     @if ($featuredAlumni->isEmpty())
         <x-empty-state icon="graduation-cap" title="No featured alumni yet" description="Verified alumni profiles will be showcased here." class="mt-8" />
     @else
-        <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6">
             @foreach ($featuredAlumni as $profile)
-                <div class="card card-body text-center">
-                    <x-avatar :src="$profile->user->avatar_url" :name="$profile->user->full_name" size="lg" class="mx-auto" />
-                    <p class="mt-4 font-semibold text-slate-900 dark:text-white">{{ $profile->user->full_name }}</p>
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ $profile->degree?->abbreviation }} {{ $profile->graduation_year }}</p>
-                    <p class="mt-1 text-xs text-slate-400">{{ $profile->job_title }} @if($profile->organization) at {{ $profile->organization }} @endif</p>
+                <div class="group relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-navy-200 hover:shadow-lg dark:border-white/10 dark:bg-white/5 dark:hover:border-navy-400/30">
+                    <x-avatar :src="$profile->user->avatar_url" :name="$profile->user->full_name" size="md" class="mx-auto transition-transform duration-300 group-hover:scale-110" />
+                    <p class="mt-2.5 truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $profile->user->full_name }}</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ $profile->degree?->abbreviation }} {{ $profile->graduation_year }}</p>
+                    <p class="mt-1 truncate text-[11px] text-slate-400">{{ $profile->job_title }} @if($profile->organization) at {{ $profile->organization }} @endif</p>
                 </div>
             @endforeach
         </div>
