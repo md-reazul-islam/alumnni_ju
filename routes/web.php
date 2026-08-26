@@ -45,6 +45,7 @@ use App\Http\Controllers\Alumni\ProfileItemController;
 use App\Http\Controllers\Alumni\StoryController as AlumniStoryController;
 use App\Http\Controllers\CarpoolBookingController;
 use App\Http\Controllers\CateringOrderController;
+use App\Http\Controllers\CateringSearchController;
 use App\Http\Controllers\CateringStripeWebhookController;
 use App\Http\Controllers\CarpoolCarController;
 use App\Http\Controllers\CarpoolDriverController;
@@ -182,6 +183,10 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
 
 Route::prefix('carpooling')->name('carpooling.')->group(function () {
     Route::get('/', [CarpoolSearchController::class, 'index'])->name('search');
+});
+
+Route::prefix('catering')->name('catering.')->group(function () {
+    Route::get('/', [CateringSearchController::class, 'index'])->name('search');
 });
 
 Route::prefix('matrimony')->name('matrimony.')->group(function () {

@@ -7,6 +7,7 @@
         ['label' => 'Community', 'route' => 'community.index', 'icon' => 'message-square'],
         ['label' => 'Mentorship', 'route' => 'mentorship.index', 'icon' => 'handshake'],
         ['label' => 'Carpooling panel', 'route' => 'carpooling.driver.become', 'icon' => 'car', 'section' => 'show_carpooling'],
+        ['label' => 'Catering', 'route' => 'catering.search', 'icon' => 'utensils', 'section' => 'show_catering'],
         ['label' => 'Matrimony', 'route' => 'matrimony.search', 'icon' => 'heart', 'section' => 'show_matrimony'],
     ];
 

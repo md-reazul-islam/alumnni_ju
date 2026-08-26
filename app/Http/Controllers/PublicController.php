@@ -7,6 +7,8 @@ use App\Models\AlumniProfile;
 use App\Models\AlumniStory;
 use App\Models\Book;
 use App\Models\CarpoolSchedule;
+use App\Models\CateringFoodItem;
+use App\Models\CateringProgramCategory;
 use App\Models\Event;
 use App\Models\GalleryPhoto;
 use App\Models\JobPosting;
@@ -52,6 +54,8 @@ class PublicController extends Controller
                     ->limit(300)
                     ->get(),
                 'matrimonyProfiles' => MatrimonyProfile::searchable()->with('photos')->inRandomOrder()->limit(8)->get(),
+                'cateringCategories' => CateringProgramCategory::active()->withCount('foodItems')->orderBy('sort_order')->orderBy('name')->limit(12)->get(),
+                'cateringFoodItems' => CateringFoodItem::active()->with('categories')->inRandomOrder()->limit(12)->get(),
                 'stories' => AlumniStory::published()->with('alumniProfile.user')->latest('published_at')->limit(6)->get(),
                 'news' => News::published()->latest('published_at')->limit(6)->get(),
                 'gallery' => GalleryPhoto::approved()->with('user')->latest('approved_at')->limit(8)->get(),

@@ -10,6 +10,7 @@
         ['label' => 'Careers', 'route' => 'jobs.index', 'section' => 'show_jobs'],
         ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
         ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
+        ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering'],
         ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
         ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories'],
         ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news'],
