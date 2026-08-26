@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\CateringFoodItem;
 use App\Models\CateringOrder;
+use App\Models\CateringOrderFeedback;
 use App\Models\CateringProgramCategory;
 use App\Models\Setting;
 use App\Models\User;
@@ -191,5 +192,26 @@ class CateringOrderController extends Controller
         Notification::send($admins, new CateringOrderCancelled($order, cancelledByRole: 'customer'));
 
         return redirect()->route('catering.orders.show', $order)->with('status', 'Order cancelled. Your refund has been initiated.');
+    }
+
+    public function feedback(Request $request, CateringOrder $order): RedirectResponse
+    {
+        abort_unless($order->customer_id === $request->user()->id, 403);
+        abort_unless($order->status === CateringOrder::STATUS_DELIVERED, 422, 'Feedback can only be left after your order is delivered.');
+        abort_if($order->feedback()->exists(), 422, 'You have already left feedback for this order.');
+
+        $data = $request->validate([
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        CateringOrderFeedback::create([
+            'catering_order_id' => $order->id,
+            'customer_id' => $request->user()->id,
+            'rating' => $data['rating'],
+            'comment' => $data['comment'] ?? null,
+        ]);
+
+        return redirect()->route('catering.orders.show', $order)->with('status', 'Thanks for your feedback!');
     }
 }

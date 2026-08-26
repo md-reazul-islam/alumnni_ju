@@ -333,6 +333,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{order}/payment-success', [CateringOrderController::class, 'paymentSuccess'])->name('payment-success');
             Route::get('/{order}/payment-cancelled', [CateringOrderController::class, 'paymentCancelled'])->name('payment-cancelled');
             Route::post('/{order}/cancel', [CateringOrderController::class, 'cancel'])->middleware('throttle:10,1')->name('cancel');
+            Route::post('/{order}/feedback', [CateringOrderController::class, 'feedback'])->middleware('throttle:10,1')->name('feedback');
         });
     });
 

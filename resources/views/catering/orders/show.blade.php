@@ -95,6 +95,35 @@
                 </div>
             @endif
 
+            @if ($order->status === 'delivered')
+                <div class="card card-body">
+                    @if ($order->feedback)
+                        <p class="text-sm text-slate-400">Your feedback</p>
+                        <div class="mt-1 flex gap-0.5">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <svg class="h-4 w-4 {{ $i <= $order->feedback->rating ? 'text-amber-400' : 'text-slate-200 dark:text-navy-700' }}" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.364 1.118l1.287 3.957c.3.922-.755 1.688-1.54 1.118l-3.367-2.446a1 1 0 00-1.175 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.286-3.957a1 1 0 00-.363-1.118L2.05 9.385c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.286-3.958z"/></svg>
+                            @endfor
+                        </div>
+                        @if ($order->feedback->comment)
+                            <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">{{ $order->feedback->comment }}</p>
+                        @endif
+                    @else
+                        <h2 class="font-semibold text-slate-900 dark:text-white">Leave Feedback</h2>
+                        <form method="POST" action="{{ route('catering.orders.feedback', $order) }}" class="mt-3 space-y-3" x-data="{ rating: 0 }">
+                            @csrf
+                            <input type="hidden" name="rating" x-model="rating">
+                            <div class="flex gap-1">
+                                <template x-for="i in 5" :key="i">
+                                    <button type="button" @click="rating = i" class="text-2xl leading-none" :class="i <= rating ? 'text-amber-400' : 'text-slate-200 dark:text-navy-700'">&#9733;</button>
+                                </template>
+                            </div>
+                            <x-textarea label="Comment (optional)" name="comment" rows="2" />
+                            <x-button type="submit" size="sm" class="w-full" x-bind:disabled="rating === 0">Submit Feedback</x-button>
+                        </form>
+                    @endif
+                </div>
+            @endif
+
             <div class="card card-body">
                 <p class="text-sm text-slate-400">Delivery Address</p>
                 <p class="font-medium text-slate-900 dark:text-white">{{ $order->delivery_address ?: '—' }}</p>
