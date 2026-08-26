@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
+use App\Http\Controllers\Admin\CateringOrderController as AdminCateringOrderController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
 use App\Http\Controllers\Admin\MatrimonyReportController as AdminMatrimonyReportController;
@@ -513,6 +514,13 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/{cateringFoodItem}/edit', [AdminCateringFoodItemController::class, 'edit'])->name('edit');
             Route::put('/{cateringFoodItem}', [AdminCateringFoodItemController::class, 'update'])->name('update');
             Route::delete('/{cateringFoodItem}', [AdminCateringFoodItemController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('catering/orders')->name('catering.orders.')->group(function () {
+            Route::get('/', [AdminCateringOrderController::class, 'index'])->name('index');
+            Route::get('/{cateringOrder}', [AdminCateringOrderController::class, 'show'])->name('show');
+            Route::post('/{cateringOrder}/price', [AdminCateringOrderController::class, 'price'])->name('price');
+            Route::post('/{cateringOrder}/reject', [AdminCateringOrderController::class, 'reject'])->name('reject');
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {

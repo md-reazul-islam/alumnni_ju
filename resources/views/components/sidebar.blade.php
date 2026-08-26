@@ -52,6 +52,7 @@
         ['label' => 'Catering', 'icon' => 'utensils', 'match' => 'admin.catering.*', 'permission' => 'manage-catering', 'children' => [
             ['label' => 'Program Categories', 'route' => 'admin.catering.categories.index'],
             ['label' => 'Food Items', 'route' => 'admin.catering.items.index'],
+            ['label' => 'Orders', 'route' => 'admin.catering.orders.index'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
