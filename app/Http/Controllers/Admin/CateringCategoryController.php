@@ -11,6 +11,12 @@ use Illuminate\View\View;
 
 class CateringCategoryController extends Controller
 {
+    public const ICON_OPTIONS = [
+        'utensils', 'cooking-pot', 'gift', 'sun', 'sunrise', 'users', 'house', 'heart',
+        'briefcase', 'graduation-cap', 'landmark', 'sparkles', 'handshake', 'flame',
+        'camera', 'star', 'trophy', 'building', 'building-2', 'school',
+    ];
+
     protected function ensurePermission(Request $request): void
     {
         abort_unless($request->user()->hasPermission('manage-catering'), 403);
@@ -27,7 +33,9 @@ class CateringCategoryController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.catering.categories.index', compact('categories'));
+        $iconOptions = array_combine(self::ICON_OPTIONS, self::ICON_OPTIONS);
+
+        return view('admin.catering.categories.index', compact('categories', 'iconOptions'));
     }
 
     public function store(Request $request): RedirectResponse

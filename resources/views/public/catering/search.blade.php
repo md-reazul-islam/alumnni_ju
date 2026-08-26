@@ -63,23 +63,21 @@
                     <input type="text" x-model="query" placeholder="Search food items" class="form-input pl-9">
                 </div>
 
-                <template x-if="!activeCategory && !query">
-                    <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-                        <template x-for="cat in categories" :key="cat.id">
-                            <button
-                                type="button"
-                                @click="activeCategory = cat.id"
-                                class="card flex flex-col items-center gap-2 p-4 text-center transition hover:shadow-popover"
-                            >
-                                <span class="flex h-12 w-12 items-center justify-center rounded-full bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
-                                    <x-icon name="utensils" class="h-6 w-6" />
-                                </span>
-                                <span class="text-sm font-semibold text-slate-900 dark:text-white" x-text="cat.name"></span>
-                                <span class="text-xs text-slate-400" x-text="cat.item_count + ' item' + (cat.item_count === 1 ? '' : 's')"></span>
-                            </button>
-                        </template>
-                    </div>
-                </template>
+                <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6" x-show="!activeCategory && !query">
+                    @foreach ($categories as $cat)
+                        <button
+                            type="button"
+                            @click="activeCategory = {{ $cat->id }}"
+                            class="card flex flex-col items-center gap-2 p-4 text-center transition hover:shadow-popover"
+                        >
+                            <span class="flex h-12 w-12 items-center justify-center rounded-full bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
+                                <x-icon :name="$cat->icon ?: 'utensils'" class="h-6 w-6" />
+                            </span>
+                            <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ $cat->name }}</span>
+                            <span class="text-xs text-slate-400">{{ $cat->foodItems->count() }} {{ \Illuminate\Support\Str::plural('item', $cat->foodItems->count()) }}</span>
+                        </button>
+                    @endforeach
+                </div>
 
                 <template x-if="activeCategory || query">
                     <div class="mt-6">

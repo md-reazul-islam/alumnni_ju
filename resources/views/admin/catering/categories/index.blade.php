@@ -14,7 +14,7 @@
             @csrf
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 <x-input label="Category Name" name="name" required />
-                <x-input label="Icon" name="icon" hint="e.g. cake, users, tent" />
+                <x-select label="Icon" name="icon" :selected="'utensils'" :options="$iconOptions" :placeholder="''" />
                 <x-input label="Sort Order" name="sort_order" type="number" min="0" value="0" />
             </div>
             <x-textarea label="Description" name="description" rows="2" />
@@ -29,10 +29,15 @@
             <x-empty-state icon="utensils" title="No program categories yet" class="mt-8" />
         @else
             <x-table class="mt-6">
-                <thead><tr><th>Name</th><th>Food Items</th><th>Orders</th><th>Status</th><th></th></tr></thead>
+                <thead><tr><th>Icon</th><th>Name</th><th>Food Items</th><th>Orders</th><th>Status</th><th></th></tr></thead>
                 <tbody>
                     @foreach ($categories as $category)
                         <tr>
+                            <td>
+                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
+                                    <x-icon :name="$category->icon ?: 'utensils'" class="h-4 w-4" />
+                                </span>
+                            </td>
                             <td class="font-medium text-slate-900 dark:text-white">{{ $category->name }}</td>
                             <td>{{ $category->food_items_count }}</td>
                             <td>{{ $category->orders_count }}</td>
@@ -50,11 +55,11 @@
                             </td>
                         </tr>
                         <tr x-show="editing === {{ $category->id }}" x-cloak>
-                            <td colspan="5">
+                            <td colspan="6">
                                 <form method="POST" action="{{ route('admin.catering.categories.update', $category) }}" class="flex flex-wrap items-end gap-4 rounded-lg bg-slate-50 p-4 dark:bg-navy-900">
                                     @csrf @method('PUT')
                                     <x-input label="Category Name" name="name" :value="$category->name" required />
-                                    <x-input label="Icon" name="icon" :value="$category->icon" />
+                                    <x-select label="Icon" name="icon" :selected="$category->icon ?: 'utensils'" :options="$iconOptions" :placeholder="''" />
                                     <x-input label="Sort Order" name="sort_order" type="number" min="0" :value="$category->sort_order" />
                                     <label class="flex items-center gap-2 pb-2 text-sm text-slate-600 dark:text-slate-300">
                                         <input type="checkbox" name="is_active" value="1" @checked($category->is_active) class="rounded border-slate-300 text-navy-700 focus:ring-navy-500">
