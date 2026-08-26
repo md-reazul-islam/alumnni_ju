@@ -10,6 +10,8 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
+use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
+use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
 use App\Http\Controllers\Admin\MatrimonyReportController as AdminMatrimonyReportController;
@@ -485,6 +487,22 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/', [AdminMarketplaceCategoryController::class, 'store'])->name('store');
             Route::put('/{marketplaceCategory}', [AdminMarketplaceCategoryController::class, 'update'])->name('update');
             Route::delete('/{marketplaceCategory}', [AdminMarketplaceCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('catering/categories')->name('catering.categories.')->group(function () {
+            Route::get('/', [AdminCateringCategoryController::class, 'index'])->name('index');
+            Route::post('/', [AdminCateringCategoryController::class, 'store'])->name('store');
+            Route::put('/{cateringProgramCategory}', [AdminCateringCategoryController::class, 'update'])->name('update');
+            Route::delete('/{cateringProgramCategory}', [AdminCateringCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('catering/items')->name('catering.items.')->group(function () {
+            Route::get('/', [AdminCateringFoodItemController::class, 'index'])->name('index');
+            Route::get('/create', [AdminCateringFoodItemController::class, 'create'])->name('create');
+            Route::post('/create', [AdminCateringFoodItemController::class, 'store'])->name('store');
+            Route::get('/{cateringFoodItem}/edit', [AdminCateringFoodItemController::class, 'edit'])->name('edit');
+            Route::put('/{cateringFoodItem}', [AdminCateringFoodItemController::class, 'update'])->name('update');
+            Route::delete('/{cateringFoodItem}', [AdminCateringFoodItemController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {

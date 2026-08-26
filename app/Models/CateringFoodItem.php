@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CateringFoodItem extends Model
 {
@@ -23,6 +24,11 @@ class CateringFoodItem extends Model
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(CateringProgramCategory::class, 'catering_food_item_category');
+    }
+
+    public function orderItems(): HasMany
+    {
+        return $this->hasMany(CateringOrderItem::class);
     }
 
     public function scopeActive($query)
