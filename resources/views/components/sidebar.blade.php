@@ -54,6 +54,9 @@
             ['label' => 'Food Items', 'route' => 'admin.catering.items.index'],
             ['label' => 'Orders', 'route' => 'admin.catering.orders.index'],
             ['label' => 'Home Made Categories', 'route' => 'admin.catering.homemade-categories.index'],
+            ['label' => 'Home Made: Pending', 'route' => 'admin.catering.homemade-listings.pending'],
+            ['label' => 'Home Made: Approved', 'route' => 'admin.catering.homemade-listings.approved'],
+            ['label' => 'Home Made: Rejected', 'route' => 'admin.catering.homemade-listings.rejected'],
         ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
