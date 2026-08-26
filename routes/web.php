@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\CateringHomemadeListingController as AdminCaterin
 use App\Http\Controllers\Admin\CateringHomemadeOrderController as AdminCateringHomemadeOrderController;
 use App\Http\Controllers\Admin\CateringOrderController as AdminCateringOrderController;
 use App\Http\Controllers\Admin\CateringReportController as AdminCateringReportController;
+use App\Http\Controllers\Admin\CateringSettingsController as AdminCateringSettingsController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
 use App\Http\Controllers\Admin\MatrimonyReportController as AdminMatrimonyReportController;
@@ -599,6 +600,11 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/complaints', [AdminCateringReportController::class, 'complaints'])->name('complaints');
             Route::post('/complaints/{report}/resolve', [AdminCateringReportController::class, 'resolveComplaint'])->name('complaints.resolve');
             Route::get('/export/{type}', [AdminCateringReportController::class, 'export'])->name('export');
+        });
+
+        Route::prefix('catering/settings')->name('catering.settings.')->group(function () {
+            Route::get('/', [AdminCateringSettingsController::class, 'edit'])->name('edit');
+            Route::put('/', [AdminCateringSettingsController::class, 'update'])->name('update');
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {
