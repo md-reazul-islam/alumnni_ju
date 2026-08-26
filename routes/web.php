@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCatego
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
 use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateringHomemadeCategoryController;
 use App\Http\Controllers\Admin\CateringHomemadeListingController as AdminCateringHomemadeListingController;
+use App\Http\Controllers\Admin\CateringHomemadeOrderController as AdminCateringHomemadeOrderController;
 use App\Http\Controllers\Admin\CateringOrderController as AdminCateringOrderController;
 use App\Http\Controllers\Admin\MatrimonyConversationController as AdminMatrimonyConversationController;
 use App\Http\Controllers\Admin\MatrimonyProfileController as AdminMatrimonyProfileController;
@@ -574,6 +575,13 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/{homemadeListing}/approve', [AdminCateringHomemadeListingController::class, 'approve'])->name('approve');
             Route::post('/{homemadeListing}/reject', [AdminCateringHomemadeListingController::class, 'reject'])->name('reject');
             Route::delete('/{homemadeListing}', [AdminCateringHomemadeListingController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('catering/homemade-orders')->name('catering.homemade-orders.')->group(function () {
+            Route::get('/', [AdminCateringHomemadeOrderController::class, 'index'])->name('index');
+            Route::get('/{homemadeOrder}', [AdminCateringHomemadeOrderController::class, 'show'])->name('show');
+            Route::post('/{homemadeOrder}/status', [AdminCateringHomemadeOrderController::class, 'updateStatus'])->name('status');
+            Route::post('/{homemadeOrder}/converse/{role}', [AdminCateringHomemadeOrderController::class, 'converse'])->name('converse')->whereIn('role', ['buyer', 'seller']);
         });
 
         Route::prefix('marketplace/listings')->name('marketplace.listings.')->group(function () {
