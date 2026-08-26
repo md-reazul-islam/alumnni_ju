@@ -30,25 +30,25 @@
         @if ($profiles->isEmpty())
             <x-empty-state icon="heart" title="No matching profiles" description="Try broadening your filters, or check back soon — approved profiles appear here as they're reviewed." class="mt-8" />
         @else
-            <div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                 @foreach ($profiles as $profile)
                     <a href="{{ route('matrimony.show', $profile) }}" class="card overflow-hidden transition hover:shadow-popover">
-                        <div class="flex aspect-[4/3] items-center justify-center bg-slate-100 dark:bg-navy-800">
+                        <div class="flex aspect-square items-center justify-center bg-slate-100 dark:bg-navy-800">
                             @if ($profile->photoVisibleTo(auth()->user()) && $profile->primary_photo)
                                 <img src="{{ asset('storage/' . $profile->primary_photo->path) }}" class="h-full w-full object-cover">
                             @else
-                                <x-icon name="user" class="h-16 w-16 text-slate-300 dark:text-navy-600" />
+                                <x-icon name="user" class="h-10 w-10 text-slate-300 dark:text-navy-600" />
                             @endif
                         </div>
-                        <div class="p-4">
-                            <div class="flex items-center gap-2">
-                                <p class="font-semibold text-slate-900 dark:text-white">{{ $profile->display_name }}, {{ $profile->age }}</p>
+                        <div class="p-2.5">
+                            <div class="flex items-center gap-1">
+                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $profile->display_name }}, {{ $profile->age }}</p>
                                 @if ($profile->is_verified)
-                                    <x-icon name="badge-check" class="h-4 w-4 text-navy-600 dark:text-navy-300" />
+                                    <x-icon name="badge-check" class="h-3.5 w-3.5 flex-shrink-0 text-navy-600 dark:text-navy-300" />
                                 @endif
                             </div>
-                            <p class="text-sm text-slate-500 dark:text-slate-400">{{ $profile->city ? $profile->city . ', ' : '' }}{{ $profile->country }}</p>
-                            <p class="mt-1 text-xs text-slate-400">{{ $profile->occupation }} &middot; {{ $profile->religion }}</p>
+                            <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ $profile->city ? $profile->city . ', ' : '' }}{{ $profile->country }}</p>
+                            <p class="mt-0.5 truncate text-[11px] text-slate-400">{{ $profile->occupation }} &middot; {{ $profile->religion }}</p>
                         </div>
                     </a>
                 @endforeach
