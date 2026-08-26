@@ -166,6 +166,26 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(MatrimonyProfile::class, 'created_by');
     }
 
+    public function cateringOrders(): HasMany
+    {
+        return $this->hasMany(CateringOrder::class, 'customer_id');
+    }
+
+    public function cateringHomemadeListings(): HasMany
+    {
+        return $this->hasMany(CateringHomemadeListing::class);
+    }
+
+    public function cateringHomemadeOrdersAsBuyer(): HasMany
+    {
+        return $this->hasMany(CateringHomemadeOrder::class, 'buyer_id');
+    }
+
+    public function cateringHomemadeOrdersAsSeller(): HasMany
+    {
+        return $this->hasMany(CateringHomemadeOrder::class, 'seller_id');
+    }
+
     public function matrimonyInterestsSent(): HasMany
     {
         return $this->hasMany(MatrimonyInterest::class, 'requested_by');
