@@ -327,6 +327,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/mine', [CateringOrderController::class, 'mine'])->name('mine');
             Route::get('/{order}', [CateringOrderController::class, 'show'])->name('show');
             Route::post('/{order}/decline', [CateringOrderController::class, 'decline'])->middleware('throttle:10,1')->name('decline');
+            Route::get('/{order}/accept', [CateringOrderController::class, 'accept'])->middleware('throttle:10,1')->name('accept');
+            Route::get('/{order}/payment-success', [CateringOrderController::class, 'paymentSuccess'])->name('payment-success');
+            Route::get('/{order}/payment-cancelled', [CateringOrderController::class, 'paymentCancelled'])->name('payment-cancelled');
         });
     });
 

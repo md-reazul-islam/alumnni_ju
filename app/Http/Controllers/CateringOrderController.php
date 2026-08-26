@@ -8,6 +8,7 @@ use App\Models\CateringProgramCategory;
 use App\Models\User;
 use App\Notifications\CateringOrderDeclined;
 use App\Notifications\CateringOrderSubmitted;
+use App\Services\Catering\CateringCheckoutService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -132,5 +133,29 @@ class CateringOrderController extends Controller
         Notification::send($admins, new CateringOrderDeclined($order));
 
         return redirect()->route('catering.orders.show', $order)->with('status', 'You declined this invoice.');
+    }
+
+    public function accept(Request $request, CateringOrder $order): RedirectResponse
+    {
+        abort_unless($order->customer_id === $request->user()->id, 403);
+        abort_unless($order->status === CateringOrder::STATUS_PRICED, 422, 'This order is not awaiting your decision.');
+
+        $session = app(CateringCheckoutService::class)->createSession($order);
+
+        return redirect($session->url);
+    }
+
+    public function paymentSuccess(Request $request, CateringOrder $order): View
+    {
+        abort_unless($order->customer_id === $request->user()->id, 403);
+
+        return view('catering.orders.payment-success', compact('order'));
+    }
+
+    public function paymentCancelled(Request $request, CateringOrder $order): View
+    {
+        abort_unless($order->customer_id === $request->user()->id, 403);
+
+        return view('catering.orders.payment-cancelled', compact('order'));
     }
 }
