@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\View\View;
+use RuntimeException;
 
 class CateringOrderController extends Controller
 {
@@ -117,7 +118,9 @@ class CateringOrderController extends Controller
 
         $order->load(['category', 'items.foodItem', 'feedback']);
 
-        return view('catering.orders.show', compact('order'));
+        $stripeConfigured = (bool) config('services.stripe.secret');
+
+        return view('catering.orders.show', compact('order', 'stripeConfigured'));
     }
 
     public function decline(Request $request, CateringOrder $order): RedirectResponse
@@ -144,7 +147,14 @@ class CateringOrderController extends Controller
         abort_unless($order->customer_id === $request->user()->id, 403);
         abort_unless($order->status === CateringOrder::STATUS_PRICED, 422, 'This order is not awaiting your decision.');
 
-        $session = app(CateringCheckoutService::class)->createSession($order);
+        try {
+            $session = app(CateringCheckoutService::class)->createSession($order);
+        } catch (RuntimeException $e) {
+            report($e);
+
+            return redirect()->route('catering.orders.show', $order)
+                ->with('payment_error', 'Online payment isn\'t available yet. Please contact us and we\'ll help you complete this order.');
+        }
 
         return redirect($session->url);
     }

@@ -5,6 +5,10 @@
         <x-alert variant="success" class="mt-4">{{ session('status') }}</x-alert>
     @endif
 
+    @if (session('payment_error'))
+        <x-alert variant="warning" class="mt-4">{{ session('payment_error') }}</x-alert>
+    @endif
+
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
             <x-badge :variant="match($order->status) { 'accepted', 'delivered' => 'success', 'declined', 'cancelled' => 'danger', default => 'warning' }">
@@ -63,10 +67,10 @@
 
                     @if ($order->status === 'priced')
                         <div class="mt-4 space-y-2" x-data="{ declining: false }">
-                            @if (Route::has('catering.orders.accept'))
+                            @if (Route::has('catering.orders.accept') && $stripeConfigured)
                                 <x-button :href="route('catering.orders.accept', $order)" class="w-full">Accept &amp; Pay</x-button>
                             @else
-                                <x-badge variant="info">Payment opens soon</x-badge>
+                                <x-alert variant="info">Online payment isn't set up yet. Please <a href="{{ route('contact') }}" class="font-semibold underline">contact us</a> to arrange payment and confirm this order.</x-alert>
                             @endif
 
                             <button type="button" @click="declining = !declining" class="w-full text-sm font-medium text-red-600 hover:underline">Decline this invoice</button>
