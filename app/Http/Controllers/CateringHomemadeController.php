@@ -6,7 +6,11 @@ use App\Http\Requests\StoreCateringHomemadeListingRequest;
 use App\Http\Requests\UpdateCateringHomemadeListingRequest;
 use App\Models\CateringHomemadeCategory;
 use App\Models\CateringHomemadeListing;
+use App\Models\CateringHomemadeOrder;
+use App\Models\User;
+use App\Notifications\NewMessageReceived;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -14,6 +18,77 @@ use Illuminate\View\View;
 
 class CateringHomemadeController extends Controller
 {
+    public function index(): View
+    {
+        $categories = CateringHomemadeCategory::active()->orderBy('name')->get();
+
+        $listings = CateringHomemadeListing::approved()
+            ->with(['category', 'images'])
+            ->latest('approved_at')
+            ->get();
+
+        return view('public.catering.homemade.index', compact('listings', 'categories'));
+    }
+
+    public function show(Request $request, CateringHomemadeListing $homemadeListing): View
+    {
+        abort_unless($homemadeListing->status === CateringHomemadeListing::STATUS_APPROVED, 404);
+
+        $homemadeListing->load(['category', 'images', 'seller']);
+        $homemadeListing->increment('views_count');
+
+        $hasActiveInquiry = $request->user()
+            ? $homemadeListing->orders()->where('buyer_id', $request->user()->id)->whereIn('status', ['pending', 'ongoing'])->exists()
+            : false;
+
+        return view('public.catering.homemade.show', ['listing' => $homemadeListing, 'hasActiveInquiry' => $hasActiveInquiry]);
+    }
+
+    public function inquire(Request $request, CateringHomemadeListing $homemadeListing): RedirectResponse
+    {
+        abort_unless($homemadeListing->status === CateringHomemadeListing::STATUS_APPROVED, 404);
+
+        $buyer = $request->user();
+        abort_if($buyer->id === $homemadeListing->user_id, 422, "You can't order your own listing.");
+
+        $data = $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:1000']]);
+
+        $order = CateringHomemadeOrder::where('catering_homemade_listing_id', $homemadeListing->id)
+            ->where('buyer_id', $buyer->id)
+            ->whereIn('status', [CateringHomemadeOrder::STATUS_PENDING, CateringHomemadeOrder::STATUS_ONGOING])
+            ->first();
+
+        if (! $order) {
+            $order = CateringHomemadeOrder::create([
+                'catering_homemade_listing_id' => $homemadeListing->id,
+                'buyer_id' => $buyer->id,
+                'seller_id' => $homemadeListing->user_id,
+                'quantity' => $data['quantity'] ?? 1,
+                'status' => CateringHomemadeOrder::STATUS_PENDING,
+            ]);
+        }
+
+        $conversation = $order->buyerConversation;
+
+        if (! $conversation) {
+            $conversation = $order->buyerConversation()->create(['context' => 'buyer']);
+            $adminIds = User::withPermission('manage-catering')->pluck('id');
+            $conversation->participants()->attach([...$adminIds->all(), $buyer->id]);
+
+            $message = $conversation->messages()->create([
+                'user_id' => $buyer->id,
+                'body' => "I'm interested in this home made food: " . route('catering.homemade.show', $homemadeListing),
+            ]);
+            $conversation->update(['last_message_at' => now()]);
+
+            $conversation->participants()->where('users.id', '!=', $buyer->id)->get()
+                ->each(fn ($recipient) => $recipient->notify(new NewMessageReceived($message->load('sender'))));
+        }
+
+        return redirect()->route('messages.index', $conversation)
+            ->with('status', 'Your order inquiry has been sent to our team. We\'ll be in touch shortly.');
+    }
+
     public function create(): View
     {
         $this->authorize('create', CateringHomemadeListing::class);

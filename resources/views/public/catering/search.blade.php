@@ -27,9 +27,12 @@
                 <h1 class="text-3xl font-bold text-white">Event Catering</h1>
                 <p class="mt-1.5 text-navy-200">Pick a program category, build your order from our catalog, and get a priced invoice back from our team.</p>
             </div>
-            @auth
-                <x-button :href="route('catering.orders.create')" size="sm">Start an Order</x-button>
-            @endauth
+            <div class="flex items-center gap-2">
+                <x-button :href="route('catering.homemade.index')" variant="secondary" size="sm">Home Made Foods</x-button>
+                @auth
+                    <x-button :href="route('catering.orders.create')" size="sm">Start an Order</x-button>
+                @endauth
+            </div>
         </div>
 
         @if ($categories->isEmpty())

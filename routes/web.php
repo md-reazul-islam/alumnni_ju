@@ -192,6 +192,10 @@ Route::prefix('catering')->name('catering.')->group(function () {
     Route::get('/', [CateringSearchController::class, 'index'])->name('search');
 });
 
+Route::prefix('catering/homemade')->name('catering.homemade.')->group(function () {
+    Route::get('/', [CateringHomemadeController::class, 'index'])->name('index');
+});
+
 Route::prefix('matrimony')->name('matrimony.')->group(function () {
     Route::get('/', [MatrimonySearchController::class, 'index'])->name('search');
     Route::get('/{profile}', [MatrimonyProfileController::class, 'show'])->name('show')->where('profile', '[0-9]+');
@@ -351,6 +355,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{homemadeListing}/edit', [CateringHomemadeController::class, 'edit'])->name('edit');
             Route::put('/{homemadeListing}', [CateringHomemadeController::class, 'update'])->middleware('throttle:10,1')->name('update');
             Route::delete('/{homemadeListing}', [CateringHomemadeController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
+            Route::post('/{homemadeListing}/inquire', [CateringHomemadeController::class, 'inquire'])->middleware('throttle:10,1')->name('inquire');
         });
     });
 
@@ -388,6 +393,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/requests/{mentorshipRequest}/reject', [MentorshipController::class, 'reject'])->name('reject');
     });
 });
+
+// Public listing detail — registered after the alumni-area create/mine/edit routes above so
+// "create" and "mine" aren't swallowed by this catch-all slug segment.
+Route::get('/catering/homemade/{homemadeListing:slug}', [CateringHomemadeController::class, 'show'])->name('catering.homemade.show');
 
 // Admin-area routes: staff roles only (super administrator, alumni administrator, moderator).
 Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administrator,moderator'])
