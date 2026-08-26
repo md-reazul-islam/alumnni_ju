@@ -28,9 +28,11 @@ class PublicController extends Controller
                 'sliders' => Slider::active()->ordered()->get(),
                 'stats' => [
                     'total_alumni' => User::whereHas('role', fn ($q) => $q->where('slug', 'alumni'))->count(),
-                    'verified_alumni' => User::verified()->whereHas('role', fn ($q) => $q->where('slug', 'alumni'))->count(),
-                    'countries' => AlumniProfile::whereNotNull('country')->distinct('country')->count('country'),
+                    'career_opportunities' => JobPosting::approved()->count(),
+                    'carpooling_services' => CarpoolSchedule::approved()->upcoming()->count(),
                     'active_events' => Event::published()->upcoming()->count(),
+                    'brides_grooms' => MatrimonyProfile::searchable()->count(),
+                    'available_books' => Book::available()->count(),
                 ],
                 'featuredAlumni' => AlumniProfile::with(['user', 'department', 'degree'])
                     ->whereNotNull('verified_at')
