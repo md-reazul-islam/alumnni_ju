@@ -1,9 +1,9 @@
-@props(['photos'])
+@props(['photos', 'compact' => false])
 
 <div
     x-data="photoGallery(@js($photos->map(fn ($p) => ['url' => $p->image_url, 'description' => $p->description, 'name' => $p->user->full_name ?? null])->values()))"
 >
-    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+    <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 {{ $compact ? 'lg:grid-cols-6' : 'lg:grid-cols-4' }}">
         @foreach ($photos as $index => $photo)
             <button
                 type="button"

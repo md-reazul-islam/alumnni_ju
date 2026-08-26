@@ -14,7 +14,7 @@
             <x-empty-state icon="image" title="No gallery photos yet" class="mt-8" />
         @else
             <div class="mt-8">
-                <x-gallery-grid :photos="$gallery" />
+                <x-gallery-grid :photos="$gallery" :compact="true" />
             </div>
         @endif
     </div>
