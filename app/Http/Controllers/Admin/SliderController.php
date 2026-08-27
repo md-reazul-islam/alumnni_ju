@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreSliderRequest;
 use App\Models\Slider;
 use App\Services\AuditLogger;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +35,7 @@ class SliderController extends Controller
         $data = $request->validated();
         $data['is_active'] = $request->boolean('is_active', true);
         $data['position'] = $data['position'] ?? (Slider::max('position') + 1);
-        $data['image'] = $request->file('image')->store('sliders', 'public');
+        $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'sliders', ImageUploadService::MAX_LARGE);
 
         $slider = Slider::create($data);
 
@@ -59,7 +60,7 @@ class SliderController extends Controller
 
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($slider->image);
-            $data['image'] = $request->file('image')->store('sliders', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'sliders', ImageUploadService::MAX_LARGE);
         }
 
         $slider->update($data);

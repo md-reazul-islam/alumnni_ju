@@ -24,7 +24,7 @@ class UpdateMarketplaceListingRequest extends FormRequest
             'city' => ['nullable', 'string', 'max:150'],
             'video_url' => ['nullable', 'url', 'max:255'],
             'images' => ['nullable', 'array', 'max:8'],
-            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=400,min_height=300'],
             'details' => ['nullable', 'array'],
             'details.*.label' => ['nullable', 'string', 'max:100'],
             'details.*.value' => ['nullable', 'string', 'max:255'],

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CarpoolCar;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -35,7 +36,7 @@ class CarpoolCarController extends Controller
         $data['carpool_driver_profile_id'] = $request->user()->carpoolDriverProfile->id;
 
         if ($request->hasFile('photo')) {
-            $data['photo'] = $request->file('photo')->store('carpool-cars', 'public');
+            $data['photo'] = app(ImageUploadService::class)->store($request->file('photo'), 'carpool-cars', ImageUploadService::MAX_LARGE);
         }
 
         CarpoolCar::create($data);
@@ -60,7 +61,7 @@ class CarpoolCarController extends Controller
             if ($car->photo) {
                 Storage::disk('public')->delete($car->photo);
             }
-            $data['photo'] = $request->file('photo')->store('carpool-cars', 'public');
+            $data['photo'] = app(ImageUploadService::class)->store($request->file('photo'), 'carpool-cars', ImageUploadService::MAX_LARGE);
         }
 
         $car->update($data);
@@ -92,7 +93,7 @@ class CarpoolCarController extends Controller
             'color' => ['nullable', 'string', 'max:50'],
             'plate_number' => ['required', 'string', 'max:20'],
             'total_seats' => ['required', 'integer', 'min:1', 'max:8'],
-            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=400,min_height=300'],
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -33,13 +34,13 @@ class CompanyController extends Controller
             'website' => ['nullable', 'url', 'max:255'],
             'industry' => ['nullable', 'string', 'max:150'],
             'description' => ['nullable', 'string', 'max:2000'],
-            'logo' => ['nullable', 'image', 'max:2048'],
+            'logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
         $data['slug'] = Str::slug($data['name']) . '-' . Str::random(4);
 
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('companies', 'public');
+            $data['logo'] = app(ImageUploadService::class)->store($request->file('logo'), 'companies', ImageUploadService::MAX_SMALL);
         }
 
         Company::create($data);

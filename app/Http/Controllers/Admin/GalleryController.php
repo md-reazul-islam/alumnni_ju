@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\GalleryPhoto;
 use App\Services\AuditLogger;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -43,12 +44,12 @@ class GalleryController extends Controller
         $this->ensurePermission($request);
 
         $data = $request->validate([
-            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=400,min_height=300'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         $data['user_id'] = $request->user()->id;
-        $data['image'] = $request->file('image')->store('gallery', 'public');
+        $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'gallery', ImageUploadService::MAX_LARGE);
         $data['status'] = GalleryPhoto::STATUS_APPROVED;
         $data['approved_by'] = $request->user()->id;
         $data['approved_at'] = now();
@@ -73,13 +74,13 @@ class GalleryController extends Controller
         $this->authorize('update', $galleryPhoto);
 
         $data = $request->validate([
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=400,min_height=300'],
             'description' => ['nullable', 'string', 'max:1000'],
         ]);
 
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($galleryPhoto->image);
-            $data['image'] = $request->file('image')->store('gallery', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'gallery', ImageUploadService::MAX_LARGE);
         }
 
         $galleryPhoto->update($data);

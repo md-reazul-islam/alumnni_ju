@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\MatrimonyProfile;
 use App\Models\MatrimonyProfilePhoto;
+use App\Services\ImageUploadService;
 use App\Services\MatrimonyProfileCompletionCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class MatrimonyPhotoController extends Controller
 
         $data = $request->validate([
             'photos' => ['required', 'array', 'min:1', 'max:' . $remaining],
-            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=400,min_height=300'],
         ]);
 
         $nextSort = (int) $profile->photos()->max('sort_order') + 1;
@@ -38,7 +39,7 @@ class MatrimonyPhotoController extends Controller
 
         foreach ($data['photos'] as $index => $file) {
             $profile->photos()->create([
-                'path' => $file->store('matrimony', 'public'),
+                'path' => app(ImageUploadService::class)->store($file, 'matrimony', ImageUploadService::MAX_LARGE),
                 'is_primary' => ! $hasPrimary && $index === 0,
                 'sort_order' => $nextSort + $index,
             ]);

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreStoryRequest;
 use App\Models\AlumniProfile;
 use App\Models\AlumniStory;
 use App\Services\AuditLogger;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -48,7 +49,7 @@ class StoryController extends Controller
         $data['slug'] = $this->uniqueSlug($data['title']);
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('stories', 'public');
+            $data['cover_image'] = app(ImageUploadService::class)->store($request->file('cover_image'), 'stories', ImageUploadService::MAX_LARGE);
         }
 
         if ($data['status'] === AlumniStory::STATUS_PUBLISHED) {
@@ -92,7 +93,7 @@ class StoryController extends Controller
             if ($story->cover_image) {
                 Storage::disk('public')->delete($story->cover_image);
             }
-            $data['cover_image'] = $request->file('cover_image')->store('stories', 'public');
+            $data['cover_image'] = app(ImageUploadService::class)->store($request->file('cover_image'), 'stories', ImageUploadService::MAX_LARGE);
         }
 
         $wasPublished = $story->status === AlumniStory::STATUS_PUBLISHED;

@@ -8,6 +8,7 @@ use App\Http\Requests\StoreBorrowRequestRequest;
 use App\Http\Requests\UpdateBookRequest;
 use App\Models\Book;
 use App\Models\BorrowRequest;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,7 +30,7 @@ class LibraryController extends Controller
         $data['status'] = Book::STATUS_PENDING;
 
         if ($request->hasFile('cover')) {
-            $data['cover'] = $request->file('cover')->store('library', 'public');
+            $data['cover'] = app(ImageUploadService::class)->store($request->file('cover'), 'library', ImageUploadService::MAX_LARGE);
         }
 
         Book::create($data);
@@ -62,7 +63,7 @@ class LibraryController extends Controller
             if ($book->cover) {
                 Storage::disk('public')->delete($book->cover);
             }
-            $data['cover'] = $request->file('cover')->store('library', 'public');
+            $data['cover'] = app(ImageUploadService::class)->store($request->file('cover'), 'library', ImageUploadService::MAX_LARGE);
         }
 
         $data['status'] = Book::STATUS_PENDING;

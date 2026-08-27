@@ -35,7 +35,7 @@ class UpdateAlumniProfileRequest extends FormRequest
             'interests' => ['nullable', 'array'],
             'interests.*' => ['exists:interests,id'],
             'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'cover_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=800,min_height=300'],
         ];
     }
 }

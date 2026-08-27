@@ -18,7 +18,7 @@ class AlumniRegistrationService
     public function register(array $data, ?UploadedFile $photo): User
     {
         return DB::transaction(function () use ($data, $photo) {
-            $avatarPath = $photo?->store('avatars', 'public');
+            $avatarPath = $photo ? app(ImageUploadService::class)->store($photo, 'avatars', ImageUploadService::MAX_SMALL) : null;
 
             $user = User::create([
                 'role_id' => Role::where('slug', Role::ALUMNI)->value('id'),

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Donation;
 use App\Models\DonationCampaign;
+use App\Services\ImageUploadService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class DonationController extends Controller
             'goal_amount' => ['nullable', 'numeric', 'min:0'],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-            'image' => ['nullable', 'image', 'max:4096'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=600,min_height=300'],
         ]);
 
         $data['created_by'] = $request->user()->id;
@@ -67,7 +68,7 @@ class DonationController extends Controller
         $data['status'] = DonationCampaign::STATUS_ACTIVE;
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('campaigns', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'campaigns', ImageUploadService::MAX_LARGE);
         }
 
         DonationCampaign::create($data);

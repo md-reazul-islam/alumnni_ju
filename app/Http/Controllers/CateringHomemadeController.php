@@ -9,6 +9,7 @@ use App\Models\CateringHomemadeListing;
 use App\Models\CateringHomemadeOrder;
 use App\Models\User;
 use App\Notifications\NewMessageReceived;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -190,10 +191,11 @@ class CateringHomemadeController extends Controller
     protected function storeImages(CateringHomemadeListing $listing, array $images): void
     {
         $nextSort = $listing->images()->max('sort_order') + 1;
+        $imageUploadService = app(ImageUploadService::class);
 
         foreach ($images as $index => $file) {
             $listing->images()->create([
-                'path' => $file->store('catering-homemade', 'public'),
+                'path' => $imageUploadService->store($file, 'catering-homemade', ImageUploadService::MAX_LARGE),
                 'sort_order' => $nextSort + $index,
             ]);
         }

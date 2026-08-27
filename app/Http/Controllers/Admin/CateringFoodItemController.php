@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\CateringFoodItem;
 use App\Models\CateringProgramCategory;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -50,7 +51,7 @@ class CateringFoodItemController extends Controller
         unset($data['category_ids']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('catering-items', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'catering-items', ImageUploadService::MAX_LARGE);
         }
 
         $item = CateringFoodItem::create($data);
@@ -82,7 +83,7 @@ class CateringFoodItemController extends Controller
             if ($cateringFoodItem->image) {
                 Storage::disk('public')->delete($cateringFoodItem->image);
             }
-            $data['image'] = $request->file('image')->store('catering-items', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'catering-items', ImageUploadService::MAX_LARGE);
         }
 
         $cateringFoodItem->update($data);
@@ -114,7 +115,7 @@ class CateringFoodItemController extends Controller
             'description' => ['nullable', 'string', 'max:1000'],
             'base_price' => ['required', 'numeric', 'min:0.01', 'max:99999.99'],
             'unit_label' => ['required', 'string', 'max:50'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=400,min_height=300'],
             'category_ids' => ['required', 'array', 'min:1'],
             'category_ids.*' => ['exists:catering_program_categories,id'],
         ]);

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreNewsRequest;
 use App\Models\News;
 use App\Models\NewsCategory;
 use App\Models\Tag;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -47,7 +48,7 @@ class NewsController extends Controller
         $data['slug'] = $this->uniqueSlug($data['title']);
 
         if ($request->hasFile('featured_image')) {
-            $data['featured_image'] = $request->file('featured_image')->store('news', 'public');
+            $data['featured_image'] = app(ImageUploadService::class)->store($request->file('featured_image'), 'news', ImageUploadService::MAX_LARGE);
         }
 
         if ($data['status'] === News::STATUS_PUBLISHED && empty($data['published_at'])) {
@@ -89,7 +90,7 @@ class NewsController extends Controller
             if ($news->featured_image) {
                 Storage::disk('public')->delete($news->featured_image);
             }
-            $data['featured_image'] = $request->file('featured_image')->store('news', 'public');
+            $data['featured_image'] = app(ImageUploadService::class)->store($request->file('featured_image'), 'news', ImageUploadService::MAX_LARGE);
         }
 
         if ($data['status'] === News::STATUS_PUBLISHED && $news->status !== News::STATUS_PUBLISHED && empty($data['published_at'])) {

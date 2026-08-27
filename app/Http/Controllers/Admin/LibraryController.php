@@ -10,6 +10,7 @@ use App\Notifications\BorrowDueReminder;
 use App\Notifications\BorrowRequestApproved;
 use App\Notifications\BorrowRequestRejected;
 use App\Services\AuditLogger;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -52,7 +53,7 @@ class LibraryController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'author' => ['nullable', 'string', 'max:150'],
-            'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=300,min_height=400'],
             'description' => ['nullable', 'string', 'max:2000'],
             'tags' => ['nullable', 'string', 'max:500'],
         ]);
@@ -63,7 +64,7 @@ class LibraryController extends Controller
         $data['approved_at'] = now();
 
         if ($request->hasFile('cover')) {
-            $data['cover'] = $request->file('cover')->store('library', 'public');
+            $data['cover'] = app(ImageUploadService::class)->store($request->file('cover'), 'library', ImageUploadService::MAX_LARGE);
         }
 
         $book = Book::create($data);
@@ -88,7 +89,7 @@ class LibraryController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'author' => ['nullable', 'string', 'max:150'],
-            'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'cover' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=300,min_height=400'],
             'description' => ['nullable', 'string', 'max:2000'],
             'tags' => ['nullable', 'string', 'max:500'],
         ]);
@@ -97,7 +98,7 @@ class LibraryController extends Controller
             if ($book->cover) {
                 Storage::disk('public')->delete($book->cover);
             }
-            $data['cover'] = $request->file('cover')->store('library', 'public');
+            $data['cover'] = app(ImageUploadService::class)->store($request->file('cover'), 'library', ImageUploadService::MAX_LARGE);
         }
 
         $book->update($data);

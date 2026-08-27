@@ -17,7 +17,7 @@ class StoreEventRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:5000'],
-            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096', 'dimensions:min_width=600,min_height=300'],
             'category' => ['required', Rule::in(['reunion', 'networking', 'workshop', 'seminar', 'webinar', 'career', 'sports', 'cultural', 'fundraising', 'alumni_meetup'])],
             'mode' => ['required', Rule::in(['online', 'offline'])],
             'venue' => ['nullable', 'required_if:mode,offline', 'string', 'max:255'],

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateAlumniProfileRequest;
 use App\Models\Interest;
 use App\Models\Skill;
+use App\Services\ImageUploadService;
 use App\Services\ProfileCompletionCalculator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -39,14 +40,14 @@ class ProfileController extends Controller
             if ($request->user()->avatar) {
                 Storage::disk('public')->delete($request->user()->avatar);
             }
-            $request->user()->update(['avatar' => $request->file('avatar')->store('avatars', 'public')]);
+            $request->user()->update(['avatar' => app(ImageUploadService::class)->store($request->file('avatar'), 'avatars', ImageUploadService::MAX_SMALL)]);
         }
 
         if ($request->hasFile('cover_image')) {
             if ($profile->cover_image) {
                 Storage::disk('public')->delete($profile->cover_image);
             }
-            $data['cover_image'] = $request->file('cover_image')->store('covers', 'public');
+            $data['cover_image'] = app(ImageUploadService::class)->store($request->file('cover_image'), 'covers', ImageUploadService::MAX_LARGE);
         }
 
         $profile->update(collect($data)->except(['skills', 'interests', 'avatar'])->toArray());

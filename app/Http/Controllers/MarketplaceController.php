@@ -9,6 +9,7 @@ use App\Models\MarketplaceListing;
 use App\Models\MarketplaceOrder;
 use App\Models\User;
 use App\Notifications\NewMessageReceived;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -194,7 +195,7 @@ class MarketplaceController extends Controller
 
         foreach ($images as $index => $file) {
             $listing->images()->create([
-                'path' => $file->store('marketplace', 'public'),
+                'path' => app(ImageUploadService::class)->store($file, 'marketplace', ImageUploadService::MAX_LARGE),
                 'sort_order' => $nextSort + $index,
             ]);
         }

@@ -29,7 +29,7 @@ class MarketplaceListingTest extends TestCase
             'price_unit' => 'per_month',
             'address' => '123 Main St',
             'city' => 'Springfield',
-            'images' => [UploadedFile::fake()->image('photo.jpg')],
+            'images' => [UploadedFile::fake()->image('photo.jpg', 800, 600)],
         ]);
 
         $response->assertRedirect(route('marketplace.mine'));
@@ -54,7 +54,7 @@ class MarketplaceListingTest extends TestCase
             'price' => 900,
             'price_unit' => 'per_month',
             'address' => '456 Oak St',
-            'images' => [UploadedFile::fake()->image('photo.jpg')],
+            'images' => [UploadedFile::fake()->image('photo.jpg', 800, 600)],
             'tags' => 'furnished, pet-friendly',
         ]);
 

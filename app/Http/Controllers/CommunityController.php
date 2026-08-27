@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCommunityPostRequest;
 use App\Models\CommunityPost;
 use App\Models\Poll;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,7 @@ class CommunityController extends Controller
         $data = $request->validated();
 
         $post = DB::transaction(function () use ($data, $request) {
-            $imagePath = $request->hasFile('image') ? $request->file('image')->store('community', 'public') : null;
+            $imagePath = $request->hasFile('image') ? app(ImageUploadService::class)->store($request->file('image'), 'community', ImageUploadService::MAX_LARGE) : null;
 
             $post = CommunityPost::create([
                 'user_id' => $request->user()->id,

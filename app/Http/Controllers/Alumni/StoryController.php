@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Alumni;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAlumniStoryRequest;
 use App\Models\AlumniStory;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class StoryController extends Controller
         $data['status'] = AlumniStory::STATUS_PENDING_REVIEW;
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('stories', 'public');
+            $data['cover_image'] = app(ImageUploadService::class)->store($request->file('cover_image'), 'stories', ImageUploadService::MAX_LARGE);
         }
 
         AlumniStory::create($data);

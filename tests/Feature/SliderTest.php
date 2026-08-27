@@ -22,7 +22,7 @@ class SliderTest extends TestCase
         $response = $this->actingAs($admin)->post(route('admin.sliders.store'), [
             'title' => 'Homecoming 2026',
             'subtitle' => 'Join us for a weekend of celebration.',
-            'image' => UploadedFile::fake()->image('hero.jpg'),
+            'image' => UploadedFile::fake()->image('hero.jpg', 1200, 400),
             'button_text' => 'Register Now',
             'button_url' => '/events',
         ]);

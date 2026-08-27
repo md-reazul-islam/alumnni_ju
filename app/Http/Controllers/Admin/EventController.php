@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreEventRequest;
 use App\Models\Event;
 use App\Services\AuditLogger;
+use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -45,7 +46,7 @@ class EventController extends Controller
         $data['slug'] = $this->uniqueSlug($data['title']);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('events', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'events', ImageUploadService::MAX_LARGE);
         }
 
         if ($data['status'] === Event::STATUS_PUBLISHED) {
@@ -81,7 +82,7 @@ class EventController extends Controller
             if ($event->image) {
                 Storage::disk('public')->delete($event->image);
             }
-            $data['image'] = $request->file('image')->store('events', 'public');
+            $data['image'] = app(ImageUploadService::class)->store($request->file('image'), 'events', ImageUploadService::MAX_LARGE);
         }
 
         $wasPublished = $event->status === Event::STATUS_PUBLISHED;
