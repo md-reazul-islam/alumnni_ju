@@ -5,18 +5,16 @@
     }
     $primaryNavItems = array_merge($primaryNavItems, [
         ['label' => 'About', 'route' => 'about'],
-        ['label' => 'Alumni', 'route' => 'alumni.directory'],
-        ['label' => 'Events', 'route' => 'events.index', 'section' => 'show_events'],
+        ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
+        ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
+        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
+        ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering'],
         ['label' => 'Careers', 'route' => 'jobs.index', 'section' => 'show_jobs'],
+        ['label' => 'Events', 'route' => 'events.index', 'section' => 'show_events'],
+        ['label' => 'Alumni', 'route' => 'alumni.directory'],
     ]);
 
     $moreNavGroups = [
-        'Services' => [
-            ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
-            ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
-            ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering'],
-            ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
-        ],
         'Community' => [
             ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories'],
             ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news'],
@@ -54,7 +52,7 @@
                 @if (Route::has($item['route']))
                     <a
                         href="{{ route($item['route']) }}"
-                        class="whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-medium {{ request()->routeIs($item['route']) ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
+                        class="whitespace-nowrap rounded-full px-2 py-1.5 text-xs font-medium {{ request()->routeIs($item['route']) ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
                     >
                         {{ $item['label'] }}
                     </a>
@@ -70,7 +68,7 @@
                         type="button"
                         @click="moreOpen = !moreOpen"
                         @click.outside="moreOpen = false"
-                        class="flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-medium {{ $moreIsActive ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
+                        class="flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-1.5 text-xs font-medium {{ $moreIsActive ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
                     >
                         More
                         <x-icon name="chevron-down" class="h-3 w-3" />
