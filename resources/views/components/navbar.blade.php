@@ -1,17 +1,25 @@
 @php
-    $navItems = [
+    $primaryNavItems = [
         ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'layout-dashboard'],
         ['label' => 'Directory', 'route' => 'alumni.directory', 'icon' => 'users'],
         ['label' => 'Events', 'route' => 'events.index', 'icon' => 'calendar', 'section' => 'show_events'],
         ['label' => 'Careers', 'route' => 'jobs.index', 'icon' => 'briefcase', 'section' => 'show_jobs'],
         ['label' => 'Community', 'route' => 'community.index', 'icon' => 'message-square'],
+    ];
+
+    $moreNavItems = [
         ['label' => 'Mentorship', 'route' => 'mentorship.index', 'icon' => 'handshake'],
         ['label' => 'Carpooling panel', 'route' => 'carpooling.driver.become', 'icon' => 'car', 'section' => 'show_carpooling'],
         ['label' => 'Catering', 'route' => 'catering.search', 'icon' => 'utensils', 'section' => 'show_catering'],
         ['label' => 'Matrimony', 'route' => 'matrimony.search', 'icon' => 'heart', 'section' => 'show_matrimony'],
     ];
 
-    $navItems = array_values(array_filter($navItems, fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0'));
+    $filterVisible = fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0';
+
+    $primaryNavItems = array_values(array_filter($primaryNavItems, $filterVisible));
+    $moreNavItems = array_values(array_filter($moreNavItems, $filterVisible));
+
+    $navItems = array_merge($primaryNavItems, $moreNavItems);
 @endphp
 
 <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur dark:border-navy-800 dark:bg-navy-950/90">
@@ -23,7 +31,7 @@
             </a>
 
             <nav class="hidden items-center gap-1 lg:flex">
-                @foreach ($navItems as $item)
+                @foreach ($primaryNavItems as $item)
                     @if (Route::has($item['route']))
                         <a
                             href="{{ route($item['route']) }}"
@@ -33,6 +41,48 @@
                         </a>
                     @endif
                 @endforeach
+
+                @if (!empty($moreNavItems))
+                    @php
+                        $moreIsActive = collect($moreNavItems)->contains(fn ($item) => request()->routeIs(explode('.', $item['route'])[0] . '.*'));
+                    @endphp
+                    <div x-data="{ moreOpen: false }" class="relative">
+                        <button
+                            type="button"
+                            @click="moreOpen = !moreOpen"
+                            @click.outside="moreOpen = false"
+                            class="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium {{ $moreIsActive ? 'bg-navy-50 text-navy-800 dark:bg-navy-800 dark:text-white' : 'text-slate-600 hover:bg-slate-50 hover:text-navy-800 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white' }}"
+                        >
+                            More
+                            <x-icon name="chevron-down" class="h-3.5 w-3.5" />
+                        </button>
+
+                        <div
+                            x-show="moreOpen"
+                            x-cloak
+                            x-transition:enter="transition ease-out duration-150"
+                            x-transition:enter-start="opacity-0 scale-95"
+                            x-transition:enter-end="opacity-100 scale-100"
+                            x-transition:leave="transition ease-in duration-100"
+                            x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute left-0 z-40 mt-2 w-52 origin-top-left rounded-xl border border-slate-200 bg-white p-2 shadow-popover dark:border-navy-800 dark:bg-navy-900"
+                        >
+                            @foreach ($moreNavItems as $item)
+                                @if (Route::has($item['route']))
+                                    <a
+                                        href="{{ route($item['route']) }}"
+                                        @click="moreOpen = false"
+                                        class="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs(explode('.', $item['route'])[0] . '.*') ? 'bg-navy-50 text-navy-800 dark:bg-navy-800 dark:text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-navy-800 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white' }}"
+                                    >
+                                        <x-icon :name="$item['icon']" class="h-4 w-4 text-slate-400" />
+                                        {{ $item['label'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </nav>
         </div>
 

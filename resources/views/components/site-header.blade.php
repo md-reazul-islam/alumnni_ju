@@ -1,26 +1,44 @@
 @php
-    $navItems = [];
+    $primaryNavItems = [];
     if (auth()->check()) {
-        $navItems[] = ['label' => 'Dashboard', 'route' => 'dashboard'];
+        $primaryNavItems[] = ['label' => 'Dashboard', 'route' => 'dashboard'];
     }
-    $navItems = array_merge($navItems, [
+    $primaryNavItems = array_merge($primaryNavItems, [
         ['label' => 'About', 'route' => 'about'],
         ['label' => 'Alumni', 'route' => 'alumni.directory'],
         ['label' => 'Events', 'route' => 'events.index', 'section' => 'show_events'],
         ['label' => 'Careers', 'route' => 'jobs.index', 'section' => 'show_jobs'],
-        ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
-        ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
-        ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering'],
-        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
-        ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories'],
-        ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news'],
-        ['label' => 'Gallery', 'route' => 'gallery.index', 'section' => 'show_gallery'],
-        ['label' => 'Library', 'route' => 'library.index', 'section' => 'show_library'],
-        ['label' => 'Donate', 'route' => 'donations.index'],
-        ['label' => 'Contact', 'route' => 'contact'],
     ]);
 
-    $navItems = array_values(array_filter($navItems, fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0'));
+    $moreNavGroups = [
+        'Services' => [
+            ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
+            ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
+            ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering'],
+            ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
+        ],
+        'Community' => [
+            ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories'],
+            ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news'],
+            ['label' => 'Gallery', 'route' => 'gallery.index', 'section' => 'show_gallery'],
+            ['label' => 'Library', 'route' => 'library.index', 'section' => 'show_library'],
+        ],
+        'Info' => [
+            ['label' => 'Donate', 'route' => 'donations.index'],
+            ['label' => 'Contact', 'route' => 'contact'],
+        ],
+    ];
+
+    $filterVisible = fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0';
+
+    $primaryNavItems = array_values(array_filter($primaryNavItems, $filterVisible));
+
+    $moreNavGroups = array_filter(array_map(
+        fn ($items) => array_values(array_filter($items, $filterVisible)),
+        $moreNavGroups
+    ));
+
+    $navItems = array_merge($primaryNavItems, ...array_values($moreNavGroups));
 @endphp
 
 <div x-data="{ mobileOpen: false }">
@@ -32,7 +50,7 @@
         </a>
 
         <nav class="hidden items-center gap-0.5 rounded-full bg-slate-100 p-1 dark:bg-navy-900 xl:flex">
-            @foreach ($navItems as $item)
+            @foreach ($primaryNavItems as $item)
                 @if (Route::has($item['route']))
                     <a
                         href="{{ route($item['route']) }}"
@@ -42,6 +60,53 @@
                     </a>
                 @endif
             @endforeach
+
+            @if (!empty($moreNavGroups))
+                @php
+                    $moreIsActive = collect($moreNavGroups)->flatten(1)->contains(fn ($item) => request()->routeIs($item['route']));
+                @endphp
+                <div x-data="{ moreOpen: false }" class="relative">
+                    <button
+                        type="button"
+                        @click="moreOpen = !moreOpen"
+                        @click.outside="moreOpen = false"
+                        class="flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1.5 text-xs font-medium {{ $moreIsActive ? 'bg-white text-navy-800 shadow-sm dark:bg-navy-700 dark:text-white' : 'text-slate-600 hover:text-navy-800 dark:text-slate-300 dark:hover:text-white' }}"
+                    >
+                        More
+                        <x-icon name="chevron-down" class="h-3 w-3" />
+                    </button>
+
+                    <div
+                        x-show="moreOpen"
+                        x-cloak
+                        x-transition:enter="transition ease-out duration-150"
+                        x-transition:enter-start="opacity-0 scale-95"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-100"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute left-0 z-40 mt-2 w-56 origin-top-left rounded-xl border border-slate-200 bg-white p-2 shadow-popover dark:border-navy-800 dark:bg-navy-900"
+                    >
+                        @foreach ($moreNavGroups as $groupLabel => $groupItems)
+                            @if (!$loop->first)
+                                <div class="my-1 border-t border-slate-100 dark:border-navy-800"></div>
+                            @endif
+                            <p class="px-3 pt-1.5 pb-0.5 text-[10px] font-semibold uppercase tracking-wide text-slate-400">{{ $groupLabel }}</p>
+                            @foreach ($groupItems as $item)
+                                @if (Route::has($item['route']))
+                                    <a
+                                        href="{{ route($item['route']) }}"
+                                        @click="moreOpen = false"
+                                        class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs($item['route']) ? 'bg-slate-100 text-navy-800 dark:bg-navy-800 dark:text-white' : 'text-slate-600 hover:bg-slate-100 hover:text-navy-800 dark:text-slate-300 dark:hover:bg-navy-800 dark:hover:text-white' }}"
+                                    >
+                                        {{ $item['label'] }}
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endforeach
+                    </div>
+                </div>
+            @endif
         </nav>
 
         <div class="flex items-center gap-2">
