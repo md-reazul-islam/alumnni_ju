@@ -3,6 +3,14 @@
     <div class="section-container max-w-4xl py-8">
         <x-breadcrumb :items="[['label' => 'Marketplace', 'url' => route('marketplace.index')], ['label' => $listing->title]]" class="mb-6" />
 
+        @if (session('status'))
+            <x-alert variant="success" class="mb-4">{{ session('status') }}</x-alert>
+        @endif
+
+        @if (session('error'))
+            <x-alert variant="warning" class="mb-4">{{ session('error') }}</x-alert>
+        @endif
+
         <div class="card card-body">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div>
@@ -131,7 +139,9 @@
             </div>
 
             <div class="mt-8 border-t border-slate-100 pt-6 dark:border-navy-800">
-                @auth
+                @if ($isOwnListing)
+                    <x-badge variant="info" class="text-sm">This is your own listing — you can't inquire about it yourself.</x-badge>
+                @elseif (auth()->check())
                     @if ($hasActiveInquiry)
                         <x-badge variant="success" class="text-sm">You've already contacted our team about this listing — check your messages.</x-badge>
                     @else
@@ -143,7 +153,7 @@
                     @endif
                 @else
                     <x-button :href="route('login')">Log In to Contact Us About This Listing</x-button>
-                @endauth
+                @endif
             </div>
         </div>
     </div>

@@ -38,11 +38,17 @@ class CateringHomemadeController extends Controller
         $homemadeListing->load(['category', 'images', 'seller']);
         $homemadeListing->increment('views_count');
 
-        $hasActiveInquiry = $request->user()
+        $isOwnListing = $request->user() && $request->user()->id === $homemadeListing->user_id;
+
+        $hasActiveInquiry = $request->user() && ! $isOwnListing
             ? $homemadeListing->orders()->where('buyer_id', $request->user()->id)->whereIn('status', ['pending', 'ongoing'])->exists()
             : false;
 
-        return view('public.catering.homemade.show', ['listing' => $homemadeListing, 'hasActiveInquiry' => $hasActiveInquiry]);
+        return view('public.catering.homemade.show', [
+            'listing' => $homemadeListing,
+            'hasActiveInquiry' => $hasActiveInquiry,
+            'isOwnListing' => $isOwnListing,
+        ]);
     }
 
     public function inquire(Request $request, CateringHomemadeListing $homemadeListing): RedirectResponse
@@ -50,7 +56,11 @@ class CateringHomemadeController extends Controller
         abort_unless($homemadeListing->status === CateringHomemadeListing::STATUS_APPROVED, 404);
 
         $buyer = $request->user();
-        abort_if($buyer->id === $homemadeListing->user_id, 422, "You can't order your own listing.");
+
+        if ($buyer->id === $homemadeListing->user_id) {
+            return redirect()->route('catering.homemade.show', $homemadeListing)
+                ->with('error', "This is your own listing — you can't order it yourself.");
+        }
 
         $data = $request->validate(['quantity' => ['nullable', 'integer', 'min:1', 'max:1000']]);
 

@@ -39,7 +39,9 @@ class MarketplaceOrderTest extends TestCase
 
         $response = $this->actingAs($seller)->post(route('marketplace.inquire', $listing));
 
-        $response->assertStatus(422);
+        $response->assertRedirect(route('marketplace.show', $listing));
+        $response->assertSessionHas('error');
+        $this->assertDatabaseMissing('marketplace_orders', ['marketplace_listing_id' => $listing->id]);
     }
 
     public function test_repeat_inquiry_reuses_the_existing_pending_order(): void

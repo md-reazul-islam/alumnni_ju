@@ -38,11 +38,13 @@ class MarketplaceController extends Controller
         $listing->load(['category', 'images']);
         $listing->increment('views_count');
 
-        $hasActiveInquiry = $request->user()
+        $isOwnListing = $request->user() && $request->user()->id === $listing->user_id;
+
+        $hasActiveInquiry = $request->user() && ! $isOwnListing
             ? $listing->orders()->where('buyer_id', $request->user()->id)->whereIn('status', ['pending', 'ongoing'])->exists()
             : false;
 
-        return view('public.marketplace.show', compact('listing', 'hasActiveInquiry'));
+        return view('public.marketplace.show', compact('listing', 'hasActiveInquiry', 'isOwnListing'));
     }
 
     public function inquire(Request $request, MarketplaceListing $listing): RedirectResponse
@@ -50,7 +52,11 @@ class MarketplaceController extends Controller
         abort_unless($listing->status === MarketplaceListing::STATUS_APPROVED, 404);
 
         $buyer = $request->user();
-        abort_if($buyer->id === $listing->user_id, 422, "You can't inquire about your own listing.");
+
+        if ($buyer->id === $listing->user_id) {
+            return redirect()->route('marketplace.show', $listing)
+                ->with('error', "This is your own listing — you can't inquire about it yourself.");
+        }
 
         $order = MarketplaceOrder::where('marketplace_listing_id', $listing->id)
             ->where('buyer_id', $buyer->id)
