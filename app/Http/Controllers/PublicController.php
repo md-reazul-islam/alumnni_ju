@@ -45,7 +45,7 @@ class PublicController extends Controller
                     ->limit(4)
                     ->get(),
                 'upcomingEvents' => Event::published()->upcoming()->orderBy('event_date')->limit(6)->get(),
-                'jobs' => JobPosting::approved()->with('company')->latest('approved_at')->limit(4)->get(),
+                'jobs' => JobPosting::approved()->with('company')->latest('approved_at')->limit(6)->get(),
                 'marketplaceCategories' => MarketplaceCategory::active()->orderBy('name')->get(),
                 'marketplaceListings' => MarketplaceListing::approved()->with(['category', 'images'])->inRandomOrder()->limit(12)->get(),
                 'carpoolSchedules' => CarpoolSchedule::approved()
