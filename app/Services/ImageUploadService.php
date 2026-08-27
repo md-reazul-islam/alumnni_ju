@@ -70,4 +70,65 @@ class ImageUploadService
             Storage::disk($disk)->delete($path);
         }
     }
+
+    /**
+     * Reprocess an already-stored image IN PLACE (same path, same filename) — for
+     * backfilling images that were uploaded before this service existed. Only touches
+     * the file if it actually needs help (oversized, or a non-normal EXIF rotation
+     * tag); otherwise leaves it untouched. This makes repeat runs safe: a file this
+     * has already fixed (or a freshly-uploaded one that was already processed by
+     * store()) won't get a second lossy re-encode pass.
+     *
+     * Returns a status string: 'missing', 'skipped-non-raster', 'already-ok', or 'processed'.
+     * Pass $dryRun = true to compute the status without writing anything.
+     */
+    public function reprocessInPlace(string $path, int $maxDimension = self::MAX_LARGE, string $disk = 'public', bool $dryRun = false): string
+    {
+        if (! Storage::disk($disk)->exists($path)) {
+            return 'missing';
+        }
+
+        $mimeType = Storage::disk($disk)->mimeType($path);
+        if (! in_array($mimeType, self::RASTER_MIMES, true)) {
+            return 'skipped-non-raster';
+        }
+
+        $fullPath = Storage::disk($disk)->path($path);
+
+        [$width, $height] = @getimagesize($fullPath) ?: [0, 0];
+
+        $orientation = 1;
+        if ($mimeType === 'image/jpeg' && function_exists('exif_read_data')) {
+            $exif = @exif_read_data($fullPath);
+            $orientation = $exif['Orientation'] ?? 1;
+        }
+
+        $needsResize = $width > $maxDimension || $height > $maxDimension;
+        $needsRotation = $orientation !== 1;
+
+        if (! $needsResize && ! $needsRotation) {
+            return 'already-ok';
+        }
+
+        if ($dryRun) {
+            return 'processed';
+        }
+
+        $image = $this->manager->read($fullPath);
+        $image->scaleDown($maxDimension, $maxDimension);
+
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $extension = in_array($extension, self::RASTER_EXTENSIONS, true) ? $extension : 'jpg';
+
+        $encoded = match ($extension) {
+            'png' => $image->toPng(),
+            'webp' => $image->toWebp(quality: 82),
+            'gif' => $image->toGif(),
+            default => $image->toJpeg(quality: 82),
+        };
+
+        Storage::disk($disk)->put($path, (string) $encoded);
+
+        return 'processed';
+    }
 }
