@@ -38,4 +38,29 @@ class Conversation extends Model
     {
         return $this->morphTo();
     }
+
+    /**
+     * Which inbox category this conversation belongs to, from the viewing user's
+     * perspective. Assumes $this->participants is already loaded (and, for the
+     * Alumni/Mentors case, filtered to exclude $viewer) — callers driving a list of
+     * conversations should eager-load participants once rather than per-conversation.
+     */
+    public function categoryLabel(User $viewer): string
+    {
+        if ($this->context === 'matrimony') {
+            return 'Matrimony';
+        }
+
+        if ($this->subject_type === MarketplaceOrder::class) {
+            return 'Marketplace';
+        }
+
+        if ($this->subject_type === CateringHomemadeOrder::class) {
+            return 'Catering';
+        }
+
+        $other = $this->participants->first(fn ($p) => $p->id !== $viewer->id) ?? $this->participants->first();
+
+        return $other?->isMentor() ? 'Mentors' : 'Alumni';
+    }
 }

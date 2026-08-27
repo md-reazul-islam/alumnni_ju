@@ -13,6 +13,14 @@ use Illuminate\View\View;
 
 class MessageController extends Controller
 {
+    /**
+     * Fixed display order for the grouped inbox. Categories with no conversations
+     * are simply omitted (see index()), so this list can safely include categories
+     * that don't have a conversation source yet (e.g. Carpooling) without ever
+     * showing an empty group.
+     */
+    protected const CATEGORY_ORDER = ['Alumni', 'Mentors', 'Marketplace', 'Catering', 'Matrimony', 'Carpooling'];
+
     public function index(Request $request, ?Conversation $conversation = null): View
     {
         $user = $request->user();
@@ -28,9 +36,11 @@ class MessageController extends Controller
             ->sortByDesc(fn ($c) => $c->latestMessage?->created_at ?? $c->created_at)
             ->values();
 
-        [$mentorConversations, $otherConversations] = $conversations->partition(
-            fn ($c) => $c->participants->first()?->isMentor()
-        );
+        $groupedByCategory = $conversations->groupBy(fn ($c) => $c->categoryLabel($user));
+
+        $groupedConversations = collect(self::CATEGORY_ORDER)
+            ->mapWithKeys(fn ($label) => [$label => $groupedByCategory->get($label, collect())])
+            ->filter(fn ($group) => $group->isNotEmpty());
 
         if ($conversation) {
             abort_unless($user->conversations()->where('conversations.id', $conversation->id)->exists(), 403);
@@ -52,7 +62,7 @@ class MessageController extends Controller
             return view('alumni.messages.partials.thread', compact('activeConversation', 'messages', 'otherParticipant'));
         }
 
-        return view('alumni.messages.index', compact('conversations', 'mentorConversations', 'otherConversations', 'activeConversation', 'messages', 'otherParticipant'));
+        return view('alumni.messages.index', compact('conversations', 'groupedConversations', 'activeConversation', 'messages', 'otherParticipant'));
     }
 
     public function create(Request $request, User $user): RedirectResponse

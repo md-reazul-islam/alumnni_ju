@@ -16,23 +16,14 @@
                         <x-empty-state icon="message-circle" title="No conversations yet" description="Start a conversation from any alumni profile." />
                     </div>
                 @else
-                    @if ($mentorConversations->isNotEmpty())
-                        <p class="bg-slate-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-950/60">Mentors</p>
+                    @foreach ($groupedConversations as $categoryLabel => $categoryConversations)
+                        <p class="bg-slate-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-950/60">{{ $categoryLabel }}</p>
                         <div class="divide-y divide-slate-100 dark:divide-navy-800">
-                            @foreach ($mentorConversations as $conversation)
+                            @foreach ($categoryConversations as $conversation)
                                 @include('alumni.messages.partials.conversation-item')
                             @endforeach
                         </div>
-                    @endif
-
-                    @if ($otherConversations->isNotEmpty())
-                        <p class="bg-slate-50 px-4 py-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-950/60">Messages</p>
-                        <div class="divide-y divide-slate-100 dark:divide-navy-800">
-                            @foreach ($otherConversations as $conversation)
-                                @include('alumni.messages.partials.conversation-item')
-                            @endforeach
-                        </div>
-                    @endif
+                    @endforeach
                 @endif
             </div>
         </div>
