@@ -32,7 +32,7 @@ class MatrimonyConversationController extends Controller
 
         abort_unless($conversation->context === 'matrimony', 404);
 
-        $conversation->load(['participants', 'messages.sender']);
+        $conversation->load(['participants', 'messages' => fn ($q) => $q->oldest()->with('sender')]);
 
         return view('admin.matrimony.conversations.show', compact('conversation'));
     }
