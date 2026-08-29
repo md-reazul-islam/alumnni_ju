@@ -62,10 +62,17 @@ class SettingsController extends Controller
      * "description_{$key}"); an empty/cleared value falls back to 'default'.
      */
     public const HOMEPAGE_SECTION_DESCRIPTIONS = [
+        'featured_alumni' => 'Meet graduates making an impact around the world.',
+        'jobs' => 'Jobs and internships shared by fellow alumni.',
         'marketplace' => 'House rentals, property, and used items posted by alumni.',
         'carpooling' => 'Share a ride with fellow alumni — drivers post trips, passengers save on fare.',
         'matrimony' => 'Admin-reviewed profiles for alumni, family, and friends looking to get married — in the US, Bangladesh, and beyond.',
         'catering' => 'Order catering for your next event, or browse home made foods from fellow alumni.',
+        'media_advocacy' => 'Request a media service, or browse work we\'ve already published.',
+        'stories' => 'Inspiring journeys from our graduates.',
+        'gallery' => 'Moments from our alumni community.',
+        'library' => 'Books donated by alumni, available to borrow.',
+        'news' => 'The latest from our institution and alumni association.',
     ];
 
     /**

@@ -258,6 +258,43 @@ class AdminSettingsTest extends TestCase
         );
     }
 
+    public function test_every_configurable_section_description_can_be_set_and_cleared(): void
+    {
+        $admin = User::factory()->admin()->create();
+        $keys = array_keys(\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTION_DESCRIPTIONS);
+
+        $this->assertSame(
+            ['featured_alumni', 'jobs', 'marketplace', 'carpooling', 'matrimony', 'catering', 'media_advocacy', 'stories', 'gallery', 'library', 'news'],
+            $keys
+        );
+
+        $payload = [];
+        foreach ($keys as $key) {
+            $payload["description_{$key}"] = "Custom {$key} text.";
+        }
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), $payload);
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+
+        foreach ($keys as $key) {
+            $this->assertSame(
+                "Custom {$key} text.",
+                \App\Http\Controllers\Admin\SettingsController::resolveSectionDescription($key)
+            );
+        }
+
+        $clearPayload = array_fill_keys(array_map(fn ($key) => "description_{$key}", $keys), '');
+        $this->actingAs($admin)->put(route('admin.settings.homepage'), $clearPayload);
+
+        foreach ($keys as $key) {
+            $this->assertSame(
+                \App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTION_DESCRIPTIONS[$key],
+                \App\Http\Controllers\Admin\SettingsController::resolveSectionDescription($key)
+            );
+        }
+    }
+
     public function test_homepage_renders_the_configured_section_description(): void
     {
         Setting::set('homepage', 'description_matrimony', 'Custom matrimony blurb for testing.');
