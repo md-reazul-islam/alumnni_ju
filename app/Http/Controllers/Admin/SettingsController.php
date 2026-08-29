@@ -76,6 +76,27 @@ class SettingsController extends Controller
     ];
 
     /**
+     * Static fallback heading text for the same 11 sections, used only by
+     * defaultSectionName() below. 'featured_alumni' and 'stories' are special:
+     * their real default is composed from the general.site_text setting at
+     * render time (see defaultSectionName()), so the values here only matter
+     * if that lookup somehow doesn't apply.
+     */
+    public const HOMEPAGE_SECTION_NAMES = [
+        'featured_alumni' => 'Featured Alumni',
+        'jobs' => 'Career Opportunities',
+        'marketplace' => 'Marketplace',
+        'carpooling' => 'Carpooling',
+        'matrimony' => 'Matrimony',
+        'catering' => 'Catering',
+        'media_advocacy' => 'Media Advocacy',
+        'stories' => 'Alumni Stories',
+        'gallery' => 'Gallery',
+        'library' => 'Your Library',
+        'news' => 'News & Announcements',
+    ];
+
+    /**
      * The public site-header's configurable menu items. 'group' controls which
      * heading an item appears under when it's placed inside the "More" dropdown
      * (it has no effect when the item is placed outside the dropdown). The
@@ -131,6 +152,30 @@ class SettingsController extends Controller
         $default = self::HOMEPAGE_SECTION_DESCRIPTIONS[$key] ?? '';
 
         return Setting::get('homepage', "description_{$key}", $default);
+    }
+
+    /**
+     * The default heading for a section when no admin override is stored.
+     * Computed live (not cached as a Setting default) so that 'featured_alumni'
+     * and 'stories' — whose default is composed from the site_text setting —
+     * always reflect the current site_text instead of a stale cached value.
+     */
+    public static function defaultSectionName(string $key): string
+    {
+        $siteText = Setting::get('general', 'site_text', config('app.name'));
+
+        return match ($key) {
+            'featured_alumni' => "Featured {$siteText}",
+            'stories' => "{$siteText} Stories",
+            default => self::HOMEPAGE_SECTION_NAMES[$key] ?? '',
+        };
+    }
+
+    public static function resolveSectionName(string $key): string
+    {
+        $override = Setting::get('homepage', "name_{$key}");
+
+        return filled($override) ? $override : self::defaultSectionName($key);
     }
 
     public static function resolveNavbarOrder(): array
@@ -210,14 +255,16 @@ class SettingsController extends Controller
         $homepageOrder = self::resolveSectionOrder();
 
         $sectionDescriptions = [];
+        $sectionNames = [];
         foreach (array_keys(self::HOMEPAGE_SECTION_DESCRIPTIONS) as $key) {
             $sectionDescriptions[$key] = self::resolveSectionDescription($key);
+            $sectionNames[$key] = self::resolveSectionName($key);
         }
 
         $navbarOrder = self::resolveNavbarOrder();
         $navbarPrimaryKeys = self::resolveNavbarPrimaryKeys();
 
-        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder', 'sectionDescriptions', 'navbarOrder', 'navbarPrimaryKeys'));
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder', 'sectionDescriptions', 'sectionNames', 'navbarOrder', 'navbarPrimaryKeys'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -363,6 +410,7 @@ class SettingsController extends Controller
         $rules['section_order'] = ['nullable', 'string'];
         foreach (array_keys(self::HOMEPAGE_SECTION_DESCRIPTIONS) as $key) {
             $rules["description_{$key}"] = ['nullable', 'string', 'max:300'];
+            $rules["name_{$key}"] = ['nullable', 'string', 'max:150'];
         }
         $data = $request->validateWithBag('homepage', $rules);
 
@@ -372,6 +420,7 @@ class SettingsController extends Controller
 
         foreach (array_keys(self::HOMEPAGE_SECTION_DESCRIPTIONS) as $key) {
             Setting::set('homepage', "description_{$key}", $data["description_{$key}"] ?? null);
+            Setting::set('homepage', "name_{$key}", $data["name_{$key}"] ?? null);
         }
 
         $submittedOrder = json_decode($request->input('section_order', '[]'), true);

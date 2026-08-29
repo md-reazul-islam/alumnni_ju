@@ -196,6 +196,16 @@
                             </div>
                             <div class="min-w-0 flex-1">
                                 <x-toggle :name="$key" :label="\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS[$key]" :checked="$homepage[$key]" />
+                                @if (array_key_exists($sectionSlug, $sectionNames))
+                                    <label class="mt-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Section name</label>
+                                    <input
+                                        type="text"
+                                        name="name_{{ $sectionSlug }}"
+                                        maxlength="150"
+                                        value="{{ $sectionNames[$sectionSlug] }}"
+                                        class="form-input mt-1 w-full text-sm"
+                                    >
+                                @endif
                                 @if (array_key_exists($sectionSlug, $sectionDescriptions))
                                     <label class="mt-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Section description</label>
                                     <textarea

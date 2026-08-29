@@ -305,6 +305,63 @@ class AdminSettingsTest extends TestCase
         $response->assertSee('Custom matrimony blurb for testing.');
     }
 
+    public function test_admin_can_set_a_custom_section_name(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
+            'name_marketplace' => 'Housing & Marketplace',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $this->assertSame(
+            'Housing & Marketplace',
+            \App\Http\Controllers\Admin\SettingsController::resolveSectionName('marketplace')
+        );
+    }
+
+    public function test_clearing_a_section_name_restores_the_default(): void
+    {
+        $admin = User::factory()->admin()->create();
+        Setting::set('homepage', 'name_marketplace', 'Custom Name');
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
+            'name_marketplace' => '',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame(
+            \App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTION_NAMES['marketplace'],
+            \App\Http\Controllers\Admin\SettingsController::resolveSectionName('marketplace')
+        );
+    }
+
+    public function test_section_name_default_for_featured_alumni_and_stories_tracks_site_text(): void
+    {
+        Setting::set('general', 'site_text', 'Springfield Grads');
+
+        $this->assertSame('Featured Springfield Grads', \App\Http\Controllers\Admin\SettingsController::resolveSectionName('featured_alumni'));
+        $this->assertSame('Springfield Grads Stories', \App\Http\Controllers\Admin\SettingsController::resolveSectionName('stories'));
+
+        Setting::set('homepage', 'name_featured_alumni', 'Distinguished Graduates');
+        $this->assertSame('Distinguished Graduates', \App\Http\Controllers\Admin\SettingsController::resolveSectionName('featured_alumni'));
+
+        Setting::set('general', 'site_text', 'A Different Name');
+        $this->assertSame('Distinguished Graduates', \App\Http\Controllers\Admin\SettingsController::resolveSectionName('featured_alumni'));
+        $this->assertSame('A Different Name Stories', \App\Http\Controllers\Admin\SettingsController::resolveSectionName('stories'));
+    }
+
+    public function test_homepage_renders_the_configured_section_name(): void
+    {
+        Setting::set('homepage', 'name_matrimony', 'Custom Matrimony Heading');
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $response->assertSee('Custom Matrimony Heading');
+    }
+
     public function test_homepage_renders_sections_in_the_configured_order(): void
     {
         \App\Models\Setting::set('homepage', 'section_order', json_encode(['show_marketplace', 'show_hero', 'show_stats', 'show_featured_alumni', 'show_events', 'show_jobs', 'show_stories', 'show_gallery', 'show_library', 'show_news', 'show_cta']));

@@ -2,7 +2,7 @@
     <div class="section-container py-5 sm:py-7">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-white sm:text-3xl">{{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }} Stories</h2>
+                <h2 class="text-2xl font-bold text-white sm:text-3xl">{{ \App\Http\Controllers\Admin\SettingsController::resolveSectionName('stories') }}</h2>
                 <p class="mt-1.5 text-navy-200">{{ \App\Http\Controllers\Admin\SettingsController::resolveSectionDescription('stories') }}</p>
             </div>
             <a href="{{ route('stories.index') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
