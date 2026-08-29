@@ -1,5 +1,5 @@
 <x-layouts::admin :title="'Settings'">
-    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : ($errors->login->any() ? 'login' : ($errors->homepage->any() ? 'homepage' : session('active_tab', 'institution'))))) }}' }">
+    <div x-data="{ tab: '{{ $errors->general->any() ? 'general' : ($errors->association->any() ? 'association' : ($errors->about->any() ? 'about' : ($errors->login->any() ? 'login' : ($errors->homepage->any() ? 'homepage' : ($errors->navbar->any() ? 'navbar' : session('active_tab', 'institution')))))) }}' }">
         <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Settings</h1>
 
         @if (session('status'))
@@ -13,6 +13,7 @@
             <button @click="tab = 'about'" :class="tab === 'about' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">About Page</button>
             <button @click="tab = 'login'" :class="tab === 'login' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Login Page</button>
             <button @click="tab = 'homepage'" :class="tab === 'homepage' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Homepage Sections</button>
+            <button @click="tab = 'navbar'" :class="tab === 'navbar' ? 'border-navy-700 text-navy-800 dark:text-white' : 'border-transparent text-slate-500'" class="border-b-2 px-4 py-2.5 text-sm font-medium">Navbar Menu</button>
         </div>
 
         <div x-show="tab === 'general'" x-cloak class="mt-6">
@@ -200,6 +201,66 @@
                 </div>
 
                 <div class="mt-5 flex justify-end"><x-button type="submit">Save Homepage Sections</x-button></div>
+            </form>
+        </div>
+
+        <div x-show="tab === 'navbar'" x-cloak class="mt-6">
+            <form
+                method="POST"
+                action="{{ route('admin.settings.navbar') }}"
+                class="card card-body"
+                x-data="{
+                    syncOrder(el) {
+                        const keys = Array.from(el.closest('form').querySelectorAll('[data-nav-row]')).map(row => row.dataset.navKey);
+                        el.closest('form').querySelector('input[name=menu_order]').value = JSON.stringify(keys);
+                    },
+                    moveUp(el) {
+                        const row = el.closest('[data-nav-row]');
+                        const prev = row.previousElementSibling;
+                        if (prev) row.parentNode.insertBefore(row, prev);
+                        this.syncOrder(el);
+                    },
+                    moveDown(el) {
+                        const row = el.closest('[data-nav-row]');
+                        const next = row.nextElementSibling;
+                        if (next) row.parentNode.insertBefore(next, row);
+                        this.syncOrder(el);
+                    },
+                }"
+                x-init="syncOrder($el)"
+            >
+                @csrf @method('PUT')
+                <input type="hidden" name="menu_order" value="">
+
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    Turn "Show outside dropdown" on to pin a menu to the main navbar; leave it off to keep it inside the "More" dropdown. Use the arrows to set the order — it applies to both the main navbar and the dropdown. Changes apply immediately.
+                </p>
+
+                <div class="mt-4 divide-y divide-slate-100 dark:divide-navy-800">
+                    @foreach ($navbarOrder as $key)
+                        @php $item = \App\Http\Controllers\Admin\SettingsController::NAVBAR_MENU_ITEMS[$key]; @endphp
+                        <div data-nav-row data-nav-key="{{ $key }}" class="flex items-center gap-3 py-1">
+                            <div class="flex flex-shrink-0 flex-col">
+                                <button type="button" @click="moveUp($event.target)" class="text-slate-400 hover:text-navy-700 disabled:opacity-30 dark:hover:text-white">
+                                    <x-icon name="chevron-up" class="h-4 w-4" />
+                                </button>
+                                <button type="button" @click="moveDown($event.target)" class="text-slate-400 hover:text-navy-700 disabled:opacity-30 dark:hover:text-white">
+                                    <x-icon name="chevron-down" class="h-4 w-4" />
+                                </button>
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <x-toggle
+                                    name="primary_{{ $key }}"
+                                    :label="$item['label']"
+                                    :hint="'Dropdown group when hidden: ' . $item['group']"
+                                    :checked="in_array($key, $navbarPrimaryKeys, true)"
+                                />
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="mt-5 flex justify-end"><x-button type="submit">Save Navbar Menu</x-button></div>
             </form>
         </div>
     </div>

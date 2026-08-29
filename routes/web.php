@@ -794,6 +794,7 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::put('/about', [AdminSettingsController::class, 'updateAbout'])->name('about');
             Route::put('/login-page', [AdminSettingsController::class, 'updateLoginPage'])->name('login-page');
             Route::put('/homepage', [AdminSettingsController::class, 'updateHomepage'])->name('homepage');
+            Route::put('/navbar', [AdminSettingsController::class, 'updateNavbar'])->name('navbar');
         });
 
         Route::prefix('donations')->name('donations.')->group(function () {

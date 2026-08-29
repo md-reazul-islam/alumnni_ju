@@ -252,4 +252,89 @@ class AdminSettingsTest extends TestCase
 
         $response->assertForbidden();
     }
+
+    public function test_navbar_menu_defaults_to_the_current_layout_when_unconfigured(): void
+    {
+        $defaults = \App\Http\Controllers\Admin\SettingsController::resolveNavbarPrimaryKeys();
+
+        $this->assertSame(\App\Http\Controllers\Admin\SettingsController::DEFAULT_NAVBAR_PRIMARY_KEYS, $defaults);
+    }
+
+    public function test_admin_can_move_a_menu_outside_the_dropdown_and_reorder_it(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $primary = ['about', 'marketplace', 'carpooling', 'matrimony', 'catering', 'events', 'alumni', 'stories'];
+        $order = ['about', 'marketplace', 'carpooling', 'matrimony', 'catering', 'events', 'alumni', 'stories', 'careers', 'news', 'gallery', 'library', 'media_advocacy', 'donate', 'contact'];
+
+        $payload = ['menu_order' => json_encode($order)];
+        foreach ($primary as $key) {
+            $payload["primary_{$key}"] = '1';
+        }
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.navbar'), $payload);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $this->assertSame($primary, \App\Http\Controllers\Admin\SettingsController::resolveNavbarPrimaryKeys());
+        $this->assertSame($order, \App\Http\Controllers\Admin\SettingsController::resolveNavbarOrder());
+    }
+
+    public function test_navbar_menu_reorder_ignores_invalid_keys_and_appends_missing_ones(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.navbar'), [
+            'menu_order' => json_encode(['stories', 'not_a_real_menu', 'about']),
+        ]);
+
+        $response->assertRedirect();
+        $resolved = \App\Http\Controllers\Admin\SettingsController::resolveNavbarOrder();
+
+        $this->assertSame(['stories', 'about'], array_slice($resolved, 0, 2));
+        $this->assertNotContains('not_a_real_menu', $resolved);
+        $this->assertSame(count(\App\Http\Controllers\Admin\SettingsController::NAVBAR_MENU_ITEMS), count($resolved));
+    }
+
+    public function test_unchecking_every_primary_toggle_moves_everything_into_the_dropdown(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.navbar'), []);
+
+        $response->assertRedirect();
+        $this->assertSame([], \App\Http\Controllers\Admin\SettingsController::resolveNavbarPrimaryKeys());
+    }
+
+    public function test_homepage_nav_reflects_the_configured_navbar_layout(): void
+    {
+        \App\Models\Setting::set('navbar', 'primary_keys', json_encode(['stories']));
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $content = $response->getContent();
+        $navStart = strpos($content, '<nav class="hidden items-center');
+        $navEnd = strpos($content, '</nav>', $navStart);
+        $navHtml = substr($content, $navStart, $navEnd - $navStart);
+
+        // The "More" dropdown button/menu is nested inside the same <nav>, right
+        // after the primary items — slice it off so only the primary bar remains.
+        $moreButtonPos = strpos($navHtml, 'More');
+        $primaryNavHtml = substr($navHtml, 0, $moreButtonPos !== false ? $moreButtonPos : strlen($navHtml));
+
+        $this->assertStringContainsString('Stories', $primaryNavHtml);
+        $this->assertStringNotContainsString('Marketplace', $primaryNavHtml);
+    }
+
+    public function test_non_admin_cannot_update_navbar_menu(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->put(route('admin.settings.navbar'), [
+            'primary_about' => '1',
+        ]);
+
+        $response->assertForbidden();
+    }
 }

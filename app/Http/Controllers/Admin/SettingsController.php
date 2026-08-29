@@ -56,6 +56,40 @@ class SettingsController extends Controller
         'show_cta' => 'Bottom Call-to-Action',
     ];
 
+    /**
+     * The public site-header's configurable menu items. 'group' controls which
+     * heading an item appears under when it's placed inside the "More" dropdown
+     * (it has no effect when the item is placed outside the dropdown). The
+     * 'Dashboard' link is deliberately not listed here — it's only shown to
+     * authenticated users and is always pinned to the front of the primary bar.
+     */
+    public const NAVBAR_MENU_ITEMS = [
+        'about' => ['label' => 'About', 'route' => 'about', 'group' => 'Info'],
+        'marketplace' => ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace', 'group' => 'Services'],
+        'carpooling' => ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling', 'group' => 'Services'],
+        'matrimony' => ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony', 'group' => 'Services'],
+        'catering' => ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering', 'group' => 'Services'],
+        'media_advocacy' => ['label' => 'Media Advocacy', 'route' => 'media-advocacy.index', 'section' => 'show_media_advocacy', 'group' => 'Services'],
+        'careers' => ['label' => 'Careers', 'route' => 'jobs.index', 'section' => 'show_jobs', 'group' => 'Opportunities'],
+        'events' => ['label' => 'Events', 'route' => 'events.index', 'section' => 'show_events', 'group' => 'Opportunities'],
+        'alumni' => ['label' => 'Alumni', 'route' => 'alumni.directory', 'group' => 'Community'],
+        'stories' => ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories', 'group' => 'Community'],
+        'news' => ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news', 'group' => 'Community'],
+        'gallery' => ['label' => 'Gallery', 'route' => 'gallery.index', 'section' => 'show_gallery', 'group' => 'Community'],
+        'library' => ['label' => 'Library', 'route' => 'library.index', 'section' => 'show_library', 'group' => 'Community'],
+        'donate' => ['label' => 'Donate', 'route' => 'donations.index', 'group' => 'Info'],
+        'contact' => ['label' => 'Contact', 'route' => 'contact', 'group' => 'Info'],
+    ];
+
+    /**
+     * The site's current (pre-admin-configurable) navbar layout, kept as the
+     * fallback so the public nav looks exactly the same until an admin actually
+     * saves the Navbar Menu tab for the first time.
+     */
+    public const DEFAULT_NAVBAR_PRIMARY_KEYS = [
+        'about', 'marketplace', 'carpooling', 'matrimony', 'catering', 'careers', 'events', 'alumni',
+    ];
+
     protected function ensurePermission(Request $request): void
     {
         abort_unless($request->user()->hasPermission('manage-settings'), 403);
@@ -71,6 +105,27 @@ class SettingsController extends Controller
             array_values(array_intersect($stored, $validKeys)),
             $validKeys
         )));
+    }
+
+    public static function resolveNavbarOrder(): array
+    {
+        $stored = json_decode(Setting::get('navbar', 'menu_order', '[]'), true);
+        $stored = is_array($stored) ? $stored : [];
+        $validKeys = array_keys(self::NAVBAR_MENU_ITEMS);
+
+        return array_values(array_unique(array_merge(
+            array_values(array_intersect($stored, $validKeys)),
+            $validKeys
+        )));
+    }
+
+    public static function resolveNavbarPrimaryKeys(): array
+    {
+        $stored = json_decode(Setting::get('navbar', 'primary_keys', json_encode(self::DEFAULT_NAVBAR_PRIMARY_KEYS)), true);
+        $stored = is_array($stored) ? $stored : self::DEFAULT_NAVBAR_PRIMARY_KEYS;
+        $validKeys = array_keys(self::NAVBAR_MENU_ITEMS);
+
+        return array_values(array_intersect($stored, $validKeys));
     }
 
     public function index(Request $request): View
@@ -128,7 +183,10 @@ class SettingsController extends Controller
 
         $homepageOrder = self::resolveSectionOrder();
 
-        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder'));
+        $navbarOrder = self::resolveNavbarOrder();
+        $navbarPrimaryKeys = self::resolveNavbarPrimaryKeys();
+
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder', 'navbarOrder', 'navbarPrimaryKeys'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -291,5 +349,35 @@ class SettingsController extends Controller
         AuditLogger::log('updated_settings', null, 'Updated homepage section visibility and order.', [], $data);
 
         return back()->with('status', 'Homepage sections updated.')->with('active_tab', 'homepage');
+    }
+
+    public function updateNavbar(Request $request): RedirectResponse
+    {
+        $this->ensurePermission($request);
+
+        $validKeys = array_keys(self::NAVBAR_MENU_ITEMS);
+
+        $rules = array_fill_keys(
+            array_map(fn ($key) => "primary_{$key}", $validKeys),
+            ['nullable', 'boolean']
+        );
+        $rules['menu_order'] = ['nullable', 'string'];
+        $data = $request->validateWithBag('navbar', $rules);
+
+        $primaryKeys = array_values(array_filter($validKeys, fn ($key) => $request->boolean("primary_{$key}")));
+        Setting::set('navbar', 'primary_keys', json_encode($primaryKeys));
+
+        $submittedOrder = json_decode($request->input('menu_order', '[]'), true);
+        if (is_array($submittedOrder)) {
+            $cleanOrder = array_values(array_unique(array_merge(
+                array_values(array_intersect($submittedOrder, $validKeys)),
+                $validKeys
+            )));
+            Setting::set('navbar', 'menu_order', json_encode($cleanOrder));
+        }
+
+        AuditLogger::log('updated_settings', null, 'Updated navbar menu placement and order.', [], $data);
+
+        return back()->with('status', 'Navbar menu updated.')->with('active_tab', 'navbar');
     }
 }

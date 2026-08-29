@@ -1,45 +1,29 @@
 @php
-    $primaryNavItems = [];
-    if (auth()->check()) {
-        $primaryNavItems[] = ['label' => 'Dashboard', 'route' => 'dashboard'];
-    }
-    $primaryNavItems = array_merge($primaryNavItems, [
-        ['label' => 'About', 'route' => 'about'],
-        ['label' => 'Marketplace', 'route' => 'marketplace.index', 'section' => 'show_marketplace'],
-        ['label' => 'Carpooling', 'route' => 'carpooling.search', 'section' => 'show_carpooling'],
-        ['label' => 'Matrimony', 'route' => 'matrimony.search', 'section' => 'show_matrimony'],
-        ['label' => 'Catering', 'route' => 'catering.search', 'section' => 'show_catering'],
-        ['label' => 'Careers', 'route' => 'jobs.index', 'section' => 'show_jobs'],
-        ['label' => 'Events', 'route' => 'events.index', 'section' => 'show_events'],
-        ['label' => 'Alumni', 'route' => 'alumni.directory'],
-    ]);
-
-    $moreNavGroups = [
-        'Community' => [
-            ['label' => 'Stories', 'route' => 'stories.index', 'section' => 'show_stories'],
-            ['label' => 'News', 'route' => 'news.index', 'section' => 'show_news'],
-            ['label' => 'Gallery', 'route' => 'gallery.index', 'section' => 'show_gallery'],
-            ['label' => 'Library', 'route' => 'library.index', 'section' => 'show_library'],
-        ],
-        'Services' => [
-            ['label' => 'Media Advocacy', 'route' => 'media-advocacy.index', 'section' => 'show_media_advocacy'],
-        ],
-        'Info' => [
-            ['label' => 'Donate', 'route' => 'donations.index'],
-            ['label' => 'Contact', 'route' => 'contact'],
-        ],
-    ];
+    $navbarRegistry = \App\Http\Controllers\Admin\SettingsController::NAVBAR_MENU_ITEMS;
+    $navbarOrder = \App\Http\Controllers\Admin\SettingsController::resolveNavbarOrder();
+    $navbarPrimaryKeys = \App\Http\Controllers\Admin\SettingsController::resolveNavbarPrimaryKeys();
 
     $filterVisible = fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0';
 
-    $primaryNavItems = array_values(array_filter($primaryNavItems, $filterVisible));
+    $orderedItems = collect($navbarOrder)
+        ->map(fn ($key) => array_merge(['key' => $key], $navbarRegistry[$key] ?? []))
+        ->filter($filterVisible)
+        ->values();
 
-    $moreNavGroups = array_filter(array_map(
-        fn ($items) => array_values(array_filter($items, $filterVisible)),
-        $moreNavGroups
-    ));
+    $primaryNavItems = $orderedItems->filter(fn ($item) => in_array($item['key'], $navbarPrimaryKeys, true))->values()->all();
 
-    $navItems = array_merge($primaryNavItems, ...array_values($moreNavGroups));
+    if (auth()->check()) {
+        array_unshift($primaryNavItems, ['key' => 'dashboard', 'label' => 'Dashboard', 'route' => 'dashboard']);
+    }
+
+    $moreItems = $orderedItems->reject(fn ($item) => in_array($item['key'], $navbarPrimaryKeys, true));
+
+    $moreNavGroups = [];
+    foreach ($moreItems as $item) {
+        $moreNavGroups[$item['group'] ?? 'More'][] = $item;
+    }
+
+    $navItems = array_merge($primaryNavItems, $moreItems->all());
 @endphp
 
 <div x-data="{ mobileOpen: false }">
