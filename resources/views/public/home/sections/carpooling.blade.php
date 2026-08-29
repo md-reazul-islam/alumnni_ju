@@ -15,7 +15,7 @@
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
             <h2 class="text-2xl font-bold text-white sm:text-3xl">Carpooling</h2>
-            <p class="mt-1.5 text-navy-200">Share a ride with fellow alumni — drivers post trips, passengers save on fare.</p>
+            <p class="mt-1.5 text-navy-200">{{ \App\Http\Controllers\Admin\SettingsController::resolveSectionDescription('carpooling') }}</p>
         </div>
         <a href="{{ route('carpooling.search') }}" class="flex items-center gap-1 text-sm font-semibold text-gold-400 hover:text-gold-300">
             Find a ride <x-icon name="arrow-right" class="h-4 w-4" />

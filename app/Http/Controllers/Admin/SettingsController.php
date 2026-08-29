@@ -57,6 +57,18 @@ class SettingsController extends Controller
     ];
 
     /**
+     * Homepage sections whose one-line subtitle (shown under the section
+     * heading) is admin-editable. Stored under Setting::get('homepage',
+     * "description_{$key}"); an empty/cleared value falls back to 'default'.
+     */
+    public const HOMEPAGE_SECTION_DESCRIPTIONS = [
+        'marketplace' => 'House rentals, property, and used items posted by alumni.',
+        'carpooling' => 'Share a ride with fellow alumni — drivers post trips, passengers save on fare.',
+        'matrimony' => 'Admin-reviewed profiles for alumni, family, and friends looking to get married — in the US, Bangladesh, and beyond.',
+        'catering' => 'Order catering for your next event, or browse home made foods from fellow alumni.',
+    ];
+
+    /**
      * The public site-header's configurable menu items. 'group' controls which
      * heading an item appears under when it's placed inside the "More" dropdown
      * (it has no effect when the item is placed outside the dropdown). The
@@ -105,6 +117,13 @@ class SettingsController extends Controller
             array_values(array_intersect($stored, $validKeys)),
             $validKeys
         )));
+    }
+
+    public static function resolveSectionDescription(string $key): string
+    {
+        $default = self::HOMEPAGE_SECTION_DESCRIPTIONS[$key] ?? '';
+
+        return Setting::get('homepage', "description_{$key}", $default);
     }
 
     public static function resolveNavbarOrder(): array
@@ -183,10 +202,15 @@ class SettingsController extends Controller
 
         $homepageOrder = self::resolveSectionOrder();
 
+        $sectionDescriptions = [];
+        foreach (array_keys(self::HOMEPAGE_SECTION_DESCRIPTIONS) as $key) {
+            $sectionDescriptions[$key] = self::resolveSectionDescription($key);
+        }
+
         $navbarOrder = self::resolveNavbarOrder();
         $navbarPrimaryKeys = self::resolveNavbarPrimaryKeys();
 
-        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder', 'navbarOrder', 'navbarPrimaryKeys'));
+        return view('admin.settings.index', compact('institution', 'association', 'general', 'about', 'login', 'homepage', 'homepageOrder', 'sectionDescriptions', 'navbarOrder', 'navbarPrimaryKeys'));
     }
 
     public function updateInstitution(Request $request): RedirectResponse
@@ -330,10 +354,17 @@ class SettingsController extends Controller
 
         $rules = array_fill_keys(array_keys(self::HOMEPAGE_SECTIONS), ['nullable', 'boolean']);
         $rules['section_order'] = ['nullable', 'string'];
+        foreach (array_keys(self::HOMEPAGE_SECTION_DESCRIPTIONS) as $key) {
+            $rules["description_{$key}"] = ['nullable', 'string', 'max:300'];
+        }
         $data = $request->validateWithBag('homepage', $rules);
 
         foreach (array_keys(self::HOMEPAGE_SECTIONS) as $key) {
             Setting::set('homepage', $key, $request->boolean($key) ? '1' : '0');
+        }
+
+        foreach (array_keys(self::HOMEPAGE_SECTION_DESCRIPTIONS) as $key) {
+            Setting::set('homepage', "description_{$key}", $data["description_{$key}"] ?? null);
         }
 
         $submittedOrder = json_decode($request->input('section_order', '[]'), true);

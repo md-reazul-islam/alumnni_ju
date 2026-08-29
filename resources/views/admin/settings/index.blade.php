@@ -184,8 +184,9 @@
 
                 <div class="mt-4 divide-y divide-slate-100 dark:divide-navy-800">
                     @foreach ($homepageOrder as $key)
-                        <div data-section-row data-section-key="{{ $key }}" class="flex items-center gap-3 py-1">
-                            <div class="flex flex-shrink-0 flex-col">
+                        @php $sectionSlug = \Illuminate\Support\Str::after($key, 'show_'); @endphp
+                        <div data-section-row data-section-key="{{ $key }}" class="flex items-start gap-3 py-2">
+                            <div class="flex flex-shrink-0 flex-col pt-1">
                                 <button type="button" @click="moveUp($event.target)" class="text-slate-400 hover:text-navy-700 disabled:opacity-30 dark:hover:text-white">
                                     <x-icon name="chevron-up" class="h-4 w-4" />
                                 </button>
@@ -195,6 +196,15 @@
                             </div>
                             <div class="min-w-0 flex-1">
                                 <x-toggle :name="$key" :label="\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS[$key]" :checked="$homepage[$key]" />
+                                @if (array_key_exists($sectionSlug, $sectionDescriptions))
+                                    <label class="mt-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Section description</label>
+                                    <textarea
+                                        name="description_{{ $sectionSlug }}"
+                                        rows="2"
+                                        maxlength="300"
+                                        class="form-textarea mt-1 w-full text-sm"
+                                    >{{ $sectionDescriptions[$sectionSlug] }}</textarea>
+                                @endif
                             </div>
                         </div>
                     @endforeach

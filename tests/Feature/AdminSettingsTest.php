@@ -226,6 +226,48 @@ class AdminSettingsTest extends TestCase
         $this->assertSame(count(\App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTIONS), count($resolved));
     }
 
+    public function test_admin_can_set_a_custom_section_description(): void
+    {
+        $admin = User::factory()->admin()->create();
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
+            'description_marketplace' => 'Find your next rental or great deals from fellow graduates.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasNoErrors();
+        $this->assertSame(
+            'Find your next rental or great deals from fellow graduates.',
+            \App\Http\Controllers\Admin\SettingsController::resolveSectionDescription('marketplace')
+        );
+    }
+
+    public function test_clearing_a_section_description_restores_the_default(): void
+    {
+        $admin = User::factory()->admin()->create();
+        Setting::set('homepage', 'description_carpooling', 'Custom text');
+
+        $response = $this->actingAs($admin)->put(route('admin.settings.homepage'), [
+            'description_carpooling' => '',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertSame(
+            \App\Http\Controllers\Admin\SettingsController::HOMEPAGE_SECTION_DESCRIPTIONS['carpooling'],
+            \App\Http\Controllers\Admin\SettingsController::resolveSectionDescription('carpooling')
+        );
+    }
+
+    public function test_homepage_renders_the_configured_section_description(): void
+    {
+        Setting::set('homepage', 'description_matrimony', 'Custom matrimony blurb for testing.');
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk();
+        $response->assertSee('Custom matrimony blurb for testing.');
+    }
+
     public function test_homepage_renders_sections_in_the_configured_order(): void
     {
         \App\Models\Setting::set('homepage', 'section_order', json_encode(['show_marketplace', 'show_hero', 'show_stats', 'show_featured_alumni', 'show_events', 'show_jobs', 'show_stories', 'show_gallery', 'show_library', 'show_news', 'show_cta']));
