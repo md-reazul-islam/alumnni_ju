@@ -1,0 +1,100 @@
+<x-layouts::admin :title="'Media Advocacy Categories'">
+    <div x-data="{ adding: false, editing: null }">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white">Media Advocacy Categories</h1>
+            <x-button size="sm" @click="adding = !adding"><x-icon name="plus" class="h-4 w-4" /> Add Category</x-button>
+        </div>
+        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Service types alumni can request — TV news, Facebook marketing, banners, logos, etc.</p>
+
+        @if (session('status'))
+            <x-alert variant="success" class="mt-4">{{ session('status') }}</x-alert>
+        @endif
+
+        <form method="POST" action="{{ route('admin.media-advocacy.categories.store') }}" enctype="multipart/form-data" x-show="adding" x-cloak class="card card-body mt-4 space-y-4">
+            @csrf
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <x-input label="Category Name" name="name" required />
+                <x-select label="Icon" name="icon" :selected="'megaphone'" :options="$iconOptions" :placeholder="''" />
+                <x-input label="Sort Order" name="sort_order" type="number" min="0" value="0" />
+            </div>
+            <x-textarea label="Service Description" name="description" rows="3" required />
+            <div>
+                <label class="form-label">Image</label>
+                <input type="file" name="image" accept="image/*" class="form-input">
+                @error('image')
+                    <p class="form-error">{{ $message }}</p>
+                @enderror
+            </div>
+            <div class="flex justify-end"><x-button type="submit" size="sm">Save</x-button></div>
+        </form>
+
+        <form method="GET" class="mt-6">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Search categories" class="form-input max-w-xs">
+        </form>
+
+        @if ($categories->isEmpty())
+            <x-empty-state icon="megaphone" title="No categories yet" class="mt-8" />
+        @else
+            <x-table class="mt-6">
+                <thead><tr><th>Image</th><th>Icon</th><th>Name</th><th>Orders</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                    @foreach ($categories as $category)
+                        <tr>
+                            <td>
+                                <div class="flex h-10 w-10 items-center justify-center overflow-hidden rounded-lg bg-slate-100 dark:bg-navy-800">
+                                    @if ($category->image_url)
+                                        <img src="{{ $category->image_url }}" class="h-full w-full object-cover">
+                                    @else
+                                        <x-icon name="image" class="h-4 w-4 text-slate-400" />
+                                    @endif
+                                </div>
+                            </td>
+                            <td>
+                                <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
+                                    <x-icon :name="$category->icon ?: 'megaphone'" class="h-4 w-4" />
+                                </span>
+                            </td>
+                            <td class="font-medium text-slate-900 dark:text-white">{{ $category->name }}</td>
+                            <td>{{ $category->orders_count }}</td>
+                            <td>
+                                <x-badge :variant="$category->is_active ? 'success' : 'neutral'">{{ $category->is_active ? 'Active' : 'Inactive' }}</x-badge>
+                            </td>
+                            <td class="flex items-center gap-3">
+                                <button type="button" @click="editing = editing === {{ $category->id }} ? null : {{ $category->id }}" class="text-slate-400 hover:text-navy-700">
+                                    <x-icon name="pencil" class="h-4 w-4" />
+                                </button>
+                                <form method="POST" action="{{ route('admin.media-advocacy.categories.destroy', $category) }}" onsubmit="event.preventDefault(); Swal.fire({title:'Remove this category?',icon:'warning',showCancelButton:true,confirmButtonColor:'#dc2626',confirmButtonText:'Remove'}).then(r=>r.isConfirmed&&this.submit())">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="text-slate-400 hover:text-red-600"><x-icon name="trash-2" class="h-4 w-4" /></button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr x-show="editing === {{ $category->id }}" x-cloak>
+                            <td colspan="6">
+                                <form method="POST" action="{{ route('admin.media-advocacy.categories.update', $category) }}" enctype="multipart/form-data" class="space-y-4 rounded-lg bg-slate-50 p-4 dark:bg-navy-900">
+                                    @csrf @method('PUT')
+                                    <div class="flex flex-wrap items-end gap-4">
+                                        <x-input label="Category Name" name="name" :value="$category->name" required />
+                                        <x-select label="Icon" name="icon" :selected="$category->icon ?: 'megaphone'" :options="$iconOptions" :placeholder="''" />
+                                        <x-input label="Sort Order" name="sort_order" type="number" min="0" :value="$category->sort_order" />
+                                        <label class="flex items-center gap-2 pb-2 text-sm text-slate-600 dark:text-slate-300">
+                                            <input type="checkbox" name="is_active" value="1" @checked($category->is_active) class="rounded border-slate-300 text-navy-700 focus:ring-navy-500">
+                                            Active
+                                        </label>
+                                    </div>
+                                    <x-textarea label="Service Description" name="description" rows="2" required>{{ $category->description }}</x-textarea>
+                                    <div>
+                                        <label class="form-label">Replace Image (optional)</label>
+                                        <input type="file" name="image" accept="image/*" class="form-input">
+                                    </div>
+                                    <div class="flex justify-end"><x-button type="submit" size="sm">Save</x-button></div>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </x-table>
+            <div class="mt-6">{{ $categories->links() }}</div>
+        @endif
+    </div>
+</x-layouts::admin>

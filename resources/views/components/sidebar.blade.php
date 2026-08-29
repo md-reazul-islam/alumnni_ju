@@ -61,6 +61,12 @@
             ['label' => 'Reports', 'route' => 'admin.catering.reports.index'],
             ['label' => 'Settings', 'route' => 'admin.catering.settings.edit'],
         ]],
+        ['label' => 'Media Advocacy', 'icon' => 'megaphone', 'match' => 'admin.media-advocacy.*', 'permission' => 'manage-media-advocacy', 'children' => [
+            ['label' => 'Categories', 'route' => 'admin.media-advocacy.categories.index'],
+            ['label' => 'Published Media', 'route' => 'admin.media-advocacy.published.index'],
+            ['label' => 'Orders', 'route' => 'admin.media-advocacy.orders.index'],
+            ['label' => 'Reports', 'route' => 'admin.media-advocacy.reports.index'],
+        ]],
         ['label' => 'Library', 'icon' => 'book-open', 'match' => 'admin.library.*', 'permission' => 'manage-library', 'children' => [
             ['label' => 'All Books', 'route' => 'admin.library.index'],
             ['label' => 'Add Book', 'route' => 'admin.library.create'],

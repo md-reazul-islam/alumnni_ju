@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementContro
 use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
+use App\Http\Controllers\Admin\MediaAdvocacyCategoryController as AdminMediaAdvocacyCategoryController;
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
 use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateringHomemadeCategoryController;
 use App\Http\Controllers\Admin\CateringHomemadeListingController as AdminCateringHomemadeListingController;
@@ -543,6 +544,13 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/', [AdminCateringCategoryController::class, 'store'])->name('store');
             Route::put('/{cateringProgramCategory}', [AdminCateringCategoryController::class, 'update'])->name('update');
             Route::delete('/{cateringProgramCategory}', [AdminCateringCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('media-advocacy/categories')->name('media-advocacy.categories.')->group(function () {
+            Route::get('/', [AdminMediaAdvocacyCategoryController::class, 'index'])->name('index');
+            Route::post('/', [AdminMediaAdvocacyCategoryController::class, 'store'])->name('store');
+            Route::put('/{mediaAdvocacyCategory}', [AdminMediaAdvocacyCategoryController::class, 'update'])->name('update');
+            Route::delete('/{mediaAdvocacyCategory}', [AdminMediaAdvocacyCategoryController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('catering/items')->name('catering.items.')->group(function () {
