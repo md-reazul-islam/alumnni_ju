@@ -34,6 +34,13 @@ class MediaAdvocacyController extends Controller
         return view('public.media-advocacy.published', compact('media'));
     }
 
+    public function show(MediaAdvocacyCategory $mediaAdvocacyCategory): View
+    {
+        abort_unless($mediaAdvocacyCategory->is_active, 404);
+
+        return view('public.media-advocacy.show', ['category' => $mediaAdvocacyCategory]);
+    }
+
     public function inquire(Request $request, MediaAdvocacyCategory $mediaAdvocacyCategory): RedirectResponse
     {
         abort_unless($mediaAdvocacyCategory->is_active, 404);

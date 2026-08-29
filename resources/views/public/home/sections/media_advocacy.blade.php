@@ -20,41 +20,48 @@
             @if ($mediaAdvocacyCategories->isEmpty())
                 <x-empty-state icon="megaphone" title="No services available yet" class="mt-4" />
             @else
-                <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div class="mt-3 grid grid-cols-3 gap-3">
                     @foreach ($mediaAdvocacyCategories as $cat)
                         <div class="card overflow-hidden">
-                            <div class="flex h-20 items-center justify-center bg-navy-100 text-navy-400 dark:bg-navy-800">
+                            <div class="flex h-16 items-center justify-center bg-navy-100 text-navy-400 dark:bg-navy-800 sm:h-20">
                                 @if ($cat->image_url)
                                     <img src="{{ $cat->image_url }}" class="h-full w-full object-cover">
                                 @else
                                     <x-icon :name="$cat->icon ?: 'megaphone'" class="h-6 w-6" />
                                 @endif
                             </div>
-                            <div class="p-2.5">
+                            <div class="p-2">
                                 <div class="flex items-center gap-1.5">
-                                    <span class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
-                                        <x-icon :name="$cat->icon ?: 'megaphone'" class="h-3 w-3" />
+                                    <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-navy-50 text-navy-600 dark:bg-navy-800 dark:text-navy-300">
+                                        <x-icon :name="$cat->icon ?: 'megaphone'" class="h-2.5 w-2.5" />
                                     </span>
-                                    <p class="truncate text-xs font-semibold text-slate-900 dark:text-white sm:text-sm">{{ $cat->name }}</p>
+                                    <p class="truncate text-[10px] font-semibold text-slate-900 dark:text-white sm:text-xs">{{ $cat->name }}</p>
                                 </div>
-                                <p class="mt-1 line-clamp-2 text-[10px] text-slate-500 dark:text-slate-400 sm:text-xs">{{ $cat->description }}</p>
 
-                                @if (Route::has('media-advocacy.inquire') && auth()->check())
-                                    <form method="POST" action="{{ route('media-advocacy.inquire', $cat) }}" class="mt-2">
-                                        @csrf
-                                        <button type="submit" class="w-full rounded-lg bg-navy-800 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700 sm:text-xs">
+                                <div class="mt-2 flex flex-col gap-1">
+                                    @if (Route::has('media-advocacy.show'))
+                                        <a href="{{ route('media-advocacy.show', $cat) }}" class="block w-full rounded-lg border border-navy-200 py-1 text-center text-[9px] font-semibold uppercase tracking-wide text-navy-700 transition hover:bg-navy-50 dark:border-navy-700 dark:text-navy-200 dark:hover:bg-navy-800">
+                                            View Details
+                                        </a>
+                                    @endif
+
+                                    @if (Route::has('media-advocacy.inquire') && auth()->check())
+                                        <form method="POST" action="{{ route('media-advocacy.inquire', $cat) }}">
+                                            @csrf
+                                            <button type="submit" class="w-full rounded-lg bg-navy-800 py-1 text-[9px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700">
+                                                I'm Interested
+                                            </button>
+                                        </form>
+                                    @elseif (Route::has('media-advocacy.inquire'))
+                                        <a href="{{ route('login') }}" class="block w-full rounded-lg bg-navy-800 py-1 text-center text-[9px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700">
                                             I'm Interested
-                                        </button>
-                                    </form>
-                                @elseif (Route::has('media-advocacy.inquire'))
-                                    <a href="{{ route('login') }}" class="mt-2 block w-full rounded-lg bg-navy-800 py-1.5 text-center text-[10px] font-semibold uppercase tracking-wide text-white transition hover:bg-navy-700 sm:text-xs">
-                                        I'm Interested
-                                    </a>
-                                @else
-                                    <span class="mt-2 block w-full rounded-lg bg-slate-100 py-1.5 text-center text-[10px] font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-800 sm:text-xs">
-                                        Coming soon
-                                    </span>
-                                @endif
+                                        </a>
+                                    @else
+                                        <span class="block w-full rounded-lg bg-slate-100 py-1 text-center text-[9px] font-semibold uppercase tracking-wide text-slate-400 dark:bg-navy-800">
+                                            Coming soon
+                                        </span>
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     @endforeach

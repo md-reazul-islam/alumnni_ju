@@ -208,6 +208,7 @@ Route::prefix('catering/homemade')->name('catering.homemade.')->group(function (
 Route::prefix('media-advocacy')->name('media-advocacy.')->group(function () {
     Route::get('/', [MediaAdvocacyController::class, 'index'])->name('index');
     Route::get('/published', [MediaAdvocacyController::class, 'published'])->name('published');
+    Route::get('/{mediaAdvocacyCategory}', [MediaAdvocacyController::class, 'show'])->name('show');
 });
 
 Route::prefix('matrimony')->name('matrimony.')->group(function () {
