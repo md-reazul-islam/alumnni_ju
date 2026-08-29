@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
 use App\Http\Controllers\Admin\MediaAdvocacyCategoryController as AdminMediaAdvocacyCategoryController;
+use App\Http\Controllers\Admin\MediaAdvocacyOrderController as AdminMediaAdvocacyOrderController;
 use App\Http\Controllers\Admin\PublishedMediaController as AdminPublishedMediaController;
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
 use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateringHomemadeCategoryController;
@@ -571,6 +572,13 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/{publishedMedium}/edit', [AdminPublishedMediaController::class, 'edit'])->name('edit');
             Route::put('/{publishedMedium}', [AdminPublishedMediaController::class, 'update'])->name('update');
             Route::delete('/{publishedMedium}', [AdminPublishedMediaController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('media-advocacy/orders')->name('media-advocacy.orders.')->group(function () {
+            Route::get('/', [AdminMediaAdvocacyOrderController::class, 'index'])->name('index');
+            Route::get('/{mediaAdvocacyOrder}', [AdminMediaAdvocacyOrderController::class, 'show'])->name('show');
+            Route::post('/{mediaAdvocacyOrder}/status', [AdminMediaAdvocacyOrderController::class, 'updateStatus'])->name('status');
+            Route::post('/{mediaAdvocacyOrder}/converse', [AdminMediaAdvocacyOrderController::class, 'converse'])->name('converse');
         });
 
         Route::prefix('catering/items')->name('catering.items.')->group(function () {
