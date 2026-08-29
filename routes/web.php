@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverCont
 use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
 use App\Http\Controllers\Admin\MediaAdvocacyCategoryController as AdminMediaAdvocacyCategoryController;
 use App\Http\Controllers\Admin\MediaAdvocacyOrderController as AdminMediaAdvocacyOrderController;
+use App\Http\Controllers\Admin\MediaAdvocacyReportController as AdminMediaAdvocacyReportController;
 use App\Http\Controllers\Admin\PublishedMediaController as AdminPublishedMediaController;
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
 use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateringHomemadeCategoryController;
@@ -579,6 +580,16 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::get('/{mediaAdvocacyOrder}', [AdminMediaAdvocacyOrderController::class, 'show'])->name('show');
             Route::post('/{mediaAdvocacyOrder}/status', [AdminMediaAdvocacyOrderController::class, 'updateStatus'])->name('status');
             Route::post('/{mediaAdvocacyOrder}/converse', [AdminMediaAdvocacyOrderController::class, 'converse'])->name('converse');
+        });
+
+        Route::prefix('media-advocacy/reports')->name('media-advocacy.reports.')->group(function () {
+            Route::get('/', [AdminMediaAdvocacyReportController::class, 'index'])->name('index');
+            Route::get('/pending', [AdminMediaAdvocacyReportController::class, 'pending'])->name('pending');
+            Route::get('/confirmed', [AdminMediaAdvocacyReportController::class, 'confirmed'])->name('confirmed');
+            Route::get('/cancelled', [AdminMediaAdvocacyReportController::class, 'cancelled'])->name('cancelled');
+            Route::get('/income-by-service', [AdminMediaAdvocacyReportController::class, 'incomeByService'])->name('income-by-service');
+            Route::get('/income-by-customer', [AdminMediaAdvocacyReportController::class, 'incomeByCustomer'])->name('income-by-customer');
+            Route::get('/export/{type}', [AdminMediaAdvocacyReportController::class, 'export'])->name('export');
         });
 
         Route::prefix('catering/items')->name('catering.items.')->group(function () {
