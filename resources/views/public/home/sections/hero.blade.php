@@ -15,10 +15,10 @@
 
                 <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                     <x-button :href="route('register')" variant="gold" class="w-full sm:w-auto">
-                        Join the Alumni Network
+                        Join the {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }} Network
                     </x-button>
                     <x-button :href="route('alumni.directory')" variant="secondary" class="w-full bg-white/10 text-white ring-white/20 hover:bg-white/20 sm:w-auto">
-                        Explore Alumni Directory
+                        Explore {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }} Directory
                     </x-button>
                 </div>
             </div>

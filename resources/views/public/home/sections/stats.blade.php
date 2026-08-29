@@ -20,7 +20,7 @@
                     <x-icon name="graduation-cap" class="h-5 w-5" />
                 </div>
                 <p x-ref="alumni" class="mt-2.5 text-2xl font-bold text-navy-900 dark:text-white sm:text-3xl">0</p>
-                <p class="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Total Alumni</p>
+                <p class="mt-1 text-xs font-medium text-slate-500 dark:text-slate-400">Total {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }}</p>
             </div>
 
             <div class="group relative flex aspect-square flex-col items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 text-center shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-200 hover:shadow-lg dark:border-white/10 dark:bg-white/5 dark:hover:border-emerald-400/30">

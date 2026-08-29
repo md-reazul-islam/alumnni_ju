@@ -5,7 +5,7 @@
             <p class="mt-2 text-navy-200">Update your profile and stay connected with your alma mater.</p>
         </div>
         <div class="flex flex-shrink-0 flex-col gap-3 sm:flex-row">
-            <x-button :href="route('register')" variant="gold">Become an Alumni Member</x-button>
+            <x-button :href="route('register')" variant="gold">Become a {{ \App\Models\Setting::get('general', 'site_text', config('app.name')) }} Member</x-button>
             @auth
                 <x-button :href="route('profile.edit')" variant="secondary" class="bg-white/10 text-white ring-white/20 hover:bg-white/20">Update Your Profile</x-button>
             @else
