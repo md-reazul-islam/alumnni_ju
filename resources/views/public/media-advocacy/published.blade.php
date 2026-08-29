@@ -25,6 +25,8 @@
                             <div class="relative flex h-40 items-center justify-center bg-navy-100 text-navy-400 dark:bg-navy-800">
                                 @if ($item->type === 'image' && $item->image_url)
                                     <img src="{{ $item->image_url }}" class="h-full w-full object-cover">
+                                @elseif ($item->type === 'video' && $item->video_thumbnail_url)
+                                    <img src="{{ $item->video_thumbnail_url }}" class="h-full w-full object-cover">
                                 @else
                                     <x-icon name="video" class="h-8 w-8" />
                                 @endif
@@ -32,7 +34,7 @@
                                 @if ($item->type === 'video')
                                     <span class="absolute inset-0 flex items-center justify-center bg-black/20">
                                         <span class="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-navy-900">
-                                            <x-icon name="video" class="h-5 w-5" />
+                                            <x-icon name="play" class="h-5 w-5" />
                                         </span>
                                     </span>
                                 @endif

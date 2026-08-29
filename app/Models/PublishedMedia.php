@@ -45,4 +45,17 @@ class PublishedMedia extends Model
 
         return null;
     }
+
+    public function getVideoThumbnailUrlAttribute(): ?string
+    {
+        if (! $this->video_url) {
+            return null;
+        }
+
+        if (preg_match('/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/', $this->video_url, $matches)) {
+            return "https://img.youtube.com/vi/{$matches[1]}/hqdefault.jpg";
+        }
+
+        return null;
+    }
 }
