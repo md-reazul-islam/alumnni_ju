@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
 use App\Http\Controllers\Admin\CarpoolDriverController as AdminCarpoolDriverController;
 use App\Http\Controllers\Admin\CateringCategoryController as AdminCateringCategoryController;
 use App\Http\Controllers\Admin\MediaAdvocacyCategoryController as AdminMediaAdvocacyCategoryController;
+use App\Http\Controllers\Admin\PublishedMediaController as AdminPublishedMediaController;
 use App\Http\Controllers\Admin\CateringFoodItemController as AdminCateringFoodItemController;
 use App\Http\Controllers\Admin\CateringHomemadeCategoryController as AdminCateringHomemadeCategoryController;
 use App\Http\Controllers\Admin\CateringHomemadeListingController as AdminCateringHomemadeListingController;
@@ -551,6 +552,15 @@ Route::middleware(['auth', 'verified', 'role:super-administrator,alumni-administ
             Route::post('/', [AdminMediaAdvocacyCategoryController::class, 'store'])->name('store');
             Route::put('/{mediaAdvocacyCategory}', [AdminMediaAdvocacyCategoryController::class, 'update'])->name('update');
             Route::delete('/{mediaAdvocacyCategory}', [AdminMediaAdvocacyCategoryController::class, 'destroy'])->name('destroy');
+        });
+
+        Route::prefix('media-advocacy/published')->name('media-advocacy.published.')->group(function () {
+            Route::get('/', [AdminPublishedMediaController::class, 'index'])->name('index');
+            Route::get('/create', [AdminPublishedMediaController::class, 'create'])->name('create');
+            Route::post('/create', [AdminPublishedMediaController::class, 'store'])->name('store');
+            Route::get('/{publishedMedium}/edit', [AdminPublishedMediaController::class, 'edit'])->name('edit');
+            Route::put('/{publishedMedium}', [AdminPublishedMediaController::class, 'update'])->name('update');
+            Route::delete('/{publishedMedium}', [AdminPublishedMediaController::class, 'destroy'])->name('destroy');
         });
 
         Route::prefix('catering/items')->name('catering.items.')->group(function () {
