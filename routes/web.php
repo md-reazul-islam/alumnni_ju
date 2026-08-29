@@ -77,6 +77,7 @@ use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\MarketplaceController;
+use App\Http\Controllers\MediaAdvocacyController;
 use App\Http\Controllers\Admin\MentorshipController as AdminMentorshipController;
 use App\Http\Controllers\MentorshipController;
 use App\Http\Controllers\MessageController;
@@ -200,6 +201,11 @@ Route::prefix('catering')->name('catering.')->group(function () {
 
 Route::prefix('catering/homemade')->name('catering.homemade.')->group(function () {
     Route::get('/', [CateringHomemadeController::class, 'index'])->name('index');
+});
+
+Route::prefix('media-advocacy')->name('media-advocacy.')->group(function () {
+    Route::get('/', [MediaAdvocacyController::class, 'index'])->name('index');
+    Route::get('/published', [MediaAdvocacyController::class, 'published'])->name('published');
 });
 
 Route::prefix('matrimony')->name('matrimony.')->group(function () {
@@ -363,6 +369,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::delete('/{homemadeListing}', [CateringHomemadeController::class, 'destroy'])->middleware('throttle:10,1')->name('destroy');
             Route::post('/{homemadeListing}/inquire', [CateringHomemadeController::class, 'inquire'])->middleware('throttle:10,1')->name('inquire');
         });
+    });
+
+    Route::prefix('media-advocacy')->name('media-advocacy.')->group(function () {
+        Route::post('/{mediaAdvocacyCategory}/inquire', [MediaAdvocacyController::class, 'inquire'])->middleware('throttle:10,1')->name('inquire');
     });
 
     Route::prefix('network')->name('connections.')->group(function () {

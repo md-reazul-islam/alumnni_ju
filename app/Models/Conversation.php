@@ -59,6 +59,10 @@ class Conversation extends Model
             return 'Catering';
         }
 
+        if ($this->subject_type === MediaAdvocacyOrder::class) {
+            return 'Media Advocacy';
+        }
+
         $other = $this->participants->first(fn ($p) => $p->id !== $viewer->id) ?? $this->participants->first();
 
         return $other?->isMentor() ? 'Mentors' : 'Alumni';

@@ -19,7 +19,7 @@ class MessageController extends Controller
      * that don't have a conversation source yet (e.g. Carpooling) without ever
      * showing an empty group.
      */
-    protected const CATEGORY_ORDER = ['Alumni', 'Mentors', 'Marketplace', 'Catering', 'Matrimony', 'Carpooling'];
+    protected const CATEGORY_ORDER = ['Alumni', 'Mentors', 'Marketplace', 'Catering', 'Media Advocacy', 'Matrimony', 'Carpooling'];
 
     public function index(Request $request, ?Conversation $conversation = null): View
     {

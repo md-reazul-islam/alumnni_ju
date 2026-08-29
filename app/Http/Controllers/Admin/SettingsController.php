@@ -48,6 +48,7 @@ class SettingsController extends Controller
         'show_carpooling' => 'Carpooling',
         'show_matrimony' => 'Matrimony',
         'show_catering' => 'Catering',
+        'show_media_advocacy' => 'Media Advocacy',
         'show_stories' => 'Alumni Stories',
         'show_gallery' => 'Gallery',
         'show_library' => 'Your Library',

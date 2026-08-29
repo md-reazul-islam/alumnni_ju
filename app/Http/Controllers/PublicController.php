@@ -17,7 +17,9 @@ use App\Models\JobPosting;
 use App\Models\MarketplaceCategory;
 use App\Models\MarketplaceListing;
 use App\Models\MatrimonyProfile;
+use App\Models\MediaAdvocacyCategory;
 use App\Models\News;
+use App\Models\PublishedMedia;
 use App\Models\Slider;
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
@@ -60,6 +62,8 @@ class PublicController extends Controller
                 'cateringFoodItems' => CateringFoodItem::active()->with('categories')->inRandomOrder()->limit(12)->get(),
                 'cateringHomemadeCategories' => CateringHomemadeCategory::active()->orderBy('name')->get(),
                 'cateringHomemadeListings' => CateringHomemadeListing::approved()->with(['category', 'images'])->inRandomOrder()->limit(9)->get(),
+                'mediaAdvocacyCategories' => MediaAdvocacyCategory::active()->orderBy('sort_order')->orderBy('name')->limit(6)->get(),
+                'publishedMedia' => PublishedMedia::active()->orderBy('sort_order')->latest()->limit(9)->get(),
                 'stories' => AlumniStory::published()->with('alumniProfile.user')->latest('published_at')->limit(6)->get(),
                 'news' => News::published()->latest('published_at')->limit(6)->get(),
                 'gallery' => GalleryPhoto::approved()->with('user')->latest('approved_at')->limit(8)->get(),
