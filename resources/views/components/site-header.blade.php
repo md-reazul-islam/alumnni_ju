@@ -21,6 +21,9 @@
             ['label' => 'Gallery', 'route' => 'gallery.index', 'section' => 'show_gallery'],
             ['label' => 'Library', 'route' => 'library.index', 'section' => 'show_library'],
         ],
+        'Services' => [
+            ['label' => 'Media Advocacy', 'route' => 'media-advocacy.index', 'section' => 'show_media_advocacy'],
+        ],
         'Info' => [
             ['label' => 'Donate', 'route' => 'donations.index'],
             ['label' => 'Contact', 'route' => 'contact'],

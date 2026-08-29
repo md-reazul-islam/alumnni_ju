@@ -12,6 +12,7 @@
         ['label' => 'Carpooling panel', 'route' => 'carpooling.driver.become', 'icon' => 'car', 'section' => 'show_carpooling'],
         ['label' => 'Catering', 'route' => 'catering.search', 'icon' => 'utensils', 'section' => 'show_catering'],
         ['label' => 'Matrimony', 'route' => 'matrimony.search', 'icon' => 'heart', 'section' => 'show_matrimony'],
+        ['label' => 'Media Advocacy', 'route' => 'media-advocacy.index', 'icon' => 'megaphone', 'section' => 'show_media_advocacy'],
     ];
 
     $filterVisible = fn ($item) => ! isset($item['section']) || \App\Models\Setting::get('homepage', $item['section'], true) !== '0';

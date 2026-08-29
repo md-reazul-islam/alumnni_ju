@@ -7,6 +7,7 @@ use App\Models\MediaAdvocacyCategory;
 use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -62,6 +63,8 @@ class MediaAdvocacyCategoryController extends Controller
 
         MediaAdvocacyCategory::create($data);
 
+        Cache::forget('homepage.content');
+
         return back()->with('status', 'Category added.');
     }
 
@@ -91,6 +94,8 @@ class MediaAdvocacyCategoryController extends Controller
 
         $mediaAdvocacyCategory->update($data);
 
+        Cache::forget('homepage.content');
+
         return back()->with('status', 'Category updated.');
     }
 
@@ -105,6 +110,8 @@ class MediaAdvocacyCategoryController extends Controller
         }
 
         $mediaAdvocacyCategory->delete();
+
+        Cache::forget('homepage.content');
 
         return back()->with('status', 'Category removed.');
     }

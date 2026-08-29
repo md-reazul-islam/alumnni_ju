@@ -24,6 +24,7 @@
         ['label' => 'My Favorites', 'icon' => 'heart', 'route' => 'matrimony.favorites.index'],
         ['label' => 'Order Catering', 'icon' => 'utensils', 'route' => 'catering.orders.create'],
         ['label' => 'My Catering Orders', 'icon' => 'utensils', 'route' => 'catering.orders.mine'],
+        ['label' => 'Request Media Service', 'icon' => 'megaphone', 'route' => 'media-advocacy.index'],
     ];
 @endphp
 

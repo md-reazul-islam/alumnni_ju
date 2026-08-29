@@ -7,6 +7,7 @@ use App\Models\PublishedMedia;
 use App\Services\ImageUploadService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -56,6 +57,8 @@ class PublishedMediaController extends Controller
 
         PublishedMedia::create($data);
 
+        Cache::forget('homepage.content');
+
         return redirect()->route('admin.media-advocacy.published.index')->with('status', 'Published media added.');
     }
 
@@ -91,6 +94,8 @@ class PublishedMediaController extends Controller
 
         $publishedMedium->update($data);
 
+        Cache::forget('homepage.content');
+
         return redirect()->route('admin.media-advocacy.published.index')->with('status', 'Published media updated.');
     }
 
@@ -103,6 +108,8 @@ class PublishedMediaController extends Controller
         }
 
         $publishedMedium->delete();
+
+        Cache::forget('homepage.content');
 
         return back()->with('status', 'Published media removed.');
     }
